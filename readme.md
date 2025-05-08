@@ -1,5 +1,3 @@
-Sure! Here's your full **`README.md`** content formatted properly for GitHub:
-
 ```markdown
 # 🚀 Next.js Application
 
