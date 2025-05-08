@@ -77,7 +77,7 @@ function DeployModelSelect({
         {tagsFilteredModels?.length > 0 ? (
           <>
             {tagsFilteredModels?.map((model, index) => (
-              <>
+              <div key={index}>
                 {multiSelect ? (
                   <ModelListCard
                     hideSeeMore={hideSeeMore}
@@ -118,7 +118,7 @@ function DeployModelSelect({
                     }}
                   />
                 )}
-              </>
+              </div>
             ))}
           </>
         ) : (
