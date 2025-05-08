@@ -73,4 +73,4 @@ docker run -d -p 3000:3000 \
   -e NEXT_PUBLIC_BASE_URL=https://yourdomain.com \
   -e NEXT_PUBLIC_VERCEL_ENV=production \
   -e NEXT_PUBLIC_PASSWORD=your-password
- 
+
