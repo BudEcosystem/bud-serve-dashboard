@@ -4,7 +4,7 @@ FROM node:lts-alpine AS deps
 WORKDIR /usr/bin/src
 
 # Install dependencies based on the package.json and yarn.lock files
-COPY package.json yarn.lock ./
+COPY package.json ./
 RUN yarn install --frozen-lockfile
 
 # Stage 2: Build the application
