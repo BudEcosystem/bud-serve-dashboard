@@ -65,7 +65,8 @@ NEXT_PUBLIC_PLAYGROUND_URL=https://playground.url
 
 ```bash
 # Build the image
-docker build -t nextjs-app .
+docker build -t budui .
+
 
 # Run the container with environment variables
 docker run -d -p 3000:3000 \
