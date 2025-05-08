@@ -1,40 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Sure! Here's your full **`README.md`** content formatted properly for GitHub:
 
-## Getting Started
+```markdown
+# 🚀 Next.js Application
 
-First, run the development server:
+This repository contains a [Next.js](https://nextjs.org/) application built and deployed using a multi-stage Dockerfile. It supports environment-based configuration and is suitable for deployment in production, development, Docker, and Kubernetes environments.
+
+---
+
+## 📁 Project Structure
+
+- **Dockerfile** – Multi-stage build for optimized production deployment.
+- **entrypoint.sh** – Entrypoint for running in containers.
+- **package.json / yarn.lock** – Dependency manifest and lockfile.
+
+---
+
+## 🌐 Running the App
+
+### 1. 🧪 Run on a Local/Remote Server (Production/Development)
+
+#### ✅ Prerequisites
+
+- [Node.js](https://nodejs.org/) v18+ (LTS recommended)
+- [Yarn](https://yarnpkg.com/)
+
+#### 🛠 Setup
 
 ```bash
-npm run dev
-# or
+# Install dependencies
+yarn install
+
+# Development mode
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Production build
+yarn build
+yarn start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### 🔐 Environment Variables
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file at the root with the following variables:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```env
+NEXT_PUBLIC_BASE_URL=https://yourdomain.com
+NEXT_PUBLIC_VERCEL_ENV=production
+NEXT_PUBLIC_PASSWORD=your-password
+NEXT_PUBLIC_PRIVATE_KEY=your-key
+NEXT_PUBLIC_NOVU_SOCKET_URL=wss://socket.url
+NEXT_PUBLIC_NOVU_BASE_URL=https://api.novu.url
+NEXT_PUBLIC_NOVU_APP_ID=novu-app-id
+NEXT_PUBLIC_TEMP_API_BASE_URL=https://temp.api.url
+NEXT_PUBLIC_COPY_CODE_API_BASE_URL=https://copy.api.url
+NEXT_PUBLIC_PLAYGROUND_URL=https://playground.url
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 2. 🐳 Run with Docker
 
-## Learn More
+#### ✅ Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- [Docker](https://docs.docker.com/get-docker/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### 🛠 Build & Run
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+# Build the image
+docker build -t nextjs-app .
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# Run the container with environment variables
+docker run -d -p 3000:3000 \
+  -e NEXT_PUBLIC_BASE_URL=https://yourdomain.com \
+  -e NEXT_PUBLIC_VERCEL_ENV=production \
+  -e NEXT_PUBLIC_PASSWORD=your-password
