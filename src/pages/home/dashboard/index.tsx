@@ -535,7 +535,7 @@ const Dashboard = () => {
 
       // Create chart data using the summary_metrics.items array
       const dimensions = ["product", "Input Tokens", "Output Tokens"];
-      const source = data.input_output_tokens_metrics.items[0].items.map(item => ({
+      const source = data.input_output_tokens_metrics.items[0]?.items.map(item => ({
         product: item.name,
         "Input Tokens": item.input_tokens,
         "Output Tokens": item.output_tokens,
@@ -1299,7 +1299,7 @@ const Dashboard = () => {
               <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.35rem] mb-[.25rem]">For the top 5 models</p>
 
               {/* <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.95rem]">For the top 5 models</p> */}
-              {tokenMetricsData?.source.length ? (
+              {tokenMetricsData?.source?.length ? (
                 <>
                   {/* <div className="flex justify-start items-start	mt-[1.5rem] gap-[.7rem]">
                     <div className={`flex flex-col border pt-[.2rem] pb-[.5rem] px-[.6rem] rounded-md`}

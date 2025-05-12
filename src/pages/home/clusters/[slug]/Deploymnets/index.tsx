@@ -257,6 +257,7 @@ function DeploymentListTable() {
                         }
                     }
                 }}
+                
                 onChange={(pagination, filters, sorter: {
                     order: 'ascend' | 'descend';
                     field: string;
