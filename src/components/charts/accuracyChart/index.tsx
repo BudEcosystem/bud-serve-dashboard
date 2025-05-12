@@ -102,8 +102,8 @@ const AccuracyPopup: React.FC<AccuracyPopupProps> = ({ data }) => {
                      item.color
                    };margin-right:15px;border-radius:2px;font-size:13px;"></span>
                    <span style="margin-right: 15px;display:inline-block;min-width:50px;">${
-                     item.value[item.seriesName]
-                   }%</span>
+                     item.value[item.seriesName] ?  item.value[item.seriesName] + '%' : 'N/A'
+                   }</span>
                    ${item.seriesName}
                  </div>`
             );
