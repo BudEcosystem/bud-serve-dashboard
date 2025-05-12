@@ -43,26 +43,26 @@ export default function UseModel() {
             "max_tokens": "256",
             "messages": [{"role": "user", "content": "Summarize the given text"}]
             }'`,
-    python: `\`\`\`python
-  import requests
-  import json
-  url = "${copyCodeApiBaseUrl}"
-  payload = json.dumps({
-    "model": "${clusterDetails?.name}",
-    "max_tokens": "10",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Summarize the given text"
-      }
-    ]
-  })
-  headers = {
-    'Authorization: Bearer {API_KEY_HERE}',
-    'Content-Type': 'application/json'
-  }
-  response = requests.request("POST", url, headers=headers, data=payload)
-  print(response.text)\`\`\``,
+    python: 
+    `import requests
+import json
+url = "${copyCodeApiBaseUrl}"
+payload = json.dumps({
+ "model": "${clusterDetails?.name}",
+ "max_tokens": "10",
+ "messages": [
+ {
+   "role": "user",
+    "content": "Summarize the given text"
+   }
+ ]
+})
+headers = {
+ 'Authorization': 'Bearer {API_KEY_HERE}',
+ 'Content-Type': 'application/json'
+}
+response = requests.request("POST", url, headers=headers, data=payload)
+print(response.text)`,
     javascript: `\`\`\`javascript
   var data = JSON.stringify({
     "model": "${clusterDetails?.name}",
