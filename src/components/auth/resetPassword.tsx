@@ -18,12 +18,14 @@ import * as Form from "@radix-ui/react-form";
 import { useAuthNavigation } from "src/context/appContext";
 import { motion } from "framer-motion";
 import { getChromeColor } from "../ui/bud/dataEntry/TagsInputData";
+import { useUser } from "src/stores/useUser";
 
 type ResetPasswordProps = {
   onSubmit: (formData: string) => void;
 };
 
 const ResetPasswordPage = ({ onSubmit }: ResetPasswordProps) => {
+  const { getUser, user } = useUser();
   const { authError } = useAuthNavigation();
   const [isNewIsShow, setNewIsShow] = useState(false);
   const [isConfIsShow, setConfIsShow] = useState(false);
@@ -32,6 +34,7 @@ const ResetPasswordPage = ({ onSubmit }: ResetPasswordProps) => {
   const [rePassword, setRePassword] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [userDetails, setUserDetails] = useState<any>();
   const [isTouched, setIsTouched] = useState({
     rePassword: false,
     password: false,
@@ -40,6 +43,10 @@ const ResetPasswordPage = ({ onSubmit }: ResetPasswordProps) => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
+  }, []);
+  
+  useEffect(() => {
+    getUser()
   }, []);
 
   const passwordRegex =

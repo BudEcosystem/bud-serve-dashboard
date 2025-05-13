@@ -15,6 +15,7 @@ import { successToast } from "@/components/toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { getChromeColor } from "@/components/ui/bud/dataEntry/TagsInputData";
 import { Text_12_400_EEEEEE } from "@/components/ui/text";
+import { useUser } from "src/stores/useUser";
 
 interface DataInterface {
   email?: string;
@@ -22,6 +23,7 @@ interface DataInterface {
 }
 
 export default function Login() {
+  const {  user } = useUser();
   const { activePage, setActivePage, setAuthError, authError } = useAuthNavigation();
   const { isLoading, showLoader, hideLoader } = useLoader();
   const router = useRouter();
@@ -89,7 +91,7 @@ export default function Login() {
   const handleResetPassword = async (payload: string) => {
     showLoader();
     try {
-      const response = await AppRequest.Patch(`users/${userId}`, {
+      const response = await AppRequest.Patch(`users/${user?.id}`, {
         password: payload,
       });
       if (userData?.first_login) {
