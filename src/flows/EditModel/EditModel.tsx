@@ -279,6 +279,7 @@ function EditModelForm({
               closable
               classNames="customTags"
               onClose={() => {
+                // formData.set("license_url", null);
                 formData.delete("license_file");
                 setFormData(formData);
                 setModelValues({
@@ -299,7 +300,8 @@ function EditModelForm({
                 Drag & Drop or <b>Choose file</b> to upload
               </>}
               hint={<>
-                Supported formats : Markdown, PDF, Text
+                <div className="text-[.75rem] pt-[.3rem]">Supported formats : Markdown, PDF, Text</div>
+                <div className="text-[.675rem]">Maximum file size : 10 MB</div>
               </>}
               rules={[{
                 required: !formData.get("license_url"), message: "Please upload a file"
