@@ -72,7 +72,8 @@ export default function Login() {
         getUser();
         hideLoader();
       } else {
-        router.push("/dashboard");
+        // router.push("/dashboard");
+        setActivePage(2);
         hideLoader();
       }
     } catch (error) {
