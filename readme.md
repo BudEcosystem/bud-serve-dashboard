@@ -1,17 +1,10 @@
 ```markdown
-# 🚀 Next.js Application
+# 🚀 Bud Dashboard
 
-This repository contains a [Next.js](https://nextjs.org/) application built and deployed using a multi-stage Dockerfile. It supports environment-based configuration and is suitable for deployment in production, development, Docker, and Kubernetes environments.
-
----
-
-## 📁 Project Structure
-
-- **Dockerfile** – Multi-stage build for optimized production deployment.
-- **entrypoint.sh** – Entrypoint for running in containers.
-- **package.json / yarn.lock** – Dependency manifest and lockfile.
+ Dashboard  for managing inference. It provides comprehensive features including model registry management, cluster administration, deployment orchestration, and granular permission controls.
 
 ---
+
 
 ## 🌐 Running the App
 

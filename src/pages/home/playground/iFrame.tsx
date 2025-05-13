@@ -1,7 +1,7 @@
 import { playGroundUrl } from "@/components/environment";
 import React, { useEffect, useRef, useState } from "react";
 
-const EmbeddedIframe = () => {
+const EmbeddedIframe = ({singleChat = false}: {singleChat?: boolean}) => {
   const [_accessToken, _setAccessToken] = useState("");
   const [_refreshToken, _setRefreshToken] = useState("");
 
@@ -39,7 +39,7 @@ const EmbeddedIframe = () => {
     <div style={{ width: "100%", height: "100%", border: "none" }}>
       <iframe
         ref={iframeRef}
-        src={`${playGroundUrl}/login?embedded=true&access_token=${_accessToken}&refresh_token=${_refreshToken}`}
+        src={`${playGroundUrl}/login?embedded=true&access_token=${_accessToken}&refresh_token=${_refreshToken}&singleChat=${singleChat}`}
         style={{ width: "100%", height: "100%", border: "none" }}
         title="Playground"
         allowFullScreen={false}

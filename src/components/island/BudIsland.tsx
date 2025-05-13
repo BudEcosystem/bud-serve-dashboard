@@ -296,8 +296,9 @@ const BudIsland: React.FC = () => {
                         </div>
                     </div>
                     <div className={` h-full border border-[#1F1F1F] rounded-[1rem] overflow-hidden relative border border-[#1F1F1F] w-[41%]`}>
-                        <ComingSoon shrink={true} scaleValue={.9} comingYpos='30%' />
+                        {/* <ComingSoon shrink={true} scaleValue={.9} comingYpos='30%' /> */}
                         <BudChat />
+                        {/* <EmbeddedIframe /> */}
                     </div>
 
                 </div>
