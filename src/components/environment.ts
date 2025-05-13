@@ -9,3 +9,5 @@ export const novuSocketUrl = process.env.NEXT_PUBLIC_NOVU_SOCKET_URL;
 export const novuAppId = process.env.NEXT_PUBLIC_NOVU_APP_ID;
 export const copyCodeApiBaseUrl = process.env.NEXT_PUBLIC_COPY_CODE_API_BASE_URL + 'v1/chat/completions';
 export const playGroundUrl = process.env.NEXT_PUBLIC_PLAYGROUND_URL;
+export const askBudUrl = process.env.NEXT_PUBLIC_ASK_BUD_URL;
+export const askBudModel = process.env.NEXT_PUBLIC_ASK_BUD_MODEL;

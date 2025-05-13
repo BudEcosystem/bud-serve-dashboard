@@ -1,4 +1,4 @@
-import { playGroundUrl } from "@/components/environment";
+import { playGroundUrl, askBudModel, askBudUrl } from "@/components/environment";
 import React, { useEffect, useRef, useState } from "react";
 
 const EmbeddedIframe = ({singleChat = false}: {singleChat?: boolean}) => {
@@ -6,7 +6,10 @@ const EmbeddedIframe = ({singleChat = false}: {singleChat?: boolean}) => {
   const [_refreshToken, _setRefreshToken] = useState("");
 
   const iframeRef = useRef(null);
-
+  let iframeUrl = `${playGroundUrl}/chat?embedded=true&access_token=${_accessToken}&refresh_token=${_refreshToken}&is_single_chat=${singleChat}`
+  if(singleChat){
+    iframeUrl += `&model=${askBudModel}&base_url=${askBudUrl}`
+  }
   useEffect(() => {
     if (typeof window !== "undefined") {
       _setAccessToken(localStorage.getItem("access_token"));
@@ -39,7 +42,7 @@ const EmbeddedIframe = ({singleChat = false}: {singleChat?: boolean}) => {
     <div style={{ width: "100%", height: "100%", border: "none" }}>
       <iframe
         ref={iframeRef}
-        src={`${playGroundUrl}/login?embedded=true&access_token=${_accessToken}&refresh_token=${_refreshToken}&singleChat=${singleChat}`}
+        src={iframeUrl}
         style={{ width: "100%", height: "100%", border: "none" }}
         title="Playground"
         allowFullScreen={false}
