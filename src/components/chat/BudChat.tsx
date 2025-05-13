@@ -5,7 +5,7 @@ import EmbeddedIframe from 'src/pages/home/playground/iFrame'
 
 function BudChat() {
     return (
-        <div className='relative flex flex-col w-full h-full bud-chat'>
+        <div className='relative flex flex-col w-full h-full'>
 
             <EmbeddedIframe singleChat={true} />
 

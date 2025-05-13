@@ -244,7 +244,7 @@ const BudIsland: React.FC = () => {
                 classNames={{
                     wrapper: 'isLandWrapper overflow-hidden transition-all duration-500 ease-in-out',
                     mask: `${!isDrawerOpen ? 'bg-[#060607] opacity-90' : 'bg-transparent'} transition-all duration-500 ease-in-out`,
-                    body: 'islandBody rounded-[1rem] flex justify-end items-start relative w-full h-[100vh] gap-[1rem] pl-[4.25rem] pr-[4.45rem] pt-[4.6rem] pb-[.7rem]',
+                    body: 'islandBody rounded-[1rem] flex justify-end items-start relative w-full h-[100vh] gap-[1rem] pl-[2.25rem] pr-[2.45rem] pt-[4.6rem] pb-[.7rem]',
                     content: 'p-0 h-full bg-transparent border-none',
                 }}
                 open={isOpen && !isDrawerOpen}
@@ -295,7 +295,7 @@ const BudIsland: React.FC = () => {
                                 ))}
                         </div>
                     </div>
-                    <div className={` h-full border border-[#1F1F1F] rounded-[1rem] overflow-hidden relative border border-[#1F1F1F] w-[41%]`}>
+                    <div className={` h-full overflow-hidden relative w-[41%]`}>
                         {/* <ComingSoon shrink={true} scaleValue={.9} comingYpos='30%' /> */}
                         <BudChat />
                         {/* <EmbeddedIframe /> */}
