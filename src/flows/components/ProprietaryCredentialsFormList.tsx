@@ -139,7 +139,7 @@ function CredentialsList() {
     selectedCredentials,
     setSelectedCredentials
   } = useDeployModel();
-  const { credentials, } = useProprietaryCredentials();
+  const { credentials } = useProprietaryCredentials();
 
 
   const handleSelect = (data: Credentials) => {

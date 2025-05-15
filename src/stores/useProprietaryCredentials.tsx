@@ -120,10 +120,14 @@ export const useProprietaryCredentials = create<{
         set({ loading: true });
         try {
             const response: any = await AppRequest.Get(`/proprietary/credentials/`, {
-                params
-            });
+                params: {
+                    page: 1,
+                    limit: 10000,
+                    ...params // include additional parameters if needed
+                }
+            },);
             if (response) {
-                set({ credentials: response.data.credentials});
+                set({ credentials: response.data.credentials });
                 set({ totalCredentials: response.data.total_record });
                 return response.data.credentials;
             }
