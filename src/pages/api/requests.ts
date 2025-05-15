@@ -124,18 +124,18 @@ const handleErrorResponse = (err) => {
     // errorToast(err.response.data?.message || "Internal Server Error");
     return false;
   } else if (err.response && err.response.status === 422) {
-    errorToast(
-      err.response?.data?.message ||
-        err.response?.data?.message?.[0].detail[0].msg ||
-        err.response?.data?.[0]?.detail[0].msg ||
-        "Internal Server Error"
-    );
+    // errorToast(
+    //   err.response?.data?.message ||
+    //     err.response?.data?.message?.[0].detail[0].msg ||
+    //     err.response?.data?.[0]?.detail[0].msg ||
+    //     "Internal Server Error"
+    // );
     return false;
   } else if (err.response && err.response.status == 400 && err.response.request.responseURL.includes('/login')) {
     return Promise.reject(err.response.data);
   } else {
     console.log(err)
-    errorToast(err.response?.data?.message || "Internal Server Error");
+    // errorToast(err.response?.data?.message || "Internal Server Error");
     return false;
   }
 };
