@@ -26,7 +26,7 @@ export default function EditProfile() {
         tags: [],
         icon: ""
       }}
-      disableNext={!submittable || (form.getFieldValue("password") && !form.getFieldValue("repassword")) || user?.name === form.getFieldValue("name")}
+      disableNext={!submittable || (form.getFieldValue("password") && !form.getFieldValue("repassword"))}
       onNext={(values) => {
         if (submittable) {
           updateCurrentUser(
