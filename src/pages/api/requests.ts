@@ -117,11 +117,11 @@ const handleErrorResponse = (err) => {
     // });
     return false;
   } else if (err.response && err.response.code === 500) {
-    errorToast(err.response.data?.message || "Internal Server Error");
+    // errorToast(err.response.data?.message || "Internal Server Error");
     window.location.reload();
     return false;
   } else if (err.response && err.response.status === 500) {
-    errorToast(err.response.data?.message || "Internal Server Error");
+    // errorToast(err.response.data?.message || "Internal Server Error");
     return false;
   } else if (err.response && err.response.status === 422) {
     errorToast(

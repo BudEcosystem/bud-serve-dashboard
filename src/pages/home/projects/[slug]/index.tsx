@@ -87,11 +87,14 @@ const ProjectDetailsPage = () => {
       onDelete: () => {
         deleteProject(selectedProjectId, router).then((result) => {
           // deleteProject('9290dfd0-2225-4f38-bee8-9d5e89c3b7', router).then((result) => {
+          console.log(result)
           if (result.success) {
             setOverlayVisible(false);
             notification.destroy(`${title}-delete-notification`);
           } else {
-            updateNotificationMessage("An unknown error occurred.");
+            updateNotificationMessage(result.message);
+            setOverlayVisible(false);
+            notification.destroy(`${title}-delete-notification`);
           }
         });
       },
