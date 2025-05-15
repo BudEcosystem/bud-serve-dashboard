@@ -6,8 +6,9 @@ const EmbeddedIframe = ({singleChat = false}: {singleChat?: boolean}) => {
   const [_refreshToken, _setRefreshToken] = useState("");
 
   const iframeRef = useRef(null);
-  let iframeUrl = `${playGroundUrl}/chat?embedded=true&access_token=${_accessToken}&refresh_token=${_refreshToken}&is_single_chat=${singleChat}`
+  let iframeUrl = `${playGroundUrl}/login?embedded=true&access_token=${_accessToken}&refresh_token=${_refreshToken}&is_single_chat=${singleChat}`
   if(singleChat){
+    iframeUrl = `${playGroundUrl}/chat?embedded=true&access_token=${_accessToken}&refresh_token=${_refreshToken}&is_single_chat=${singleChat}`
     iframeUrl += `&model=${askBudModel}&base_url=${askBudUrl}&storage=ask-bud`
   }
   useEffect(() => {
