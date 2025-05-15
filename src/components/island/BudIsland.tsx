@@ -278,7 +278,7 @@ const BudIsland: React.FC = () => {
                     />
                 </div>
                 <div className="flex justify-end items-top gap-[1rem] w-full h-[100%]">
-                    <div className="w-[57.6%] overflow-y-auto">
+                    <div className="w-[50%] overflow-y-auto">
                         <div className={`grid grid-cols-2 gap-x-[1rem] gap-y-[1rem] `}>
                             <NotificationsWidget
                                 notifications={inAppNotifications}
@@ -295,7 +295,7 @@ const BudIsland: React.FC = () => {
                                 ))}
                         </div>
                     </div>
-                    <div className={` h-full overflow-hidden relative w-[41%]`}>
+                    <div className={` h-full overflow-hidden relative w-[50%]`}>
                         {/* <ComingSoon shrink={true} scaleValue={.9} comingYpos='30%' /> */}
                         <BudChat />
                         {/* <EmbeddedIframe /> */}
