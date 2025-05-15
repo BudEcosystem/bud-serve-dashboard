@@ -114,6 +114,8 @@ export const useProjects = create<
   projectMetricsData: null,
   averageMetricsData: null,
   concurrentMetricsData: null,
+  projectMembers: [],
+
   setSelectedProject: (project: Project) => {
     set({ selectedProject: project });
   },
@@ -264,13 +266,12 @@ export const useProjects = create<
   },
   getMembers: async (projectId: string) => {
     try {
-      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/projects/${projectId}/users?order_by="project_role"`);
+      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/projects/${projectId}/users?order_by=project_role`);
       set({ projectMembers: response.data.users });
     } catch (error) {
       console.error("Error creating model:", error);
     }
   },
-  projectMembers: [],
   updatePermissions: async (projectId: string, userId: string, permissions: Permission[]) => {
     try {
       const response: any = await AppRequest.Patch(`/permissions/project`, [{
