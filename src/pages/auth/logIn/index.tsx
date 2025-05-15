@@ -141,21 +141,21 @@ export default function Login() {
     }
   };
   const handleForgetPassword = async (email: string) => {
-    setAuthError("Something went wrong, please contact admin.");
-    // showLoader();
-    // try {
-    //   const response = await AppRequest.Post(`notifications/reset-password`, {
-    //     email,
-    //   });
-    //   if (response) {
-    //     setActivePage(1);
-    //   }
-    //   successToast(response.data.message);
-    //   hideLoader();
-    // } catch (error) {
-    //   console.error("Reset password error:", error);
-    //   hideLoader();
-    // }
+    showLoader();
+    try {
+      const response = await AppRequest.Post(`users/reset-password`, {
+        email,
+      });
+      if (response) {
+        setActivePage(1);
+      }
+      console.log("response", response);
+      successToast(response.data.message);
+      hideLoader();
+    } catch (error) {
+      console.error("Reset password error:", error);
+      hideLoader();
+    }
   }
   return (
     <AuthLayout>

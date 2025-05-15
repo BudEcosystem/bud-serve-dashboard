@@ -102,7 +102,7 @@ const LoginPage = ({ onSubmit }: LoginPageModalProps) => {
           hasFeedback
           className="mb-[1.8rem]"
           name="email"
-          validateDebounce={500}
+          // validateDebounce={500}
           validateTrigger={['onBlur']}
           rules={[
             // {
@@ -162,7 +162,7 @@ const LoginPage = ({ onSubmit }: LoginPageModalProps) => {
           hasFeedback
           name="password"
           className="mb-[1rem]"
-          validateDebounce={500}
+          // validateDebounce={500}
           validateTrigger={['onBlur']}
           rules={[
             // {
