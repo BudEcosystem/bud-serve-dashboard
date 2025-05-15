@@ -247,7 +247,7 @@ const RoutesComponent: React.FC<RoutesProps> = ({ data }) => {
                       },
                   ]}
                   pagination={false}
-                  dataSource={endPoints}
+                  dataSource={[]}
                   bordered={false}
                   footer={null}
                   virtual
