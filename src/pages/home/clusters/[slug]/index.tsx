@@ -257,52 +257,52 @@ const ClusterDetailsPage = () => {
                 key: '3',
                 children: <ClusterNodes data={selectedCluster} />
               },
-              {
-                label: <div className="flex items-center gap-[0.375rem]">
-                  <div className="w-[.975rem] pt-[.15rem]">
-                    <Image
-                      preview={false}
-                      src="/images/icons/health.png"
-                      alt="home"
-                      style={{
-                        width: '.875rem',
-                        height: '.875rem'
-                      }}
-                    />
-                  </div>
-                  {activeTab === "4" ?
-                    <Text_14_600_EEEEEE >
-                      Health Status</Text_14_600_EEEEEE>
-                    :
-                    <Text_14_600_B3B3B3 >Health Status</Text_14_600_B3B3B3>
-                  }
-                </div>,
-                key: '4',
-                children: <HealthStatus data={selectedCluster} />
-              },
-              {
-                label: <div className="flex items-center gap-[0.375rem]">
-                  <div className="w-[.975rem] pt-[.15rem]">
-                    <Image
-                      preview={false}
-                      src="/images/icons/dollar.png"
-                      alt="home"
-                      style={{
-                        width: '.875rem',
-                        height: '.875rem'
-                      }}
-                    />
-                  </div>
-                  {activeTab === "4" ?
-                    <Text_14_600_EEEEEE >
-                      Cost Analysis/ TCO</Text_14_600_EEEEEE>
-                    :
-                    <Text_14_600_B3B3B3 >Cost Analysis/ TCO</Text_14_600_B3B3B3>
-                  }
-                </div>,
-                key: '5',
-                children: <CostAnalysis data={selectedCluster} />
-              },
+              // {
+              //   label: <div className="flex items-center gap-[0.375rem]">
+              //     <div className="w-[.975rem] pt-[.15rem]">
+              //       <Image
+              //         preview={false}
+              //         src="/images/icons/health.png"
+              //         alt="home"
+              //         style={{
+              //           width: '.875rem',
+              //           height: '.875rem'
+              //         }}
+              //       />
+              //     </div>
+              //     {activeTab === "4" ?
+              //       <Text_14_600_EEEEEE >
+              //         Health Status</Text_14_600_EEEEEE>
+              //       :
+              //       <Text_14_600_B3B3B3 >Health Status</Text_14_600_B3B3B3>
+              //     }
+              //   </div>,
+              //   key: '4',
+              //   children: <HealthStatus data={selectedCluster} />
+              // },
+              // {
+              //   label: <div className="flex items-center gap-[0.375rem]">
+              //     <div className="w-[.975rem] pt-[.15rem]">
+              //       <Image
+              //         preview={false}
+              //         src="/images/icons/dollar.png"
+              //         alt="home"
+              //         style={{
+              //           width: '.875rem',
+              //           height: '.875rem'
+              //         }}
+              //       />
+              //     </div>
+              //     {activeTab === "4" ?
+              //       <Text_14_600_EEEEEE >
+              //         Cost Analysis/ TCO</Text_14_600_EEEEEE>
+              //       :
+              //       <Text_14_600_B3B3B3 >Cost Analysis/ TCO</Text_14_600_B3B3B3>
+              //     }
+              //   </div>,
+              //   key: '5',
+              //   children: <CostAnalysis data={selectedCluster} />
+              // },
               {
                 label: <div className="flex items-center gap-[0.375rem]">
                   <div className="w-[.975rem] pt-[.15rem]">
