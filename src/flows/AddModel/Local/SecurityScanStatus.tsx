@@ -63,7 +63,8 @@ export default function SecurityScanning() {
           onFailed={() => {
             setIsFailed(true);
           }}
-          success_payload_type="perform_model_security_scan"
+          success_payload_type="perform_model_scanning"
+          // success_payload_type="perform_model_security_scan"
           title="Security Scanning In Progress"
           description={"Wise choice, this scan will give you the information on how secure is this model."}
           extraInfo={"This may take sometime, you can minimize this side screen and continue with the rest of your work. In-order to see your progress on your model uploading, you can visit the notification centre."}

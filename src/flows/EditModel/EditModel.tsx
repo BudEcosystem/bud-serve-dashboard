@@ -113,7 +113,7 @@ function EditModelForm({
                 formData.set("tasks", JSON.stringify(value));
               }}
               options={options}
-              // required
+            // required
             />
           </div>
           <div className="mt-[.7rem]">
@@ -189,18 +189,18 @@ function EditModelForm({
             {urls?.map((url, index) => {
               return (
                 <Tags
-                    key={index}
-                    name={`${url.title}-${index}`}
-                    color="#D1B854"
-                    classNames="w-100% truncate"
-                    textClass="w-100% truncate"
-                    closable
-                    onClose={() => {
-                      const update = urls.filter((item, i) => i !== index);
-                      setUrls(update);
-                      formData.set("paper_urls", update?.map((item) => item.url).join(","));
-                    }}
-                  />
+                  key={index}
+                  name={`${url.title}-${index}`}
+                  color="#D1B854"
+                  classNames="w-100% truncate"
+                  textClass="w-100% truncate"
+                  closable
+                  onClose={() => {
+                    const update = urls.filter((item, i) => i !== index);
+                    setUrls(update);
+                    formData.set("paper_urls", update?.map((item) => item.url).join(","));
+                  }}
+                />
               );
             }
             )}
@@ -278,10 +278,20 @@ function EditModelForm({
               name={selectedModel?.model_licenses?.name}
               closable
               classNames="customTags"
+              // onClose={() => {
+              //   // formData.set("license_url", null);
+              //   formData.delete("license_file");
+              //   setFormData(formData);
+              //   setModelValues({
+              //     ...modelValues,
+              //     model_licenses: null,
+              //   });
               onClose={() => {
-                // formData.set("license_url", null);
-                formData.delete("license_file");
-                setFormData(formData);
+                formData.delete("license_url");        // delete the license URL if it exists
+                formData.delete("license_file");       // delete the uploaded file
+                formData.set("remove_license", "true"); // optionally inform backend license was removed
+                setFormData(formData);                 // update the formData
+
                 setModelValues({
                   ...modelValues,
                   model_licenses: null,
@@ -378,7 +388,7 @@ export default function EditModel() {
       onNext={async () => {
         console.log('formData', formData.get('license_file'))
         console.log('formData', formData.get('license_url'))
-        if(formData.get('license_file') && formData.get('license_url')) {
+        if (formData.get('license_file') && formData.get('license_url')) {
           errorToast("Please either upload a file or enter an url");
           return;
         }

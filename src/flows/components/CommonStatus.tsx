@@ -35,6 +35,7 @@ export default function CommonStatus({
     'register_cluster'
     | 'get_cluster_recommendations'
     | 'deploy_model'
+    | 'perform_model_scanning'
     | 'perform_model_security_scan'
     | 'perform_model_extraction'
     | 'endpoint_deletion'
