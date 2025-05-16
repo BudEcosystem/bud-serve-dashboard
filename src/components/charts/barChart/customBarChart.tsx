@@ -183,7 +183,7 @@ const TokenMetricsChart: React.FC<TokenMetricsChartProps> = ({ data, extraChartD
               (item) =>
                 `<div style="margin-bottom: 7px;">
                    <span style="display:inline-block;width:10px;height:10px;background-color:${item.color};margin-right:15px;border-radius:2px;font-size:13px;"></span>
-                   <span style="margin-right: 15px;display:inline-block;min-width:50px;">${item.value[item.seriesName]}%</span>
+                   <span style="margin-right: 15px;display:inline-block;min-width:50px;">${item.value[item.seriesName]}</span>
                    ${item.seriesName}
                  </div>`
             );
