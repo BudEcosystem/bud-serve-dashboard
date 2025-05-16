@@ -34,7 +34,7 @@ import { DatePicker } from "antd";
 import React from "react";
 import { set } from "date-fns";
 const defaultFilter = {
-  min_score: 1,
+  min_score: 0,
   max_score: 10,
   created_at: "",
 };
@@ -199,9 +199,12 @@ const HarmfulnessPromptList = () => {
   };
 
   const clearFilter = () => {
-    setFilter({ min_score: "",
+    setFilter({
+      min_score: "",
       max_score: "",
-      created_at: "" });
+      created_at: null
+    }
+    );
     setCurrentPage(1);
     // setFilterOpen(false);
     // load(defaultFilter);
@@ -217,8 +220,9 @@ const HarmfulnessPromptList = () => {
         name: searchValue ? searchValue : undefined,
         search: !!searchValue,
         order_by: `${order}${orderBy}`,
-        min_score: 0,
-        max_score: 100,
+        min_score: filter.min_score,
+        max_score: filter.max_score,
+        created_at: filter.created_at,
       },
       deploymentId as string
     );
@@ -228,7 +232,7 @@ const HarmfulnessPromptList = () => {
   useEffect(() => {
     load();
   }, [deploymentId, currentPage, pageSize, searchValue]);
-  
+
   useEffect(() => {
     console.log("filter", filter);
   }, [filter]);
@@ -342,27 +346,22 @@ const HarmfulnessPromptList = () => {
             <CustomBreadcrumb
               data={[
                 `${pageSource}`,
-                `${
-                  selectedProject
-                    ? selectedProject?.icon
-                    : clusterDetails?.cluster?.icon
-                } ${
-                  selectedProject
-                    ? selectedProject?.name
-                    : clusterDetails?.cluster?.name
+                `${selectedProject
+                  ? selectedProject?.icon
+                  : clusterDetails?.cluster?.icon
+                } ${selectedProject
+                  ? selectedProject?.name
+                  : clusterDetails?.cluster?.name
                 }`,
                 `${clusterDetails?.name}`,
                 `${pageTitle}`,
               ]}
               urls={[
                 `/${pageSource.toLocaleLowerCase()}`,
-                `/${pageSource.toLocaleLowerCase()}/${
-                  projectId ? projectId : clusterDetails?.cluster?.id
+                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
                 }`,
-                `/${pageSource.toLocaleLowerCase()}/${
-                  projectId ? projectId : clusterDetails?.cluster?.id
-                }/deployments/${
-                  deploymentId ? deploymentId : clusterDetails?.id
+                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
+                }/deployments/${deploymentId ? deploymentId : clusterDetails?.id
                 }`,
                 ``,
               ]}
@@ -436,7 +435,7 @@ const HarmfulnessPromptList = () => {
                   <div className="flex items-center justify-end gap-x-[.5rem]">
                     <SearchHeaderInput
                       searchValue={searchValue}
-                      setSearchValue={(value) => {setSearchValue(value)}}
+                      setSearchValue={(value) => { setSearchValue(value) }}
                     />
                     <div className=" filterPopup">
                       <ConfigProvider

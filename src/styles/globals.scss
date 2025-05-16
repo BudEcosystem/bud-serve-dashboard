@@ -3631,6 +3631,12 @@ html {
   border-radius: 0.25rem;
 }
 
+
+.ant-tooltip  {
+  z-index: 1149 !important;
+}
+
+// responsive styles
 @media only screen and (min-width: 1440px) {
 
   html,

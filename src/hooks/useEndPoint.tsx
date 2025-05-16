@@ -97,13 +97,13 @@ export const useEndPoints = create<{
   }) => void;
   createEndPoint: (data: any) => Promise<any>;
   setPageSource: (data: any) => Promise<any>;
-  setPromptPage: (type: string, title:string) => Promise<any>;
+  setPromptPage: (type: string, title: string) => Promise<any>;
   deleteEndPoint: (endpointId: string) => Promise<any>;
   updateEndPoint: (endpointId: string, data: any) => void;
   getReusedPrompts: (deploymentId: string,) => void;
   getInferenceQualityAnalytics: (deploymentId: string,) => void;
   getEndpointClusterDetails: (endpointId: string, source?: string) => void;
-  getInferenceQualityPrompts: (params: any, id:string) => void;
+  getInferenceQualityPrompts: (params: any, id: string) => void;
   clusterDetails?: EndpointClusterData;
   getAdapters: (
     endpointId: string,
@@ -138,7 +138,7 @@ export const useEndPoints = create<{
     console.log("model-cluster-detail-source", source);
     const url = `${tempApiBaseUrl}/endpoints/${endpointId}/model-cluster-detail`;
     const response: any = await AppRequest.Get(url);
-    if(response) {
+    if (response) {
       set({ clusterDetails: response.data?.result });
       set({ loading: false });
     }
@@ -263,19 +263,37 @@ export const useEndPoints = create<{
       set({ loading: false });
     }
   },
+
+
   getInferenceQualityPrompts: async (params: any, id: string): Promise<any> => {
-    const payload = {
+    
+    function convertToISOString(dateStr: string): string | null {
+      if (!dateStr) return null;
+      const [month, day, year] = dateStr.split('/');
+      if (!month || !day || !year) return null;
+
+      const isoString = new Date(`${year}-${month}-${day}T00:00:00Z`).toISOString();
+      return isoString;
+    }
+
+    const rawPayload = {
       search: params.search,
       page: params.page,
       limit: params.limit,
-      // order_by: params.order_by,
       min_score: params.min_score,
       max_score: params.max_score,
+      created_at: convertToISOString(params.created_at),
     };
-  
+
+
+    // Filter out null or undefined values
+    const payload = Object.fromEntries(
+      Object.entries(rawPayload).filter(([_, v]) => v !== null && v !== undefined && v !== "")
+    );
+
     const query = new URLSearchParams(payload as any).toString();
     const url = `${tempApiBaseUrl}/metrics/analytics/inference-quality-prompts/${id}/${get().scoreType}?${query}`;
-  
+
     try {
       const response: any = await AppRequest.Post(url); // Assuming you're actually fetching data
       set({ inferenceQualityPrompts: response.data });

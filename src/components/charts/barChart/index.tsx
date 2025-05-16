@@ -18,6 +18,10 @@ interface BarChartProps {
 const BarChart: React.FC<BarChartProps> = ({ data }) => {
   const [barChartData, setBarChartData] = useState<any>(data);
 
+  useEffect(() => {
+    setBarChartData(data);
+  }, [data]);
+  
   const chartRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (chartRef.current) {

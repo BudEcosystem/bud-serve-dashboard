@@ -4,6 +4,7 @@ import FloatLabel from "@/components/ui/bud/dataEntry/FloatLabel";
 import InfoLabel from "@/components/ui/bud/dataEntry/InfoLabel";
 import type { DatePickerProps } from "antd";
 import { DatePicker } from "antd";
+import dayjs from "dayjs";
 
 export interface BudInputProps {
   onClick?: () => void;
@@ -24,7 +25,6 @@ export interface BudInputProps {
 }
 
 function CustomDatepicker(props: BudInputProps) {
- 
   return (
     <Form.Item
       name={props.name}
@@ -37,7 +37,7 @@ function CustomDatepicker(props: BudInputProps) {
           classNames={`mx-[.2rem] floatingLabel`}
           label={
             <InfoLabel
-              required={props.rules.some((rule: any) => rule.required)}
+              required={props.rules?.some((rule: any) => rule.required)}
               text={props.label}
               content={"Explain the project in detail"}
             />
@@ -56,16 +56,16 @@ function CustomDatepicker(props: BudInputProps) {
               },
             }}
           >
-            <DatePicker 
-            getPopupContainer={() => document.body}
-            format={"MM/DD/YYYY"} 
-            onChange={((_, dateString) => {
-              if (typeof dateString === "string") {
-                props.onChange?.(dateString);
-              }
-            }) as DatePickerProps['onChange']}
-            // open={true}
-            className={`w-[100%] bg-[transparent] !border py-[.6rem] !border-[#757575] hover:!border-[#CFCFCF] hover:!bg-[#FFFFFF08] shadow-none !placeholder-[#808080] !placeholder:text-[#808080] ${props.InputClasses}`}
+            <DatePicker
+              getPopupContainer={() => document.body}
+              format={"MM/DD/YYYY"}
+              value={props.value ? dayjs(props.value, "MM/DD/YYYY") : null}
+              onChange={((date, dateString) => {
+                if (typeof dateString === "string") {
+                  props.onChange?.(dateString);
+                }
+              }) as DatePickerProps['onChange']}
+              className={`w-[100%] bg-[transparent] !border py-[.6rem] !border-[#757575] hover:!border-[#CFCFCF] hover:!bg-[#FFFFFF08] shadow-none !placeholder-[#808080] !placeholder:text-[#808080] ${props.InputClasses}`}
             />
           </ConfigProvider>
         </FloatLabel>
@@ -73,5 +73,6 @@ function CustomDatepicker(props: BudInputProps) {
     </Form.Item>
   );
 }
+
 
 export default CustomDatepicker;
