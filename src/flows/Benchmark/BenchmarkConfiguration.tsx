@@ -132,7 +132,7 @@ export default function BenchmarkConfiguration() {
         <BudDrawerLayout>
           <DrawerTitleCard
             title="Benchmark Configuration"
-            description="Description"
+            description="Verify the configuration you have selected for performing the benchmark"
             classNames="pt-[.8rem]"
             descriptionClass="pt-[.3rem]"
           />

@@ -64,7 +64,7 @@ export default function Configuration() {
         <BudDrawerLayout>
           <DrawerTitleCard
             title="Configuration"
-            description="Description"
+            description="Enter the configuration's for the benchmark"
           />
           <DrawerCard classNames="pb-0">
             <TextInput

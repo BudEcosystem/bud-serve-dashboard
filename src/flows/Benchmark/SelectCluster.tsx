@@ -145,7 +145,7 @@ const SelectCluster: React.FC = (props: {
         <BudDrawerLayout>
           <DrawerTitleCard
             title="Select Cluster"
-            description="Description"
+            description="Pick the cluster you want to perform the benchmark"
             descriptionClass="pt-[.3rem]"
             classNames="pt-[.8rem] pb-[.9rem]"
           />

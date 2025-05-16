@@ -1,5 +1,5 @@
 import { Flex, Image, Progress, Spin } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDrawer } from "src/hooks/useDrawer";
 import { useDeployModel } from "src/stores/useDeployModel";
 import { WorkflowListItem, WorkflowType } from "src/stores/useWorkflow";
@@ -76,6 +76,19 @@ export function BudWidget({ data, index }: { data?: WorkflowListItem , index: nu
             Continue from <span className="text-[#EEEEEE]">{title}</span>
         </>
     }
+
+    useEffect(() => {
+        console.log('data.workflow_type', data.workflow_type)
+    }, [data.workflow_type]);
+  
+    // useEffect(() => {
+    //     console.log('index', index)
+    // }, [index]);
+    
+    useEffect(() => {
+        console.log('flow', flow)
+    }, [flow]);
+
 
     const openWidget = async () => {
         let workflow: WorkflowType;

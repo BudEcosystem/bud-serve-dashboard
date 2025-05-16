@@ -3478,7 +3478,7 @@ const flows = {
   "reset-password": resetPassword,
   "add-user": addUser,
   "add-benchmark": addBenchmark,
-    "add-quantization": addQuantizationFlow,
+  "add-quantization": addQuantizationFlow,
   "add-new-cloud-provider": addNewCloudProvider,
 
   // Cluster Specific

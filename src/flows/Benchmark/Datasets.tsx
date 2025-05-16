@@ -257,7 +257,7 @@ export default function Datasets() {
         <BudDrawerLayout>
           <DrawerTitleCard
             title="Datasets"
-            description="Description"
+            description="Pick the specific dataset you want to perform the benchmark"
             classNames="pt-[.8rem]"
             descriptionClass="pt-[.3rem]"
           />

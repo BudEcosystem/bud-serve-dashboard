@@ -65,7 +65,7 @@ export default function BenchmarkingProgress() {
             }}
             success_payload_type="performance_benchmark"
             title={"Benchmarking in Progress"}
-            description="Description"
+            description="We’ve started performance benchmark. This process may take a while, depending on the benchmark"
           />
       </BudWraperBox>
     </BudForm>

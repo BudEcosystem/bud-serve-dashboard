@@ -169,7 +169,7 @@ const SelectNodes: React.FC = (props: {
         <BudDrawerLayout>
           <DrawerTitleCard
             title="Select Nodes"
-            description="Description"
+            description="Pick the specific node you want to perform the benchmark"
             descriptionClass="pt-[.3rem]"
             classNames="pt-[.8rem] pb-[.9rem]"
           />
