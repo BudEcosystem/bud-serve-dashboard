@@ -54,18 +54,24 @@ const modalityTypeList = [
     name: "Embedding models",
     description: "Add Embedding models",
   },
-  // {
-  //   id: "speech_to_text",
-  //   icon: "/images/drawer/speachToText.png",
-  //   name: "Speech to text",
-  //   description: "Add Speech to text..",
-  // },
-  // {
-  //   id: "text_to_speech",
-  //   icon: "/images/drawer/textToSpeach.png",
-  //   name: "Text to Speech",
-  //   description: "Add Text to Speech..",
-  // },
+  {
+    id: "speech_to_text",
+    icon: "/images/drawer/speachToText.png",
+    name: "Speech to text",
+    description: "Add Speech to text models",
+  },
+  {
+    id: "text_to_speech",
+    icon: "/images/drawer/textToSpeach.png",
+    name: "Text to Speech",
+    description: "Add Text to Speech models",
+  },
+  {
+    id: "action_transformers",
+    icon: "/images/drawer/compare.png",
+    name: "Action Transformers",
+    description: "Add Action Transformers models",
+  },
 ];
 
 export type ModalityType = {
