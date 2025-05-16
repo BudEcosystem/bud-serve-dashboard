@@ -333,7 +333,7 @@ const Dashboard = () => {
       showLoader();
       await getAccuracyChart({
         // benchmarks: 'mmmu',
-        benchmarks: ['mmmu', 'hallucinationbench', 'lmsysareana', 'mathvista', 'ai2d'],
+        benchmarks: ['mmlu', 'arcc', 'gsm8k', 'math', 'humaneval'],
         // benchmarks: ['mmmu', 'hallucination_bench', 'lmsys_areana', 'math_vista', 'ai2d'],
         k: 5,
       });
