@@ -69,7 +69,7 @@ const ResetPasswordPage = ({ onSubmit }: ResetPasswordProps) => {
   return (
     <>
       <Flex justify={"center"} align={"center"} className="mb-[.8rem]">
-        <Text_32_500_FFFFFF className="tracking-[.02em] leading-[100%] text-center !font-[400]">
+        <Text_32_500_FFFFFF className="tracking-[.02em] leading-[35px] text-center !font-[400]">
           Reset your password
         </Text_32_500_FFFFFF>
         <Image
