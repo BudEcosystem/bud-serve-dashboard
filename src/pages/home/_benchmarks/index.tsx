@@ -250,7 +250,7 @@ const PerfomanceBenchmarks = () => {
               hClass=""
               buttonAction={() => {
                 reset();
-                openDrawer("add-benchmark");
+                openDrawer("model_benchmark");
                 // reset();
               }}
               rightComponent={

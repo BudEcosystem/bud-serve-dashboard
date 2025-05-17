@@ -178,7 +178,9 @@ print(response.text)`,
 
             </div>
             <div className="custom-code rounded-[8px] relative bg-[#FFFFFF08] mt-[1.5rem] w-full overflow-hidden">
-              <CustomPopover title={copyText} contentClassNames="py-[.3rem]">
+              <CustomPopover title={copyText} contentClassNames="py-[.3rem]"
+              Placement="topRight"
+              >
                 <div className="w-[1.25rem] h-[1.25rem] rounded-[4px] flex justify-center items-center absolute right-[0.35rem] top-[0.65rem] cursor-pointer hover:bg-[#1F1F1F]"
                   onClick={() => handleCopy(selectedText)}
                 >

@@ -249,7 +249,7 @@ export default function Datasets() {
       }}
       backText="Back"
       onBack={() => {
-        openDrawerWithStep("add-benchmark");
+        openDrawerWithStep("model_benchmark");
       }}
       nextText="Next"
     >

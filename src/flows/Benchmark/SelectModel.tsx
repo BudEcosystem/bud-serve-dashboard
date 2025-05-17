@@ -58,7 +58,7 @@ export default function SelectModel() {
             if (result) {
               console.log('result',result.data.workflow_steps.provider_type);
               if(result.data.workflow_steps.provider_type === "cloud_model") {
-                openDrawerWithStep("add-benchmark-credential-select");
+                openDrawerWithStep("model_benchmark-credential-select");
               } else {
                 openDrawerWithStep("Benchmark-Configuration");
               }              

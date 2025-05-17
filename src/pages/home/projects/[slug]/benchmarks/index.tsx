@@ -405,7 +405,7 @@ function BenchmarkTable() {
               </div>
               <PrimaryButton
                 onClick={() => {
-                  openDrawer("add-benchmark")
+                  openDrawer("model_benchmark")
                 }}
               >
                 <Text_12_600_EEEEEE className='flex items-center justify-center'>

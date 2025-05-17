@@ -2334,10 +2334,10 @@ const addBenchmark: DrawerFlowType = {
   steps: [
     {
       navigation: () => ["Benchmarks", "Create Benchmark"],
-      id: "add-benchmark",
+      id: "model_benchmark",
       confirmClose: false,
       step: 1,
-      component: StepComponents["add-benchmark"],
+      component: StepComponents["model_benchmark"],
       progress: [
         {
           status: FormProgressStatus.inProgress,
@@ -2532,10 +2532,10 @@ const addBenchmark: DrawerFlowType = {
     },
     {
       navigation: () => ["Benchmarks", "Create Benchmark"],
-      id: "add-benchmark-credential-select",
+      id: "model_benchmark-credential-select",
       confirmClose: true,
       step: 5,
-      component: StepComponents["add-benchmark-credential-select"],
+      component: StepComponents["model_benchmark-credential-select"],
       progress: [
         {
           status: FormProgressStatus.completed,
@@ -3477,7 +3477,7 @@ const flows = {
   "edit-user": editUser,
   "reset-password": resetPassword,
   "add-user": addUser,
-  "add-benchmark": addBenchmark,
+  "model_benchmark": addBenchmark,
   "add-quantization": addQuantizationFlow,
   "add-new-cloud-provider": addNewCloudProvider,
 
@@ -3508,6 +3508,7 @@ export const flowMapping: {
     'local_model_quantization': 'add-quantization',
     "add_adapter": "add-adapter",
     "delete_adapter": "delete-adapter",
+    "model_benchmark": "model_benchmark",
 }
 
 export const inProgressSteps = [

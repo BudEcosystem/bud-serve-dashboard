@@ -903,7 +903,7 @@ const BenchmarkResult = () => {
               buttonLabel={"Benchmark History"}
               hClass="text-[1.625rem]"
               buttonAction={() => {
-                openDrawer("add-benchmark");
+                openDrawer("model_benchmark");
                 // reset();
               }}
             />

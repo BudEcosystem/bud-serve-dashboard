@@ -56,7 +56,7 @@ export default function Configuration() {
       }}
       backText="Back"
       onBack={() => {
-        openDrawerWithStep("add-benchmark");
+        openDrawerWithStep("model_benchmark");
       }}
       nextText="Next"
     >

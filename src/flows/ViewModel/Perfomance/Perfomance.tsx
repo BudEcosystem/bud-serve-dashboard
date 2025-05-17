@@ -331,7 +331,7 @@ export default function PerformanceDetailed({ data }: { data: Model }) {
           <PrimaryButton
             type="submit"
             onClick={() => {
-              openDrawer("add-benchmark");
+              openDrawer("model_benchmark");
             }}
             className="min-w-[7.7rem]"
           >
@@ -399,7 +399,7 @@ export default function PerformanceDetailed({ data }: { data: Model }) {
             <PrimaryButton
               type="submit"
               onClick={() => {
-                openDrawer("add-benchmark");
+                openDrawer("model_benchmark");
               }}
               className="min-w-[7.7rem]"
             >

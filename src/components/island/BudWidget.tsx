@@ -81,6 +81,11 @@ export function BudWidget({ data, index }: { data?: WorkflowListItem , index: nu
         console.log('data.workflow_type', data.workflow_type)
     }, [data.workflow_type]);
   
+    useEffect(() => {
+        console.log('flowMapping', flowMapping)
+    }, [flowMapping]);
+    
+    
     // useEffect(() => {
     //     console.log('index', index)
     // }, [index]);

@@ -47,7 +47,7 @@ const CustomLegend: React.FC<CustomLegendProps> = ({ onToggleSeries, extraChartD
             
             }}
           >
-            <Text_18_400_EEEEEE>
+            <Text_18_400_EEEEEE className='min-w-[70px]'>
               {Number(Math.abs(extraChartDetails.token_metrics.total_input_value)).toFixed(2)}
             </Text_18_400_EEEEEE>
             <div className={`flex ${Number(extraChartDetails.token_metrics.input_avg) >= 0 ? 'text-[#479D5F] bg-[#122F1140]' : 'bg-[#861A1A33] text-[#EC7575]'} rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.2rem]`}>
@@ -86,7 +86,7 @@ const CustomLegend: React.FC<CustomLegendProps> = ({ onToggleSeries, extraChartD
              
             }}
           >
-            <Text_18_400_EEEEEE>
+            <Text_18_400_EEEEEE className='min-w-[70px]'>
               {Number(Math.abs(extraChartDetails.token_metrics.total_output_value)).toFixed(2)}
             </Text_18_400_EEEEEE>
             <div className={`flex ${Number(extraChartDetails.token_metrics.output_avg) >= 0 ? 'text-[#479D5F] bg-[#122F1140]' : 'bg-[#861A1A33] text-[#EC7575]'} rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.2rem]`}>
