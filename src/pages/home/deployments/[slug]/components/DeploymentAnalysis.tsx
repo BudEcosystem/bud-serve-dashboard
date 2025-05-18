@@ -839,7 +839,7 @@ export default function DeploymentAnalysis({
 }) {
   const { isLoading, showLoader, hideLoader } = useLoader();
   const router = useRouter();
-  const { projectId, deploymentId } = router.query;
+  const { projectId, clustersId, deploymentId } = router.query;
   const {
     getInferenceQualityAnalytics,
     inferenceQualityAnalytics,
@@ -848,10 +848,10 @@ export default function DeploymentAnalysis({
     clusterDetails
   } = useEndPoints();
   const navigateToHarmfulness = (key, title) => {
-    if (projectId && deploymentId) {
+    if (deploymentId) {
       setPromptPage(key, title);
       router.push(
-        `/projects/${projectId}/deployments/${deploymentId}/PromptList`
+        `/projects/${projectId || clustersId}/deployments/${deploymentId}/PromptList`
       );
     }
   };
@@ -950,9 +950,10 @@ export default function DeploymentAnalysis({
               <CircleProgress
                 key={index}
                 {...item}
-                ToHarmfulness={() =>
+                ToHarmfulness={() =>{
+                  console.log("ToHarmfulness", item)
                   navigateToHarmfulness(item.key, item.title)
-                }
+                }}
               />
             ))}
           </>
