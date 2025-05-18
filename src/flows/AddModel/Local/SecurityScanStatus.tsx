@@ -3,7 +3,7 @@ import { BudWraperBox } from "@/components/ui/bud/card/wraperBox";
 
 import { BudDrawerLayout } from "@/components/ui/bud/dataEntry/BudDrawerLayout";
 import { BudForm } from "@/components/ui/bud/dataEntry/BudForm";
-import React, {  } from "react";
+import React, { } from "react";
 import { useDrawer } from "src/hooks/useDrawer";
 import BudStepAlert from "src/flows/components/BudStepAlert";
 import { useDeployModel } from "src/stores/useDeployModel";
@@ -32,6 +32,9 @@ export default function SecurityScanning() {
           closeDrawer();
         } else {
           setShowAlert(true);
+          setTimeout(() => {
+            document.querySelector('.scrollBox')?.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 0);
         }
       }}
     >

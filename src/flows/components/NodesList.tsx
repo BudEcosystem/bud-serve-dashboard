@@ -143,7 +143,7 @@ const SingleGuageChart = ({ data }: { data: SingleGuageChartData }) => {
       />
       {/* <Text className='block absolute m-auto bottom-3 left-[50%] top-auto p-0 text-xs text-[#6A6E76] font-light h-[1rem] leading-[100%]'>{barChartData?.label2}</Text> */}
       <div className="absolute flex flex-col justify-center items-center w-full px-[14%] mt-[-0.8rem]">
-        <Text_10_400_EEEEEE>{data.data?.toFixed(0)} %</Text_10_400_EEEEEE>
+        {/* <Text_10_400_EEEEEE>{data.data?.toFixed(0)} %</Text_10_400_EEEEEE> */}
       </div>
     </div>
   );
@@ -156,8 +156,11 @@ function CompareGraph({ data }: { data: SingleGuageChartData }) {
         <Text_10_400_B3B3B3 className="text-center">
           {data.label1}
         </Text_10_400_B3B3B3>
+        <Text_10_400_EEEEEE className="text-center">
+          {data.data.toFixed(2)} %
+        </Text_10_400_EEEEEE>
       </div>
-      <div className="w-[55%] h-[32px]">
+      <div className="w-[60%] h-[25px] mt-[.3rem]">
         <SingleGuageChart data={data} />
       </div>
     </div>

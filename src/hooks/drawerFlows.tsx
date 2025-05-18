@@ -1031,7 +1031,7 @@ const securityScan: DrawerFlowType = {
       id: "security-scan-status",
       navigation: () => [
         "Model",
-        `${useModels.getState().selectedModel?.name}`,
+        `${useModels.getState().selectedModel?.name || useDeployModel.getState().currentWorkflow.workflow_steps.model.name}`,
         "Security Scan",
       ],
       confirmClose: true,

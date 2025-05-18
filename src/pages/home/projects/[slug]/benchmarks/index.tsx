@@ -21,6 +21,7 @@ import CustomPopover from 'src/flows/components/customPopover';
 import CustomSelect from 'src/flows/components/CustomSelect';
 import NoDataFount from '@/components/ui/noDataFount';
 import ComingSoon from '@/components/ui/comingSoon';
+import BenchmarksTable from 'src/pages/home/_benchmarks/components/BenchmarksTable';
 const { Search } = Input;
 
 const statusMapping = {
@@ -358,72 +359,9 @@ function BenchmarkTable() {
 
   return (
     <div className='relative'>
-      {/* <ComingSoon shrink={true} scaleValue={.9} comingYpos='-20vh' /> */}
-      <Table<DataType>
-        columns={columns}
-        pagination={false}
-        dataSource={data}
-        bordered={false}
-        footer={null}
-        virtual
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: async event => {
-              // openDrawerWithStep("worker-details")
-            }
-          }
-        }}
-        showSorterTooltip={false}
-        title={() => (
-          <div className='flex justify-between items-center px-[0.75rem] py-[1rem]'>
-            <div className='flex justify-start items-center gap-[.4rem]'>
-
-            </div>
-            <div className='flex items-center gap-x-[.1rem]'>
-              <SearchHeaderInput classNames='mr-[.4rem]' searchValue={searchValue} setSearchValue={setSearchValue} />
-              <div className='filterPopup'>
-                <ConfigProvider
-                  theme={{
-                    token: {
-                      sizePopupArrow: 0,
-                    },
-                  }}
-                  getPopupContainer={(trigger) => (trigger.parentNode as HTMLElement) || document.body}
-                >
-                  <Popover
-                    content={content}
-                    title=""
-                    trigger="click"
-                    placement="bottomRight"
-                  >
-                    <MixerHorizontalIcon
-                      style={{ width: '0.875rem', height: '0.875rem' }}
-                      className="mr-2"
-                    />
-                  </Popover>
-                </ConfigProvider>
-              </div>
-              <PrimaryButton
-                onClick={() => {
-                  openDrawer("model_benchmark")
-                }}
-              >
-                <Text_12_600_EEEEEE className='flex items-center justify-center'>
-                  Run Another Benchmark
-                </Text_12_600_EEEEEE>
-              </PrimaryButton>
-            </div>
-          </div>
-        )}
-        locale={{
-          emptyText: (
-            <NoDataFount
-              classNames="h-[20vh]"
-              textMessage={`No benchmarks`}
-            />
-          ),
-        }}
-      />
+      <div>
+          <BenchmarksTable showTableTitle={true}/>
+        </div>
     </div>
   );
 };
