@@ -135,6 +135,10 @@ const handleErrorResponse = (err) => {
     return Promise.reject(err.response.data);
   } else {
     console.log(err)
+    if (err) {
+      console.log(err.response?.data?.message)
+      errorToast(err.response?.data?.message);
+    }
     // errorToast(err.response?.data?.message || "Internal Server Error");
     return false;
   }

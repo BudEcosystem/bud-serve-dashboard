@@ -90,7 +90,7 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
   const [isHovered, setIsHovered] = useState<any>();
   const pathname = usePathname();
   const { isVisible } = useOverlay();
-  const { getUser, user, hasPermission } = useUser();
+  const { getUser, user, hasPermission, permissions } = useUser();
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [generalOpen, setGeneralOpen] = React.useState(false);
   const tabs = [
@@ -165,6 +165,8 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
     if (isHydrated && user) {
       document.documentElement.style.setProperty("--user-color", user?.color);
     }
+    console.log("tabs", tabs);
+    console.log("tabs2", tabsTwo);
   }, [isHydrated, user]);
 
   const roleMapping = {
@@ -193,6 +195,10 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
   useEffect(() => {
     getUser();
   }, []);
+  
+  useEffect(() => {
+    console.log("permissions", permissions);
+  }, [permissions]);
 
 
   const handleOpenChange = (open) => {

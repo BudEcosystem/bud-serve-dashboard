@@ -494,7 +494,7 @@ export default function UserManagement() {
                         <div className="text-[#FFFFFF] text-14 font-400">
                           Filter
                         </div>
-                        <div className="text-12 font-400 text-[#757575]">Apply the following filters to find model of your choice.</div>
+                        <div className="text-12 font-400 text-[#757575]">Apply the following filters to find users of your choice.</div>
                       </div>
                       <div className="height-1 bg-[#1F1F1F] mb-[1.5rem] w-full"></div>
                       <div className="w-full flex flex-col gap-size-20 px-[1.5rem] pb-[1.5rem]">
@@ -504,7 +504,7 @@ export default function UserManagement() {
                           <div className="w-full">
                             <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
                               Role
-                              <CustomPopover title="This is the author" >
+                              <CustomPopover title="Select user role" >
                                 <Image
                                   src="/images/info.png"
                                   preview={false}
@@ -563,7 +563,7 @@ export default function UserManagement() {
                           <div className="w-full">
                             <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
                               Status
-                              <CustomPopover title="This is the task" >
+                              <CustomPopover title="Select user status" >
                                 <Image
                                   src="/images/info.png"
                                   preview={false}
