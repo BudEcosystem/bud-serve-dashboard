@@ -26,8 +26,15 @@ export default function EditProfile() {
         tags: [],
         icon: ""
       }}
-      disableNext={!submittable || (form.getFieldValue("password") && !form.getFieldValue("repassword"))}
+      disableNext={
+        !submittable ||
+        (form.getFieldValue("password") && form.getFieldValue("password") !== form.getFieldValue("repassword")) ||
+        (!form.getFieldValue("password") && user?.name === form.getFieldValue("name"))
+      }
       onNext={(values) => {
+        console.log("name", user?.name);
+        console.log("name new ", form.getFieldValue("name"));
+        return
         if (submittable) {
           updateCurrentUser(
             {
