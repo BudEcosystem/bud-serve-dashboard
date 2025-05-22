@@ -59,10 +59,10 @@ export default function BenchmarkingFinished() {
             </div>
             <div className="mt-[1.3rem] mb-[3rem] w-full flex justify-center items-center flex-col	">
               <Text_24_600_EEEEEE className="text-center leading-[2rem] mb-[1.2rem] max-w-[70%]">
-              Benchmarking Finished
+              Benchmark successful
               </Text_24_600_EEEEEE>
               <Text_12_400_B3B3B3 className="text-center leading-[1.125rem] max-w-[85%]">
-              Description 
+              We have successfully completed the benchmark, please view the report for the details 
               </Text_12_400_B3B3B3>
             </div>
           </div>

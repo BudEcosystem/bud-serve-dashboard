@@ -195,7 +195,9 @@ const HarmfulnessPromptList = () => {
 
   const applyFilter = () => {
     setFilterOpen(false);
-    load();
+    if (deploymentId) {
+      load();
+    }
   };
 
   const clearFilter = () => {
@@ -230,12 +232,13 @@ const HarmfulnessPromptList = () => {
   };
 
   useEffect(() => {
+    if (!router.isReady && !deploymentId) return;
     load();
-  }, [deploymentId, currentPage, pageSize, searchValue]);
+  }, [router.isReady, deploymentId, currentPage, pageSize, searchValue]);
 
   useEffect(() => {
-    console.log("filter", filter);
-  }, [filter]);
+    console.log("deploymentId", deploymentId);
+  }, [router.isReady]);
 
   const goBack = () => {
     if (showPrompt) {
@@ -340,7 +343,7 @@ const HarmfulnessPromptList = () => {
   const HeaderContent = () => {
     return (
       <div className="flex justify-between items-center">
-        {isMounted && (
+        {isMounted && router.isReady && (
           <div className="flex justify-start items-center">
             <BackButton onClick={goBack} />
             <CustomBreadcrumb
