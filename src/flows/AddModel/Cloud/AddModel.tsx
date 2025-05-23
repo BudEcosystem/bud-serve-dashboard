@@ -255,7 +255,7 @@ export default function AddModel() {
         name: filter.name,
         tag: filter.name,
         // description: filter.name,
-        modality: filter.modality?.length > 0 ? filter.modality : undefined,
+        // modality: filter.modality?.length > 0 ? filter.modality : undefined,
         tasks: filter.tasks?.length > 0 ? filter.tasks : undefined,
         author: filter.author?.length > 0 ? filter.author : undefined,
         model_size_min: isFinite(filter.model_size_min)

@@ -29,16 +29,16 @@ const ModelSuccessCard: React.FC = () => {
     if (currentWorkflow?.workflow_steps?.model) {
       getModel(currentWorkflow.workflow_steps.model.id);
     }
-    if (
-      currentWorkflow.workflow_steps.model?.modality &&
-      !currentWorkflow.workflow_steps.add_model_modality?.some((modality) =>
-        currentWorkflow.workflow_steps.model.modality.includes(modality)
-      )
-    ) {
-      setShowConfirm(true);
-    } else {
-      setShowConfirm(false);
-    }   
+    // if (
+    //   currentWorkflow.workflow_steps.model?.modality &&
+    //   !currentWorkflow.workflow_steps.add_model_modality?.some((modality) =>
+    //     currentWorkflow.workflow_steps.model.modality.includes(modality)
+    //   )
+    // ) {
+    //   setShowConfirm(true);
+    // } else {
+    //   setShowConfirm(false);
+    // }   
   }, [currentWorkflow]);
 
   return (
