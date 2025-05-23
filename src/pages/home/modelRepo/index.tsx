@@ -183,7 +183,7 @@ const sourceTypes = [
 
 const defaultFilter = {
   name: "",
-  modality: [],
+  // modality: [],
   model_size_min: undefined,
   model_size_max: undefined,
   table_source: ["model"],
@@ -194,7 +194,7 @@ interface Filters {
   tasks?: string[];
   model_size_min?: string;
   model_size_max?: string;
-  modality?: string[];
+  // modality?: string[];
   // Add other filter properties as needed
 }
 
@@ -241,7 +241,7 @@ const SelectedFilters = ({
           onClose={() => removeTag("model_size_max", filters.model_size_max)}
         />
       )}
-      {filters?.modality?.length > 0 &&
+      {/* {filters?.modality?.length > 0 &&
         filters.modality.map((item, index) => (
           <Tags
             name={item}
@@ -250,7 +250,7 @@ const SelectedFilters = ({
             closable
             onClose={() => removeTag("modality", item)}
           />
-        ))}
+        ))} */}
       {/* Uncomment and update if needed
       {filters?.table_source?.length > 0 &&
         filters.table_source.map((item, index) => (
@@ -283,20 +283,20 @@ export default function ModelRepo() {
   const [tempFilter, setTempFilter] = useState<any>({});
   const [filter, setFilter] = useState<{
     name?: string;
-    modality?: string[];
+    // modality?: string[];
     model_size_min?: number;
     model_size_max?: number;
     table_source?: string[];
   }>(defaultFilter);
   const [filterOpen, setFilterOpen] = React.useState(false);
 
-  const [modalityFilters, setModalityFilters] = useState([
-    { modality: "llm", label: "LLM" },
-    { modality: "image", label: "Image" },
-    // { modality: "embedding", label: "Embedding" },
-    // { modality: "text_to_speech", label: "Text-to-Speech" },
-    // { modality: "speech_to_text", label: "Speech-to-Text" },
-  ]);
+  // const [modalityFilters, setModalityFilters] = useState([
+  //   { modality: "llm", label: "LLM" },
+  //   { modality: "image", label: "Image" },
+  //   // { modality: "embedding", label: "Embedding" },
+  //   // { modality: "text_to_speech", label: "Text-to-Speech" },
+  //   // { modality: "speech_to_text", label: "Speech-to-Text" },
+  // ]);
   const [filterReset, setFilterReset] = useState(false);
 
   const load = useCallback(
@@ -309,7 +309,7 @@ export default function ModelRepo() {
           name: filter.name,
           tag: filter.name,
           // description: filter.name,
-          modality: filter.modality?.length > 0 ? filter.modality : undefined,
+          // modality: filter.modality?.length > 0 ? filter.modality : undefined,
           tasks: filter.tasks?.length > 0 ? filter.tasks : undefined,
           author: filter.author?.length > 0 ? filter.author : undefined,
           model_size_min: isFinite(filter.model_size_min)
@@ -363,6 +363,10 @@ export default function ModelRepo() {
     setFilterReset(true);
   };
 
+  useEffect(() => {
+    console.log("models", models);
+  }, [models]);
+  
   useEffect(() => {
     if (filterReset) {
       applyFilter();
@@ -640,7 +644,7 @@ export default function ModelRepo() {
                                 </div>
                               </div>
                             </div>
-                            <div
+                            {/* <div
                               className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
                             >
                               <div className="w-full">
@@ -699,7 +703,7 @@ export default function ModelRepo() {
                                   />
                                 </ConfigProvider>
                               </div>
-                            </div>
+                            </div> */}
                             <div className="flex items-center justify-between">
                               <SecondaryButton
                                 type="button"

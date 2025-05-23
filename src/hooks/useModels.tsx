@@ -92,7 +92,12 @@ export type Model = {
     id: string;
     name: string;
     author: string;
-    modality: string;
+    modality: {
+        audio: { input: boolean; output: boolean, label: string };
+        image: { input: boolean; output: boolean, label: string };
+        text: { input: boolean; output: boolean, label: string };
+    };
+    supported_endpoints: {};
     type?: string;
     source: string;
     uri: string;
@@ -177,7 +182,7 @@ type GetModelParams = {
     description?: string;
     tag?: string;
     tasks?: string[]
-    modality?: string[];
+    // modality?: string[];
     author?: string[];
     model_size_min?: number;
     model_size_max?: number;
@@ -229,106 +234,106 @@ export const useModels = create<{
                 }
             });
             return response.data?.leaderboards || [
-                  {
+                {
                     "model": {
-                      "uri": "HuggingFaceH4/zephyr-7b-beta",
-                      "model_size": 1000000000,
-                      "is_selected": true
+                        "uri": "HuggingFaceH4/zephyr-7b-beta",
+                        "model_size": 1000000000,
+                        "is_selected": true
                     },
                     "benchmarks": {
-                      "bcfl": {
-                        "type": "Tool Use",
-                        "label": "BCFL",
-                        "value": 10
-                      },
-                      "live_code_bench": {
-                        "type": "Code Generation",
-                        "label": "Live Code Bench",
-                        "value": 10
-                      },
-                      "classification": {
-                        "type": "Classification",
-                        "label": "Classification",
-                        "value": 10
-                      },
-                      "clustering": {
-                        "type": "Clustering",
-                        "label": "Clustering",
-                        "value": 10
-                      },
-                      "pair_classification": {
-                        "type": "Classification",
-                        "label": "Pair Classification",
-                        "value": 10
-                      },
-                      "reranking": {
-                        "type": "Reranking",
-                        "label": "Reranking",
-                        "value": 10
-                      },
-                      "retrieval": {
-                        "type": "Retrieval",
-                        "label": "Retrieval",
-                        "value": 10
-                      },
-                      "semantic": {
-                        "type": "Semantic",
-                        "label": "Semantic",
-                        "value": 10
-                      },
-                      "summarization": {
-                        "type": "Summarization",
-                        "label": "Summarization",
-                        "value": 10
-                      },
-                      "mmbench": {
-                        "type": "Reasoning",
-                        "label": "MMBench",
-                        "value": 10
-                      },
-                      "mmstar": {
-                        "type": "Reasoning",
-                        "label": "MMStar",
-                        "value": 10
-                      },
-                      "mmmu": {
-                        "type": "Knowledge",
-                        "label": "MMMU",
-                        "value": 10
-                      },
-                      "math_vista": {
-                        "type": "Math",
-                        "label": "Math Vista",
-                        "value": 10
-                      },
-                      "ocr_bench": {
-                        "type": "OCR",
-                        "label": "OCRBench",
-                        "value": 10
-                      },
-                      "ai2d": {
-                        "type": "Visual QA",
-                        "label": "AI2D",
-                        "value": 500
-                      },
-                      "hallucination_bench": {
-                        "type": "Hallucination",
-                        "label": "HallucinationBench",
-                        "value": 200
-                      },
-                      "mmvet": {
-                        "type": "Visual QA",
-                        "label": "MMVet",
-                        "value": 300
-                      },
-                      "lmsys_areana": {
-                        "type": "Human Preference",
-                        "label": "LMSYS Areana",
-                        "value": 1269
-                      }
+                        "bcfl": {
+                            "type": "Tool Use",
+                            "label": "BCFL",
+                            "value": 10
+                        },
+                        "live_code_bench": {
+                            "type": "Code Generation",
+                            "label": "Live Code Bench",
+                            "value": 10
+                        },
+                        "classification": {
+                            "type": "Classification",
+                            "label": "Classification",
+                            "value": 10
+                        },
+                        "clustering": {
+                            "type": "Clustering",
+                            "label": "Clustering",
+                            "value": 10
+                        },
+                        "pair_classification": {
+                            "type": "Classification",
+                            "label": "Pair Classification",
+                            "value": 10
+                        },
+                        "reranking": {
+                            "type": "Reranking",
+                            "label": "Reranking",
+                            "value": 10
+                        },
+                        "retrieval": {
+                            "type": "Retrieval",
+                            "label": "Retrieval",
+                            "value": 10
+                        },
+                        "semantic": {
+                            "type": "Semantic",
+                            "label": "Semantic",
+                            "value": 10
+                        },
+                        "summarization": {
+                            "type": "Summarization",
+                            "label": "Summarization",
+                            "value": 10
+                        },
+                        "mmbench": {
+                            "type": "Reasoning",
+                            "label": "MMBench",
+                            "value": 10
+                        },
+                        "mmstar": {
+                            "type": "Reasoning",
+                            "label": "MMStar",
+                            "value": 10
+                        },
+                        "mmmu": {
+                            "type": "Knowledge",
+                            "label": "MMMU",
+                            "value": 10
+                        },
+                        "math_vista": {
+                            "type": "Math",
+                            "label": "Math Vista",
+                            "value": 10
+                        },
+                        "ocr_bench": {
+                            "type": "OCR",
+                            "label": "OCRBench",
+                            "value": 10
+                        },
+                        "ai2d": {
+                            "type": "Visual QA",
+                            "label": "AI2D",
+                            "value": 500
+                        },
+                        "hallucination_bench": {
+                            "type": "Hallucination",
+                            "label": "HallucinationBench",
+                            "value": 200
+                        },
+                        "mmvet": {
+                            "type": "Visual QA",
+                            "label": "MMVet",
+                            "value": 300
+                        },
+                        "lmsys_areana": {
+                            "type": "Human Preference",
+                            "label": "LMSYS Areana",
+                            "value": 1269
+                        }
                     }
-                  }
-                ]
+                }
+            ]
         } catch (error) {
             console.error("Error creating model:", error);
         }
@@ -375,6 +380,7 @@ export const useModels = create<{
             updatedListData = [...get().models, ...updatedListData];
         }
         set({ models: updatedListData, filters: params });
+        console.log("updatedListData", get().models);
     },
     getModel: async (modelId: string) => {
         set({ loading: true });
