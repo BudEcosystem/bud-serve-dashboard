@@ -54,10 +54,15 @@ export default {
           '/home/projects/[projectId]/endpoint/[endpointId]/[scoreType]',
       },
       {
-        source: '/projects/:projectId/deployments/:deploymentId/PromptList',
+        source: '/projects/:projectId/deployments/:deploymentId/:scoreType',
         destination:
           '/home/projects/[projectId]/PromptList',
       },
+      // {
+      //   source: '/projects/:projectId/deployments/:deploymentId/PromptList',
+      //   destination:
+      //     '/home/projects/[projectId]/PromptList',
+      // },
       {
         source: '/clusters',
         destination: '/home/clusters',

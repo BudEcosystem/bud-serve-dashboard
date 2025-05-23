@@ -39,6 +39,25 @@ const defaultFilter = {
   created_at: "",
 };
 
+const promptKeys = [
+  {
+    title: "Harmfulness",
+    key: "harmfulness",
+  },
+  {
+    title: "Hallucinations",
+    key: "hallucination",
+  },
+  {
+    title: "Sensitive Information",
+    key: "sensitive_info",
+  },
+  {
+    title: "Prompt Injection",
+    key: "prompt_injection",
+  },
+];
+
 const HarmfulnessPromptList = () => {
   const [filter, setFilter] = useState<{
     min_score?: any;
@@ -52,7 +71,9 @@ const HarmfulnessPromptList = () => {
     totalRecords,
     pageSource,
     clusterDetails,
+    getEndpointClusterDetails,
     pageTitle,
+    setPromptPage
   } = useEndPoints();
   const [copyText, setCopiedText] = useState<string>("Copy");
   const { showLoader, hideLoader } = useLoader();
@@ -67,6 +88,14 @@ const HarmfulnessPromptList = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isMounted, setIsMounted] = useState(false);
   const [filterOpen, setFilterOpen] = React.useState(false);
+
+  // Get last route segment
+  const lastSegment = router.asPath.split('/').filter(Boolean).pop();
+
+  // Find matching title
+  const matched = promptKeys.find(item => item.key === lastSegment);
+  const matchedTitle = matched ? matched.title : 'Unknown';
+
   const handlePageChange = (currentPage, pageSize) => {
     setCurrentPage(currentPage);
     setPageSize(pageSize);
@@ -94,6 +123,19 @@ const HarmfulnessPromptList = () => {
       setCopiedText("Copy");
     }, 3000);
   }, [copyText]);
+
+  useEffect(() => {
+    if (projectId) {
+      getProject(projectId as string);
+    }
+    if (deploymentId) {
+      getEndpointClusterDetails(deploymentId as string);
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
+    console.log("router.isReady", router)
+  }, [router.isReady]);
 
   const textToCopy1 = promptDetail?.prompt;
   const textToCopy2 = promptDetail?.response;
@@ -232,9 +274,15 @@ const HarmfulnessPromptList = () => {
   };
 
   useEffect(() => {
-    if (!router.isReady && !deploymentId) return;
+    if (!deploymentId) return;
     load();
-  }, [router.isReady, deploymentId, currentPage, pageSize, searchValue]);
+  }, [currentPage, pageSize, searchValue]);
+  useEffect(() => {
+    setPromptPage(matched?.key, matchedTitle)
+    setTimeout(() => {
+      load();
+    }, 500);
+  }, [router.isReady]);
 
   useEffect(() => {
     console.log("deploymentId", deploymentId);
@@ -340,6 +388,8 @@ const HarmfulnessPromptList = () => {
     </div>
   );
 
+
+
   const HeaderContent = () => {
     return (
       <div className="flex justify-between items-center">
@@ -348,19 +398,13 @@ const HarmfulnessPromptList = () => {
             <BackButton onClick={goBack} />
             <CustomBreadcrumb
               data={[
-                `${pageSource}`,
-                `${selectedProject
-                  ? selectedProject?.icon
-                  : clusterDetails?.cluster?.icon
-                } ${selectedProject
-                  ? selectedProject?.name
-                  : clusterDetails?.cluster?.name
-                }`,
+                `${pageSource || projectId ? 'Projects' : "Clusters"}`,
+                `${selectedProject ? selectedProject?.icon : clusterDetails?.cluster?.icon} ${selectedProject ? selectedProject?.name : clusterDetails?.cluster?.name}`,
                 `${clusterDetails?.name}`,
-                `${pageTitle}`,
+                `${matchedTitle}`,
               ]}
               urls={[
-                `/${pageSource.toLocaleLowerCase()}`,
+                `/${pageSource.toLocaleLowerCase() || projectId ? 'projects' : "Clusters"}}`,
                 `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
                 }`,
                 `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id

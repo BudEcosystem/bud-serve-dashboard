@@ -61,7 +61,7 @@ function DeploymentListTable() {
     const getData = async () => {
         await getProject(projectId as string)
         await getEndPoints({
-            id: projectId,
+            id: projectId as string,
             page: page,
             limit: limit,
             name: searchValue,
@@ -88,7 +88,7 @@ function DeploymentListTable() {
 
         const timer = setTimeout(() => {
             getEndPoints({
-                id: projectId,
+                id: projectId as string,
                 page: page,
                 limit: limit,
                 name: searchValue,
