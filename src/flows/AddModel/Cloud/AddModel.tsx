@@ -112,7 +112,7 @@ function AddModelForm() {
         className="drawerInp py-[.65rem] pt-[.8rem] pb-[.45rem] bg-transparent text-[#EEEEEE] font-[300] border-[0.5px] border-[#757575] rounded-[6px] hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] text-[.75rem] shadow-none w-full indent-[.4rem]"
       />
     </Form.Item>
-    <Form.Item hasFeedback
+    {/* <Form.Item hasFeedback
       rules={[{ required: true, message: "Please select modality!" }]}
       name={"modality"}
       className={`flex items-center rounded-[6px] relative !bg-[transparent] w-[100%] mb-[0]`}
@@ -167,7 +167,7 @@ function AddModelForm() {
           />
         </ConfigProvider>
       </div>
-    </Form.Item>
+    </Form.Item> */}
 
     {selectedModel?.uri ? null : (<Form.Item hasFeedback
       name={"uri"}
@@ -277,7 +277,8 @@ export default function AddModel() {
       data={{
 
       }}
-      disableNext={!cloudModelDetails?.modality || (selectedModel?.uri ? false : !cloudModelDetails?.uri)}
+      disableNext={(selectedModel?.uri ? false : !cloudModelDetails?.uri)}
+      // disableNext={!cloudModelDetails?.modality || (selectedModel?.uri ? false : !cloudModelDetails?.uri)}
       onNext={async () => {
         if (!currentWorkflow) {
           return openDrawerWithStep("model-source");

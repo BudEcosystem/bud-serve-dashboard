@@ -208,21 +208,21 @@ const General: React.FC<GeneralProps> = ({ data }) => {
         <div>
           <div className="pt-[1.3rem]">
             <Text_14_400_EEEEEE>Supported Endpoints</Text_14_400_EEEEEE>
-            <div className="modality flex flex-wrap items-start justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
+            <div className="modality flex flex-wrap items-start justify-start gap-y-[2rem] ml-[1rem] mt-[1rem]">
               {Object.entries(data.supported_endpoints).map(([key, value]) => {
                 const iconName = value.enabled ? `${key}.png` : `${key}-not.png`;
                 return (
-                  <div key={key} className="flex items-center justify-start gap-[.8rem]">
+                  <div key={key} className="flex items-center justify-start gap-[.8rem] w-[49%]">
                     <div>
                       <Image
                         preview={false}
-                        src={`/images/drawer/${iconName}`}
+                        src={`/images/drawer/endpoints/${iconName}`}
                         alt={value.label}
-                        style={{ height: "1.25rem" }}
+                        style={{ height: "1.5rem" }}
                         onError={(e) => {
                           e.currentTarget.src = value.enabled
-                            ? "/images/drawer/default.png"
-                            : "/images/drawer/default-not.png";
+                            ? "/images/drawer/endpoints/default.png"
+                            : "/images/drawer/endpoints/default-not.png";
                         }}
                       />
                     </div>
