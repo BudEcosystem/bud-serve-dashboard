@@ -209,22 +209,32 @@ const General: React.FC<GeneralProps> = ({ data }) => {
           <div className="pt-[1.3rem]">
             <Text_14_400_EEEEEE>Supported Endpoints</Text_14_400_EEEEEE>
             <div className="modality flex flex-wrap items-start justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
-              <div className="flex items-center justify-start gap-[.8rem]">
-                <div>
-                  <Image
-                    preview={false}
-                    src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
-                    alt={data.modality.image.label}
-                    style={{ height: "1.25rem" }}
-                  />
-                </div>
-                <div>
-                  <Text_14_400_EEEEEE>Speech generation</Text_14_400_EEEEEE>
-                  <Text_12_400_B3B3B3 className="leading-[180%]">
-                  v1/audio/speech
-                </Text_12_400_B3B3B3>
-                </div>
-              </div>
+              {Object.entries(data.supported_endpoints).map(([key, value]) => {
+                const iconName = value.enabled ? `${key}.png` : `${key}-not.png`;
+                return (
+                  <div key={key} className="flex items-center justify-start gap-[.8rem]">
+                    <div>
+                      <Image
+                        preview={false}
+                        src={`/images/drawer/${iconName}`}
+                        alt={value.label}
+                        style={{ height: "1.25rem" }}
+                        onError={(e) => {
+                          e.currentTarget.src = value.enabled
+                            ? "/images/drawer/default.png"
+                            : "/images/drawer/default-not.png";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Text_14_400_EEEEEE>{value.label}</Text_14_400_EEEEEE>
+                      <Text_12_400_B3B3B3 className="leading-[180%]">
+                        {value.path}
+                      </Text_12_400_B3B3B3>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="hR mt-[1.1rem]"></div>

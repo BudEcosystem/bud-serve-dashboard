@@ -85,6 +85,12 @@ export type ScanResult = {
     modified_at: string;
 };
 
+type EndpointInfo = {
+    path: string;
+    enabled: boolean;
+    label: string;
+};
+
 export type Model = {
     provider: Provider;
     provider_type: string;
@@ -97,7 +103,18 @@ export type Model = {
         image: { input: boolean; output: boolean, label: string };
         text: { input: boolean; output: boolean, label: string };
     };
-    supported_endpoints: {};
+    supported_endpoints: {
+        chat: EndpointInfo;
+        completion: EndpointInfo;
+        image_generation: EndpointInfo;
+        audio_transcription: EndpointInfo;
+        audio_speech: EndpointInfo;
+        embedding: EndpointInfo;
+        batch: EndpointInfo;
+        response: EndpointInfo;
+        rerank: EndpointInfo;
+        moderation: EndpointInfo;
+    };
     type?: string;
     source: string;
     uri: string;
