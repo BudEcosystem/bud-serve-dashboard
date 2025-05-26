@@ -163,7 +163,6 @@ export const useProjects = create<
     if (result && result?.page !== 1) {
       updatedListData = [...get().globalProjects, ...updatedListData];
     }
-    console.log("updatedListData", updatedListData);
     set({ globalProjects: updatedListData });
   },
   createProject: async (data: any): Promise<any> => {

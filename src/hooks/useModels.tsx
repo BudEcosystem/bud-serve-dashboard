@@ -380,7 +380,6 @@ export const useModels = create<{
             updatedListData = [...get().models, ...updatedListData];
         }
         set({ models: updatedListData, filters: params });
-        console.log("updatedListData", get().models);
     },
     getModel: async (modelId: string) => {
         set({ loading: true });

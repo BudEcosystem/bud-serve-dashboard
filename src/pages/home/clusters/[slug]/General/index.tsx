@@ -174,9 +174,8 @@ function NetworkInUsage() {
       data={{
         title: "Network In",
         description: "Amount of data over time",
-        value: `${
-          data?.cluster_summary?.network_in?.inbound_mbps?.toFixed(2) || 0
-        } Mbps`,
+        value: `${data?.cluster_summary?.network_in?.inbound_mbps?.toFixed(2) || 0
+          } Mbps`,
         percentage: 0,
         chartData: (
           <LineChart
@@ -216,9 +215,8 @@ function NetworkOutUsage() {
       data={{
         title: "Network Out",
         description: "Amount of data over time",
-        value: `${
-          data?.cluster_summary?.network_out?.outbound_mbps?.toFixed(2) || 0
-        } Mbps`,
+        value: `${data?.cluster_summary?.network_out?.outbound_mbps?.toFixed(2) || 0
+          } Mbps`,
         percentage: 0,
         chartData: (
           <LineChart
@@ -259,9 +257,8 @@ function NetworkBandwidthUsage() {
       data={{
         title: "Network Bandwidth",
         description: "% Bandwidth used vs total bandwidth",
-        value: `${
-          data?.cluster_summary?.network_bandwidth?.total_mbps?.toFixed(2) || 0
-        } Mbps`,
+        value: `${data?.cluster_summary?.network_bandwidth?.total_mbps?.toFixed(2) || 0
+          } Mbps`,
         percentage: 0,
         chartData: (
           <LineChart
@@ -344,7 +341,7 @@ const GuageCharts = ({
       );
     }
   }, [selectedSegment, clustersId]);
-  
+
   useEffect(() => {
     console.log("metrics", metrics);
   }, [metrics]);
@@ -393,6 +390,7 @@ const ClusterGeneral: React.FC<GeneralProps> = ({
 }: {
   data?: Cluster;
 }) => {
+  const [isHydrated, setIsHydrated] = useState(false);
   const [selectedSegment, setSelectedSegment] =
     useState<ClusterFilter>("today");
   const router = useRouter();
@@ -402,6 +400,7 @@ const ClusterGeneral: React.FC<GeneralProps> = ({
 
   const { getClusterMetrics } = useCluster();
   useLoaderOnLoding(loading);
+
   useEffect(() => {
     if (router.isReady && clustersId) {
       setLoading(true);
@@ -572,7 +571,9 @@ const ClusterGeneral: React.FC<GeneralProps> = ({
     //   field: "storage",
     // },
   ]?.filter(Boolean) as GaugeChartProps[];
-
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
   return (
     <div className="relative pb-[3rem]">
       <div className="flex flex-wrap justify-between items-top gap-[.8rem] mt-[.5rem]">
@@ -580,19 +581,22 @@ const ClusterGeneral: React.FC<GeneralProps> = ({
           <CardWithBgAndTag key={index} {...item} />
         ))}
       </div>
-      <div className="mt-[1.55rem]">
-        <div className="flex justify-between flex-wrap gap-x-[.8rem] gap-y-[1.4rem] ">
-          <PowerConsumption />
-          <NetworkInUsage />
-          <NetworkOutUsage />
-          <NetworkBandwidthUsage />
+      {isHydrated && (
+        <div className="mt-[1.55rem]">
+          <div className="flex justify-between flex-wrap gap-x-[.8rem] gap-y-[1.4rem] ">
+            <PowerConsumption />
+            <NetworkInUsage />
+            <NetworkOutUsage />
+            <NetworkBandwidthUsage />
+          </div>
+          <div className="flex justify-between flex-wrap gap-x-[.8rem] gap-y-[1.4rem] mt-[1.4rem]">
+            {GuageChartCardData.map((item, index) => (
+              <GuageCharts key={index} {...item} />
+            ))}
+          </div>
         </div>
-        <div className="flex justify-between flex-wrap gap-x-[.8rem] gap-y-[1.4rem] mt-[1.4rem]">
-          {GuageChartCardData.map((item, index) => (
-            <GuageCharts key={index} {...item} />
-          ))}
-        </div>
-      </div>
+      )}
+
     </div>
   );
 };
