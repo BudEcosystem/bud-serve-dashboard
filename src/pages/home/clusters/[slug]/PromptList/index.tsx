@@ -381,18 +381,15 @@ const HarmfulnessPromptList = () => {
             <BackButton onClick={goBack} />
             <CustomBreadcrumb
               data={[
-                `${projectId ? 'Projects' : "Clusters"}`,
-                `${selectedProject ? selectedProject?.icon : clusterDetails?.cluster?.icon} ${selectedProject ? selectedProject?.name : clusterDetails?.cluster?.name}`,
+                `${'Clusters'}`,
+                `${clusterDetails?.cluster?.icon} ${clusterDetails?.cluster?.name}`,
                 `${clusterDetails?.name}`,
                 `${matchedTitle}`,
               ]}
               urls={[
-                `/${pageSource.toLocaleLowerCase() || projectId ? 'projects' : "Clusters"}}`,
-                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
-                }`,
-                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
-                }/deployments/${deploymentId ? deploymentId : clusterDetails?.id
-                }`,
+                `/${pageSource.toLocaleLowerCase() || 'Clusters'}`,
+                `/${pageSource.toLocaleLowerCase()}/${clustersId}`,
+                `/${pageSource.toLocaleLowerCase()}/${clustersId}/deployments/${deploymentId ? deploymentId : clusterDetails?.id}`,
                 ``,
               ]}
             />

@@ -851,7 +851,7 @@ export default function DeploymentAnalysis({
     if (deploymentId) {
       setPromptPage(key, title);
       router.push(
-        `/projects/${projectId || clustersId}/deployments/${deploymentId}/${key}`
+        `/${projectId ? 'projects' : 'clusters'}/${projectId ? projectId : clustersId}/deployments/${deploymentId}/${key}`
       );
     }
   };
