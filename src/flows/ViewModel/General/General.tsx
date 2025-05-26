@@ -120,14 +120,122 @@ const General: React.FC<GeneralProps> = ({ data }) => {
     <div className="pt-[.25rem]">
       {/* <ModelTags model={data} hideEndPoints hideTags showExternalLink /> */}
       <div className="">
+        <div>
+          <div className="pt-[1.3rem]">
+            <Text_14_400_EEEEEE>Modalities</Text_14_400_EEEEEE>
+            <div className="modality flex items-center justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
+                <Text_14_400_EEEEEE>INPUT</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-[.5rem]">
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.text.input ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      alt={data.modality.text.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.image.input ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      alt={data.modality.image.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.audio.input ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      alt={data.modality.audio.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                </div>
+                <Text_12_400_EEEEEE>
+                  {[
+                    data.modality.text.input && data.modality.text.label,
+                    data.modality.image.input && data.modality.image.label,
+                    data.modality.audio.input && data.modality.audio.label
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Text_12_400_EEEEEE>
+              </div>
+              <div className="w-[2px] h-[90px] bg-[#1F1F1F]"></div>
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
+                <Text_14_400_EEEEEE>OUTPUT</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-[.5rem]">
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.text.output ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      alt={data.modality.text.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      alt={data.modality.image.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.audio.output ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      alt={data.modality.audio.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                </div>
+                <Text_12_400_EEEEEE>
+                  {[
+                    data.modality.text.output && data.modality.text.label,
+                    data.modality.image.output && data.modality.image.label,
+                    data.modality.audio.output && data.modality.audio.label
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Text_12_400_EEEEEE>
+              </div>
+            </div>
+          </div>
+          <div className="hR mt-[1.1rem]"></div>
+        </div>
+        <div>
+          <div className="pt-[1.3rem]">
+            <Text_14_400_EEEEEE>Supported Endpoints</Text_14_400_EEEEEE>
+            <div className="modality flex flex-wrap items-start justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
+              <div className="flex items-center justify-start gap-[.8rem]">
+                <div>
+                  <Image
+                    preview={false}
+                    src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                    alt={data.modality.image.label}
+                    style={{ height: "1.25rem" }}
+                  />
+                </div>
+                <div>
+                  <Text_14_400_EEEEEE>Speech generation</Text_14_400_EEEEEE>
+                  <Text_12_400_B3B3B3 className="leading-[180%]">
+                  v1/audio/speech
+                </Text_12_400_B3B3B3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="hR mt-[1.1rem]"></div>
+        </div>
         {data?.description ? (
           <>
             <div className="pt-[1.3rem]">
               <div
                 ref={descriptionRef}
-                className={`leading-[1.05rem] tracking-[.01em max-w-[100%] ${
-                  isExpanded ? "" : "line-clamp-2"
-                } overflow-hidden`}
+                className={`leading-[1.05rem] tracking-[.01em max-w-[100%] ${isExpanded ? "" : "line-clamp-2"
+                  } overflow-hidden`}
                 style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
               >
                 <Text_12_400_B3B3B3 className="leading-[180%]">
