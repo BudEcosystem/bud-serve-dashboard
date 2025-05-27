@@ -183,7 +183,7 @@ export const useDeployModel = create<{
   cloudModelDetails: {
     name: string;
     tags: { name: string; color: string }[];
-    // modality: string;
+    modality: string[];
     uri?: string;
   };
   status: any;
@@ -327,7 +327,7 @@ export const useDeployModel = create<{
   cloudModelDetails: {
     name: "",
     tags: [],
-    modality: "",
+    modality: [],
     uri: "",
   },
   setDeploymentSpecification: (spec: any) => {
@@ -395,7 +395,7 @@ export const useDeployModel = create<{
       cloudModelDetails: {
         name: "",
         tags: [],
-        // modality: "",
+        modality: [],
         uri: "",
       },
       selectedCredentials: null,
@@ -802,7 +802,7 @@ export const useDeployModel = create<{
           trigger_workflow: true,
           name: cloudModelDetails.name,
           tags: cloudModelDetails.tags,
-          // modality: cloudModelDetails.modality,
+          modality: cloudModelDetails.modality,
           uri: cloudModelDetails.uri ? cloudModelDetails.uri : undefined,
         }
       );

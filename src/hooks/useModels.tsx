@@ -9,6 +9,15 @@ type LeaderBoardValue = {
     "value": number;
 }
 
+export const cloudProviders = [
+    { modality: "text_input", label: "Text Input" },
+    { modality: "text_output", label: "Text Output" },
+    { modality: "image_input", label: "Image Input" },
+    { modality: "image_output", label: "Image Output" },
+    { modality: "audio_input", label: "Audio Input" },
+    { modality: "audio_output", label: "Audio Output" },
+];
+
 export type LeaderBoardBenchmark = {
     [key: string]: LeaderBoardValue;
 }
@@ -199,7 +208,7 @@ type GetModelParams = {
     description?: string;
     tag?: string;
     tasks?: string[]
-    // modality?: string[];
+    modality?: string[];
     author?: string[];
     model_size_min?: number;
     model_size_max?: number;

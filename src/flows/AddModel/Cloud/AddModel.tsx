@@ -17,8 +17,9 @@ import { modelNameRegex } from "@/lib/utils";
 import { BudFormContext } from "@/components/ui/bud/context/BudFormContext";
 import ModelTags from "src/flows/components/ModelTags";
 import { ModelFlowInfoCard } from "@/components/ui/bud/deploymentDrawer/DeployModelSpecificationInfo";
-import { useModels } from "src/hooks/useModels";
+import { cloudProviders, useModels } from "src/hooks/useModels";
 import { useLoader } from "src/context/appContext";
+import Tags from "src/flows/components/DrawerTags";
 
 function ModelTag({ tag }) {
   return (
@@ -53,6 +54,7 @@ function AddModelForm() {
   const { form } = useContext(BudFormContext);
   const { selectedModel, setCloudModelDetails, cloudModelDetails } = useDeployModel();
   const [options, setOptions] = useState([]);
+  const [modalityFilters, setModalityFilters] = useState(cloudProviders);
 
   async function fetchList(tagname) {
     await axiosInstance(`${tempApiBaseUrl}/models/tags?page=1&limit=1000`).then((result) => {
@@ -112,12 +114,13 @@ function AddModelForm() {
         className="drawerInp py-[.65rem] pt-[.8rem] pb-[.45rem] bg-transparent text-[#EEEEEE] font-[300] border-[0.5px] border-[#757575] rounded-[6px] hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] text-[.75rem] shadow-none w-full indent-[.4rem]"
       />
     </Form.Item>
-    {/* <Form.Item hasFeedback
+    {selectedModel?.modality ? null : (
+    <Form.Item hasFeedback
       rules={[{ required: true, message: "Please select modality!" }]}
       name={"modality"}
       className={`flex items-center rounded-[6px] relative !bg-[transparent] w-[100%] mb-[0]`}
     >
-      <div className="w-full">
+      {/* <div className="w-full">
         <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1">
           Modality
           <span className="text-[red] text-[1rem]">*</span>
@@ -148,14 +151,68 @@ function AddModelForm() {
             }}
             size="large"
             className="drawerInp !bg-[transparent] text-[#EEEEEE] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE]"
-            options={[
-              // Input should be 'llm', 'image', 'embedding', 'text_to_speech' or 'speech_to_text'
-              { label: "LLM", value: "llm" },
-              // { label: "Image", value: "image" },
-              // { label: "Embedding", value: "embedding" },
-              // { label: "Text to Speech", value: "text_to_speech" },
-              // { label: "Speech to Text", value: "speech_to_text" },
-            ]}
+            options={modalityFilters.map((modality) => ({
+              label: modality.label,
+              value: modality.modality,
+            }))}
+            onChange={(value) => {
+              form.setFieldsValue({ modality: value });
+              form.validateFields(['modality']);
+              setCloudModelDetails({
+                ...cloudModelDetails,
+                modality: value
+              });
+            }}
+          />
+        </ConfigProvider>
+      </div> */}
+      <div className="w-full">
+        <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1">
+          Modality
+          <CustomPopover title="This is the modality">
+            <Image
+              src="/images/info.png"
+              preview={false}
+              alt="info"
+              style={{
+                width: ".75rem",
+                height: ".75rem",
+              }}
+            />
+          </CustomPopover>
+        </Text_12_300_EEEEEE>
+      </div>
+      <div className="custom-select-two w-full rounded-[6px] relative">
+        <ConfigProvider
+          theme={{
+            token: {
+              colorTextPlaceholder: "#808080",
+            },
+          }}
+        >
+          <Select
+            placeholder="Select Modality"
+            style={{
+              backgroundColor: "transparent",
+              color: "#EEEEEE",
+              border: "0.5px solid #757575",
+              width: "100%",
+            }}
+            // value={tempFilter.modality}
+            maxTagCount={4}
+            size="large"
+            className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.15rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.59338rem] outline-none"
+            options={modalityFilters.map((modality) => ({
+              label: modality.label,
+              value: modality.modality,
+            }))}
+            tagRender={(props) => {
+              const { label } = props;
+              return (
+                <Tags name={label} color="#D1B854"></Tags>
+              );
+            }}
+            mode="multiple"
             onChange={(value) => {
               form.setFieldsValue({ modality: value });
               form.validateFields(['modality']);
@@ -167,8 +224,8 @@ function AddModelForm() {
           />
         </ConfigProvider>
       </div>
-    </Form.Item> */}
-
+    </Form.Item>
+    )}
     {selectedModel?.uri ? null : (<Form.Item hasFeedback
       name={"uri"}
       rules={[{ required: true, message: "Please input URI!" }]}
@@ -255,7 +312,7 @@ export default function AddModel() {
         name: filter.name,
         tag: filter.name,
         // description: filter.name,
-        // modality: filter.modality?.length > 0 ? filter.modality : undefined,
+        modality: filter.modality?.length > 0 ? filter.modality : undefined,
         tasks: filter.tasks?.length > 0 ? filter.tasks : undefined,
         author: filter.author?.length > 0 ? filter.author : undefined,
         model_size_min: isFinite(filter.model_size_min)
