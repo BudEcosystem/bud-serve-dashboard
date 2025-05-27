@@ -268,7 +268,7 @@ const General: React.FC<GeneralProps> = ({ data }) => {
         ) : (
           hasPermission(PermissionEnum.ModelManage) && (
             <>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center pt-[1.3rem]">
                 <div>
                   <Text_14_400_EEEEEE>Description</Text_14_400_EEEEEE>
                   <Text_12_400_757575 className="pt-[.45rem]">
