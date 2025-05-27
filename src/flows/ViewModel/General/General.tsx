@@ -21,17 +21,43 @@ import { useDeployModel } from "src/stores/useDeployModel";
 import { BranchType } from "../Advanced/Advanced";
 import { Image } from "antd";
 import { ChevronRight } from "lucide-react";
+import { set } from "date-fns";
 
 interface GeneralProps {
   data?: Model;
+  goToAdapter?: boolean;
 }
 
-const General: React.FC<GeneralProps> = ({ data }) => {
+const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { hasPermission } = useUser();
   const { isExpandedViewOpen } = useContext(BudFormContext);
   const { openDrawerWithStep, openDrawer, openDrawerWithExpandedStep } =
     useDrawer();
   const { reset } = useDeployModel();
+
+  const handleScrollToContainer = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  useEffect(() => {
+    console.log("goToAdapter", goToAdapter);
+  }, [goToAdapter]);
+
+  useEffect(() => {
+    if (goToAdapter) {
+      handleScrollToContainer();
+      setTimeout(() => {
+        onDerivedCardClick({
+          name: "Adapters",
+          value: `${data?.quantizations_count} models`,
+          color: "#B3B3B3",
+          key: "adapter",
+        })
+      }, 500);
+    }
+  }, [goToAdapter]);
 
   const specs = [
     {
@@ -121,7 +147,7 @@ const General: React.FC<GeneralProps> = ({ data }) => {
       {/* <ModelTags model={data} hideEndPoints hideTags showExternalLink /> */}
       <div className="">
         <div>
-          <div className="pt-[1.3rem]">
+          <div className="">
             <Text_14_400_EEEEEE>Modalities</Text_14_400_EEEEEE>
             <div className="modality flex items-center justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
               <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
@@ -555,7 +581,7 @@ const General: React.FC<GeneralProps> = ({ data }) => {
         )}
         <div className="hR"></div>
 
-        <div className="mt-[1.4rem] mb-[1.4rem]">
+        <div className="mt-[1.4rem] mb-[1.4rem]" ref={containerRef}>
           <div
             className="w-full mb-[1rem] py-[1.5rem] px-[1rem] cursor-pointer bg-[#101010] hover:bg-[#1F1F1F]  border border-[#1F1F1F] rounded-[8px]"
             onClick={() =>
