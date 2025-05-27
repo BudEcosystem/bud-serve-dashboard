@@ -1,5 +1,5 @@
-import { Text_11_400_808080, Text_12_400_B3B3B3, Text_12_400_EEEEEE } from '@/components/ui/text'
-import React from 'react'
+import { Text_11_400_808080, Text_12_400_B3B3B3, Text_12_400_EEEEEE, Text_12_600_EEEEEE } from '@/components/ui/text'
+import React, { useEffect, useRef, useState } from 'react'
 import { formatDate } from 'src/utils/formatDate'
 import DeploymentAnalysis from './DeploymentAnalysis'
 import CacheAnalysis from './CacheAnalysis'
@@ -19,6 +19,18 @@ function GeneralDeploymentInfo({ switchTab }: { switchTab: (key: string) => void
   const { openDrawerWithStep } = useDrawer()
   const { getModel } = useModels()
   const { getClusterById } = useCluster()
+  const descriptionRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleDescription = () => setIsExpanded(!isExpanded);
+
+  useEffect(() => {
+    if (descriptionRef.current) {
+      const element = descriptionRef.current;
+      setIsOverflowing(element.scrollHeight > 50);
+    }
+  }, [clusterDetails?.model?.description]);
 
   return (
     <div className='mt-[1.1rem] pl-[.15rem] relative'>
@@ -35,7 +47,7 @@ function GeneralDeploymentInfo({ switchTab }: { switchTab: (key: string) => void
         >
           <div className="w-full">
             <div className="flex items-start justify-start w-full">
-              <IconRender icon={clusterDetails?.model?.icon} model={clusterDetails?.model} type={clusterDetails?.model.provider_type}/>
+              <IconRender icon={clusterDetails?.model?.icon} model={clusterDetails?.model} type={clusterDetails?.model.provider_type} />
               <div className='ml-[.75rem]'>
                 <span className="block text-[0.875rem] font-[400] text-[#EEEEEE] leading-[.875rem]">
                   {clusterDetails?.model?.name}
@@ -54,9 +66,35 @@ function GeneralDeploymentInfo({ switchTab }: { switchTab: (key: string) => void
                 </div>
               </div>
             </div>
-            <Text_12_400_B3B3B3 className='mt-[1.15rem] leading-[1.05rem]'>
-              {clusterDetails?.model?.description}
-            </Text_12_400_B3B3B3>
+            {clusterDetails?.model?.description && (
+              <>
+                <div className="">
+                  <div
+                    ref={descriptionRef}
+                    className={`leading-[1.05rem] tracking-[.01em max-w-[100%] ${isExpanded ? "" : "line-clamp-3"
+                      } overflow-hidden`}
+                    style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
+                  >
+                    <Text_12_400_B3B3B3 className='mt-[1.15rem] leading-[1.05rem]'>
+                      {clusterDetails?.model?.description}
+                    </Text_12_400_B3B3B3>
+                  </div>
+                  {isOverflowing && (
+                    <div className="flex justify-end">
+                      <Text_12_600_EEEEEE
+                        className="cursor-pointer leading-[1.05rem] tracking-[.01em] mt-[.3rem]"
+                        onClick={(e)=> {
+                          toggleDescription();
+                          e.stopPropagation();
+                        }}
+                      >
+                        {isExpanded ? "See less" : "See more"}
+                      </Text_12_600_EEEEEE>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
 

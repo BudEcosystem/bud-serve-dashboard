@@ -25,6 +25,8 @@ import { useCluster } from "src/hooks/useCluster";
 
 
 const ProjectDetailsPage = () => {
+  const router = useRouter();
+  const { projectId, clustersId, deploymentId } = router.query;
   const { hasPermission, loadingUser } = useUser();
   const { clusterDetails, getEndpointClusterDetails, pageSource, setPageSource } = useEndPoints();
   const { getClusterById } = useCluster();
@@ -34,10 +36,6 @@ const ProjectDetailsPage = () => {
 
   const [activeTab, setActiveTab] = useState("1");
   const { showLoader, hideLoader } = useLoader();
-  const router = useRouter();
-  const { projectId, clustersId, deploymentId
-
-  } = router.query; // Access the dynamic part of the route
 
   const [isMounted, setIsMounted] = useState(false);
 
@@ -52,7 +50,10 @@ const ProjectDetailsPage = () => {
 
   const load = async () => {
     showLoader();
-    if (!selectedProject || selectedProject.id !== projectId && projectId) {
+    // if (!selectedProject || selectedProject.id !== projectId && projectId) {
+    //   await getProject(projectId as string);
+    // }
+    if (projectId) {
       await getProject(projectId as string);
     }
     if (clustersId) {
@@ -65,13 +66,13 @@ const ProjectDetailsPage = () => {
   }
 
   useEffect(() => {
-    console.log('ClusterId', router)
+    console.log('router', router)
     console.log('ClusterId', clustersId)
     console.log('projectId', projectId)
   }, [router.isReady]);
 
   useEffect(() => {
-    if (projectId && deploymentId) {
+    if (projectId || clustersId && deploymentId) {
       load();
     }
   }, [projectId, deploymentId, clustersId]);
@@ -107,7 +108,7 @@ const ProjectDetailsPage = () => {
           /> */}
             <CustomBreadcrumb
               data={[
-                `${pageSource || projectId ? 'Projects' : "Clusters"}`,
+                `${projectId ? 'Projects' : "Clusters"}`,
                 `${selectedProject ? selectedProject?.icon : clusterDetails?.cluster?.icon} ${selectedProject ? selectedProject?.name : clusterDetails?.cluster?.name}`,
                 `${clusterDetails?.name}`
               ]}
