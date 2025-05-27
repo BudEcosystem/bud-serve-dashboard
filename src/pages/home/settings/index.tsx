@@ -34,7 +34,7 @@ export default function Settings() {
         <div className="boardPageTop">
           <PageHeader
            headding="Settings"
-           text="Description for settings Description for settings Description for settings Description for settings"
+           text="Manage your personal information and adjust notification settings."
           />
         </div>
         <div className="projectDetailsDiv mt-[2.35rem]">
