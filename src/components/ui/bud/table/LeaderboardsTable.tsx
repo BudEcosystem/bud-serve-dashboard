@@ -91,7 +91,6 @@ function LeaderboardsTable({ data, leaderboardClasses}: { data: LeaderBoardItem[
 
     return mergedRows;
   }, [data]);
-  console.log("horizontalRows", rows);
 
   return (
     <div className={`${leaderboardClasses}`}
