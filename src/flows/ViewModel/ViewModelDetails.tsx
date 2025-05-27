@@ -44,6 +44,7 @@ export default function ViewModel() {
     // if (key != '1') {
     //   closeExpandedStep();
     // }
+    
     closeExpandedStep();
     if( key == '5') {
       setToAdapter(true);
@@ -92,7 +93,7 @@ export default function ViewModel() {
     } else {
       setFilteredItems(items); // Use all tabs
     }
-  }, [selectedModel]);
+  }, [selectedModel, toAdapter]);
 
   const firstLineText = !selectedModel?.endpoints_count ? 'You\'re about to delete the model' : 'You\'re not allowed to delete this model'
   const secondLineText = !selectedModel?.endpoints_count ? 'The model is not deployed on any projects. Are you sure you want to delete this model?' : 'You will have to stop the deployment of this model from every project, before you can delete this model.'
