@@ -3,7 +3,7 @@ import { BudWraperBox } from "@/components/ui/bud/card/wraperBox";
 import { BudDrawerLayout } from "@/components/ui/bud/dataEntry/BudDrawerLayout";
 import { BudForm } from "@/components/ui/bud/dataEntry/BudForm";
 import { Text_12_300_EEEEEE, Text_12_400_757575, Text_12_400_B3B3B3, Text_12_400_EEEEEE, Text_12_600_EEEEEE, Text_14_400_EEEEEE } from "@/components/ui/text";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 import { useDrawer } from "src/hooks/useDrawer";
 import { CredentialDetailEndpoint, useProprietaryCredentials } from "src/stores/useProprietaryCredentials";
 import { Badge, Checkbox, Dropdown, Image, Space, Table } from "antd";
@@ -67,18 +67,22 @@ export default function ViewUser() {
   const [projectList, setProjectList] = useState<any>([]);
 
   // for pagination
+  const [currentUserDetails, setCurrentUserDetails] = useState<{ id?: string; name?: string; email?: string; role?: string; status?: string }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
   const totalItems = 100;
   const [filter, setFilter] = useState<
-      {
-        name?: string;
-        email?: string;
-        role?: string;
-        status?: string;
-      }
-    >(defaultFilter);
+    {
+      name?: string;
+      email?: string;
+      role?: string;
+      status?: string;
+    }
+  >(defaultFilter);
 
+  useEffect(() => {
+    setCurrentUserDetails(userDetails);
+  }, [userDetails]);
 
   const load = useCallback(async (filter) => {
     showLoader();
@@ -118,13 +122,10 @@ export default function ViewUser() {
     getGlobalProjects(1, 1000)
   }, []);
 
-  useEffect(() => {
-    console.log('userDetails', userDetails)
-  }, [userDetails]);
 
 
   useEffect(() => {
-    let prjt = globalProjects.map(item => {
+    let prjt = globalProjects?.map(item => {
       // const matchingPermissions = userPermissions.project_scopes.length && userPermissions.project_scopes?.find(p => {
       //   console.log(p)
       //   p.id === item.project.id;
@@ -147,7 +148,7 @@ export default function ViewUser() {
   ]
 
   const firstLineText = `Are you sure you want to delete this user?`
-  const secondLineText = `You are about to delete ${userDetails?.['name']}`
+  const secondLineText = `You are about to delete ${currentUserDetails?.['name']}`
 
   const primaryTableData = [
     {
@@ -224,7 +225,7 @@ export default function ViewUser() {
                         preview={false}
                         alt="info"
                         style={{ width: '1rem', height: '1rem' }}
-                        className={`origin-center transform transition-transform duration-300 ${expandedRow? "rotate-0" : "rotate-180"
+                        className={`origin-center transform transition-transform duration-300 ${expandedRow ? "rotate-0" : "rotate-180"
                           }`}
                       />
                     </div>
@@ -308,7 +309,7 @@ export default function ViewUser() {
     <BudForm
       data={{
       }}
-
+      drawerLoading={isLoading}
     >
       <BudWraperBox classNames="mt-[2.2rem]">
         {showConfirm && <BudDrawerLayout>
@@ -319,7 +320,7 @@ export default function ViewUser() {
             confirmText='Delete User'
             cancelText='Cancel'
             confirmAction={async () => {
-              const result = await deleteUser(userDetails?.id)
+              const result = await deleteUser(currentUserDetails?.id)
               if (result) {
                 successToast('User deleted successfully')
                 await refresh()
@@ -338,7 +339,7 @@ export default function ViewUser() {
           <div className="flex flex-col items-start justify-start w-full px-[1.4rem] py-[1.05rem] pb-[1.4rem] border-b-[.5px] border-b-[#1F1F1F]">
             <div className="w-full flex justify-between items-start ">
               <Text_14_400_EEEEEE className="mb-[0.35rem]">
-                {userDetails?.name}
+                {currentUserDetails?.name}
               </Text_14_400_EEEEEE>
               <div className="mr-[.1rem] mt-[.2rem]">
                 <CustomDropDown
@@ -389,9 +390,9 @@ export default function ViewUser() {
               {/* {tagsData.map((item, index) => (
                 <Tags key={index} name={item.name} color={item.color} classNames="py-[.3rem]" />
               ))} */}
-              <Tags name={userDetails?.email} color="#D1B854" classNames="py-[.3rem]" />
-              <Tags name={capitalize(userDetails?.role)} color="#D1B854" classNames="py-[.3rem]" />
-              <Tags name={capitalize(userDetails?.status)} color={endpointStatusMapping[capitalize(userDetails?.status)]} classNames="py-[.3rem]" />
+              <Tags name={currentUserDetails?.email} color="#D1B854" classNames="py-[.3rem]" />
+              <Tags name={capitalize(currentUserDetails?.role)} color="#D1B854" classNames="py-[.3rem]" />
+              <Tags name={capitalize(currentUserDetails?.status)} color={endpointStatusMapping[capitalize(currentUserDetails?.status)]} classNames="py-[.3rem]" />
             </div>
           </div>
           <div className="px-[1.45rem]">

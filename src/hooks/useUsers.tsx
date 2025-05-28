@@ -28,13 +28,13 @@ export const UserRoles: UserRolesTypes[] = [
   { label: "Devops", value: "devops" },
   { label: "Super_admin", value: "super_admin" },
   { label: "Tester", value: "tester" },
-  { label: "User", value: "user" }, 
+  { label: "User", value: "user" },
 ];
 
 export const UserStatus: UserRolesTypes[] = [
   { label: "Active", value: "active" },
   { label: "Invited", value: "invited" },
-  { label: "Deleted", value: "deleted" }, 
+  { label: "Deleted", value: "deleted" },
 ];
 type GetUserParams = {
   page: number;
@@ -60,7 +60,7 @@ export const useUsers = create<{
   getUsers: (parms: GetUserParams) => void;
   setCreatedUser: (data) => void;
   fetchUsers: (params: GetUserParams) => Promise<User[]>;
-  getUsersDetails: (Id) => void;
+  getUsersDetails: (Id) => Promise<any>;
   getUsersPermissions: (Id) => void;
   deleteUser: (Id) => Promise<any>;
   setUsersPermissions: (Id, setUsersPermissions) => void;
@@ -75,7 +75,7 @@ export const useUsers = create<{
   createdUser: {},
   userPermissions: [],
   loading: true,
-  setCreatedUser: async(data)=> {
+  setCreatedUser: async (data) => {
     set({ createdUser: data });
   },
   fetchUsers: async (params: GetUserParams) => {
@@ -112,11 +112,16 @@ export const useUsers = create<{
     }
     set({ users: updatedListData, filters: params });
   },
-  
+
   getUsersDetails: async (Id,) => {
+    set({ loading: true });
     const response: any = await AppRequest.Get(`/users/${Id}`);
     let userData = response.data?.user;
     set({ userDetails: userData });
+    set({ loading: false });
+    if(userData) {
+      return userData;
+    }
   },
 
   getUsersPermissions: async (Id,) => {
@@ -124,16 +129,16 @@ export const useUsers = create<{
     let userData = response.data?.result;
     set({ userPermissions: userData });
   },
-  
+
   setUsersPermissions: async (Id, userPermissions) => {
     const response: any = await AppRequest.Put(`/permissions/${Id}/global`, userPermissions);
     let userData = response.data?.result;
-    if(userData) {
+    if (userData) {
       await get().getUsersPermissions(Id);
     }
     // set({ userPermissions: userData });
   },
-  
+
   updateUser: async (Id, payload) => {
     const response: any = await AppRequest.Patch(`/users/${Id}`, payload);
     let userData = response.data?.result;
