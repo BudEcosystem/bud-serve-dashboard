@@ -23,7 +23,7 @@ import { useDrawer } from "src/hooks/useDrawer";
 import { useDeployModel } from "src/stores/useDeployModel";
 import { getChromeColor } from "@/components/ui/bud/dataEntry/TagsInputData";
 import { formatDate } from "src/utils/formatDate";
-import { Model, useModels } from "src/hooks/useModels";
+import { cloudProviders, Model, useModels } from "src/hooks/useModels";
 import Tags from "src/flows/components/DrawerTags";
 import {
   PrimaryButton,
@@ -183,7 +183,7 @@ const sourceTypes = [
 
 const defaultFilter = {
   name: "",
-  // modality: [],
+  modality: [],
   model_size_min: undefined,
   model_size_max: undefined,
   table_source: ["model"],
@@ -283,20 +283,14 @@ export default function ModelRepo() {
   const [tempFilter, setTempFilter] = useState<any>({});
   const [filter, setFilter] = useState<{
     name?: string;
-    // modality?: string[];
+    modality?: string[];
     model_size_min?: number;
     model_size_max?: number;
     table_source?: string[];
   }>(defaultFilter);
   const [filterOpen, setFilterOpen] = React.useState(false);
 
-  // const [modalityFilters, setModalityFilters] = useState([
-  //   { modality: "llm", label: "LLM" },
-  //   { modality: "image", label: "Image" },
-  //   // { modality: "embedding", label: "Embedding" },
-  //   // { modality: "text_to_speech", label: "Text-to-Speech" },
-  //   // { modality: "speech_to_text", label: "Speech-to-Text" },
-  // ]);
+  const [modalityFilters, setModalityFilters] = useState(cloudProviders);
   const [filterReset, setFilterReset] = useState(false);
 
   const load = useCallback(
@@ -309,7 +303,7 @@ export default function ModelRepo() {
           name: filter.name,
           tag: filter.name,
           // description: filter.name,
-          // modality: filter.modality?.length > 0 ? filter.modality : undefined,
+          modality: filter.modality?.length > 0 ? filter.modality : undefined,
           tasks: filter.tasks?.length > 0 ? filter.tasks : undefined,
           author: filter.author?.length > 0 ? filter.author : undefined,
           model_size_min: isFinite(filter.model_size_min)
@@ -644,7 +638,7 @@ export default function ModelRepo() {
                                 </div>
                               </div>
                             </div>
-                            {/* <div
+                            <div
                               className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
                             >
                               <div className="w-full">
@@ -682,7 +676,7 @@ export default function ModelRepo() {
                                     value={tempFilter.modality}
                                     maxTagCount={2}
                                     size="large"
-                                    className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.59338rem] outline-none"
+                                    className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.15rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.59338rem] outline-none"
                                     options={modalityFilters.map((modality) => ({
                                       label: modality.label,
                                       value: modality.modality,
@@ -703,7 +697,7 @@ export default function ModelRepo() {
                                   />
                                 </ConfigProvider>
                               </div>
-                            </div> */}
+                            </div>
                             <div className="flex items-center justify-between">
                               <SecondaryButton
                                 type="button"

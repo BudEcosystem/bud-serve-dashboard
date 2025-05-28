@@ -2,7 +2,7 @@ import { BudWraperBox } from "@/components/ui/bud/card/wraperBox";
 import { BudDrawerLayout } from "@/components/ui/bud/dataEntry/BudDrawerLayout";
 import { BudForm } from "@/components/ui/bud/dataEntry/BudForm";
 import { Text_10_400_FFFFFF, Text_12_400_EEEEEE, Text_12_400_FFFFFF, Text_14_400_EEEEEE, Text_8_300_FFFFFF } from "@/components/ui/text";
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { useDrawer } from "src/hooks/useDrawer";
 import { ConfigProvider, Image } from "antd"; // Added Checkbox import
 import Tags from "src/flows/components/DrawerTags";
@@ -23,6 +23,7 @@ import ModelTags from "../components/ModelTags";
 import { useDeployModel } from "src/stores/useDeployModel";
 import { PermissionEnum, useUser } from "src/stores/useUser";
 import IconRender from "../components/BudIconRender";
+import { useMemo } from 'react';
 
 
 
@@ -33,18 +34,30 @@ export default function ViewModel() {
   const { openDrawerWithStep, closeDrawer, previousStep, setPreviousStep, closeExpandedStep } = useDrawer()
   const [filteredItems, setFilteredItems] = useState<TabsProps['items']>([]);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [toAdapter, setToAdapter] = useState(false);
   const { selectedModel, deleteModel, refresh } = useModels();
   const { hasPermission } = useUser()
   // const imageUrl = (assetBaseUrl + selectedModel?.provider?.icon) || selectedModel?.icon
   const imageUrl = selectedModel?.source == 'local' ? assetBaseUrl + selectedModel?.icon : assetBaseUrl + selectedModel?.provider?.icon
 
   const onChange = (key: string) => {
-    if (key != '1') {
-      closeExpandedStep();
+    // if (key != '1') {
+    //   closeExpandedStep();
+    // }
+    
+    closeExpandedStep();
+    if( key == '5') {
+      setToAdapter(true);
+    }
+    else {
+      setToAdapter(false);
     }
   };
+  useEffect(() => {
+    console.log('toAdapter', toAdapter);
+  }, [toAdapter]);
 
-  const items: TabsProps['items'] = [
+  const items: TabsProps['items'] = useMemo(() => [
     {
       key: '1',
       label: 'General',
@@ -67,7 +80,12 @@ export default function ViewModel() {
       label: 'Advanced',
       children: <Advanced data={selectedModel} />,
     },
-  ];
+    {
+      key: '5',
+      label: 'Adapters',
+      children: <General key={`general-tab-${toAdapter}`} data={selectedModel} goToAdapter={toAdapter} />,
+    },
+  ], [toAdapter, selectedModel]);
 
   useEffect(() => {
     if (selectedModel?.provider_type === 'cloud_model') {
@@ -75,7 +93,7 @@ export default function ViewModel() {
     } else {
       setFilteredItems(items); // Use all tabs
     }
-  }, [selectedModel]);
+  }, [selectedModel, toAdapter]);
 
   const firstLineText = !selectedModel?.endpoints_count ? 'You\'re about to delete the model' : 'You\'re not allowed to delete this model'
   const secondLineText = !selectedModel?.endpoints_count ? 'The model is not deployed on any projects. Are you sure you want to delete this model?' : 'You will have to stop the deployment of this model from every project, before you can delete this model.'
@@ -148,7 +166,7 @@ export default function ViewModel() {
                 />
               </div>
               <div>
-                <Text_14_400_EEEEEE className="mb-[0.65rem] leading-[100%]">
+                <Text_14_400_EEEEEE className="mb-[0.65rem] leading-[140%]">
                   {selectedModel?.name}
                 </Text_14_400_EEEEEE>
                 <ModelTags model={selectedModel} maxTags={3} />
@@ -222,7 +240,7 @@ export default function ViewModel() {
                 },
               }}
             >
-              <Tabs defaultActiveKey="1" items={filteredItems} onChange={onChange} className="generalTabs" />
+              <Tabs  defaultActiveKey="1" items={filteredItems} onChange={onChange} className="generalTabs" destroyOnHidden/>
             </ConfigProvider>
           </div>
         </BudDrawerLayout>

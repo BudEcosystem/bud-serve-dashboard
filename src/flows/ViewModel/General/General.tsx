@@ -21,17 +21,43 @@ import { useDeployModel } from "src/stores/useDeployModel";
 import { BranchType } from "../Advanced/Advanced";
 import { Image } from "antd";
 import { ChevronRight } from "lucide-react";
+import { set } from "date-fns";
 
 interface GeneralProps {
   data?: Model;
+  goToAdapter?: boolean;
 }
 
-const General: React.FC<GeneralProps> = ({ data }) => {
+const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { hasPermission } = useUser();
   const { isExpandedViewOpen } = useContext(BudFormContext);
   const { openDrawerWithStep, openDrawer, openDrawerWithExpandedStep } =
     useDrawer();
   const { reset } = useDeployModel();
+
+  const handleScrollToContainer = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  useEffect(() => {
+    console.log("goToAdapter", goToAdapter);
+  }, [goToAdapter]);
+
+  useEffect(() => {
+    if (goToAdapter) {
+      handleScrollToContainer();
+      setTimeout(() => {
+        onDerivedCardClick({
+          name: "Adapters",
+          value: `${data?.quantizations_count} models`,
+          color: "#B3B3B3",
+          key: "adapter",
+        })
+      }, 500);
+    }
+  }, [goToAdapter]);
 
   const specs = [
     {
@@ -120,14 +146,132 @@ const General: React.FC<GeneralProps> = ({ data }) => {
     <div className="pt-[.25rem]">
       {/* <ModelTags model={data} hideEndPoints hideTags showExternalLink /> */}
       <div className="">
+        <div>
+          <div className="">
+            <Text_14_400_EEEEEE>Modalities</Text_14_400_EEEEEE>
+            <div className="modality flex items-center justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
+                <Text_14_400_EEEEEE>INPUT</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-[.5rem]">
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.text.input ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      alt={data.modality.text.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.image.input ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      alt={data.modality.image.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.audio.input ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      alt={data.modality.audio.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                </div>
+                <Text_12_400_EEEEEE>
+                  {[
+                    data.modality.text.input && data.modality.text.label,
+                    data.modality.image.input && data.modality.image.label,
+                    data.modality.audio.input && data.modality.audio.label
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Text_12_400_EEEEEE>
+              </div>
+              <div className="w-[2px] h-[90px] bg-[#1F1F1F]"></div>
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
+                <Text_14_400_EEEEEE>OUTPUT</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-[.5rem]">
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.text.output ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      alt={data.modality.text.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      alt={data.modality.image.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div>
+                    <Image
+                      preview={false}
+                      src={data.modality.audio.output ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      alt={data.modality.audio.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                </div>
+                <Text_12_400_EEEEEE>
+                  {[
+                    data.modality.text.output && data.modality.text.label,
+                    data.modality.image.output && data.modality.image.label,
+                    data.modality.audio.output && data.modality.audio.label
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Text_12_400_EEEEEE>
+              </div>
+            </div>
+          </div>
+          <div className="hR mt-[1.1rem]"></div>
+        </div>
+        <div>
+          <div className="pt-[1.3rem]">
+            <Text_14_400_EEEEEE>Supported Endpoints</Text_14_400_EEEEEE>
+            <div className="modality flex flex-wrap items-start justify-start gap-y-[2rem] ml-[1rem] mt-[1rem]">
+              {Object.entries(data.supported_endpoints).map(([key, value]) => {
+                const iconName = value.enabled ? `${key}.png` : `${key}-not.png`;
+                return (
+                  <div key={key} className="flex items-center justify-start gap-[.8rem] w-[49%]">
+                    <div>
+                      <Image
+                        preview={false}
+                        src={`/images/drawer/endpoints/${iconName}`}
+                        alt={value.label}
+                        style={{ height: "1.5rem" }}
+                        onError={(e) => {
+                          e.currentTarget.src = value.enabled
+                            ? "/images/drawer/endpoints/default.png"
+                            : "/images/drawer/endpoints/default-not.png";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Text_14_400_EEEEEE>{value.label}</Text_14_400_EEEEEE>
+                      <Text_12_400_B3B3B3 className="leading-[180%]">
+                        {value.path}
+                      </Text_12_400_B3B3B3>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="hR mt-[1.1rem]"></div>
+        </div>
         {data?.description ? (
           <>
             <div className="pt-[1.3rem]">
               <div
                 ref={descriptionRef}
-                className={`leading-[1.05rem] tracking-[.01em max-w-[100%] ${
-                  isExpanded ? "" : "line-clamp-2"
-                } overflow-hidden`}
+                className={`leading-[1.05rem] tracking-[.01em max-w-[100%] ${isExpanded ? "" : "line-clamp-2"
+                  } overflow-hidden`}
                 style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
               >
                 <Text_12_400_B3B3B3 className="leading-[180%]">
@@ -150,7 +294,7 @@ const General: React.FC<GeneralProps> = ({ data }) => {
         ) : (
           hasPermission(PermissionEnum.ModelManage) && (
             <>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center pt-[1.3rem]">
                 <div>
                   <Text_14_400_EEEEEE>Description</Text_14_400_EEEEEE>
                   <Text_12_400_757575 className="pt-[.45rem]">
@@ -437,7 +581,7 @@ const General: React.FC<GeneralProps> = ({ data }) => {
         )}
         <div className="hR"></div>
 
-        <div className="mt-[1.4rem] mb-[1.4rem]">
+        <div className="mt-[1.4rem] mb-[1.4rem]" ref={containerRef}>
           <div
             className="w-full mb-[1rem] py-[1.5rem] px-[1rem] cursor-pointer bg-[#101010] hover:bg-[#1F1F1F]  border border-[#1F1F1F] rounded-[8px]"
             onClick={() =>

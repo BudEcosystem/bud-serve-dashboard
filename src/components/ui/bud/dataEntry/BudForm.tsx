@@ -63,6 +63,7 @@ export interface BudFormProps extends FooterProps {
   data: any;
   children: React.ReactNode;
   title?: string;
+  drawerLoading?: boolean;
 }
 
 
@@ -107,7 +108,7 @@ export function BudForm(props: BudFormProps) {
       }
     }}
   >
-    {(loading || performanceLoading) && <div className="flex items-center justify-center h-full w-full absolute bg-opacity-50  z-[100000000000000]">
+    {(loading || performanceLoading || props.drawerLoading) && <div className="flex items-center justify-center h-full w-full absolute bg-opacity-50  z-[100000000000000]">
       <Spin />
     </div>}
     {isExpandedView ? <div

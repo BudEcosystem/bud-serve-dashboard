@@ -1,14 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import {
-  TextField,
-} from "@radix-ui/themes";
-import { MagnifyingGlassIcon, MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
 
-import AddUserPopup from "../../../components/popups/user/addUserPopup";
-import ViewUserPopup from "../../../components/popups/user/viewUserpopup";
-import GeneratePassPopup from "../../../components/popups/user/generatePasswordPopup";
-import AddDeleteDialog from "../../../components/popups/user/addDeletePopup";
+import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import React from "react";
@@ -17,12 +10,10 @@ import { AppRequest } from "./../../api/requests";
 import { successToast } from "./../../../components/toast";
 
 
-import { TextInput } from "@/components/ui/input";
 import { useLoader } from "src/context/appContext";
 import { PermissionEnum, useUser } from "src/stores/useUser";
 import { Button, Popover, Table, TableProps, Image, ConfigProvider, Select } from "antd";
-import { Text_12_300_EEEEEE, Text_12_400_EEEEEE, Text_12_600_EEEEEE } from "@/components/ui/text";
-import Tags from "src/flows/components/DrawerTags";
+import { Text_12_300_EEEEEE, Text_12_400_EEEEEE } from "@/components/ui/text";
 import NoDataFount from "@/components/ui/noDataFount";
 import { PrimaryButton, SecondaryButton } from "@/components/ui/bud/form/Buttons";
 import PageHeader from "@/components/ui/pageHeader";
@@ -70,22 +61,10 @@ export default function UserManagement() {
 
   const { isLoading, showLoader, hideLoader } = useLoader();
 
-  const [isAddDeleteOpen, setIsAddDeleteOpen] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const [isAddModalOpen, setAddModalOpen] = useState<boolean>(false);
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [isPassModalOpen, setPassModalOpen] = useState<boolean>(false);
-  const [initialValues, setInitialValues] = useState<any>("");
-
-  const [UsersData, setUsersData] = useState<any>([]);
-
   // for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const totalItems = 100;
-
-  const [selectedRowData, setSelectedRowData] = useState<FormData | null>(null);
 
   const { users, totalUsers, getUsers, getUsersDetails, userDetails, getUsersPermissions, userPermissions } = useUsers();
   const [tempFilter, setTempFilter] = useState<any>({});
@@ -143,7 +122,6 @@ export default function UserManagement() {
   }, [currentPage, pageSize, getUsers]);
 
   useEffect(() => {
-    console.log("filter", filter);
     load(filter);
   }, [currentPage, pageSize, getUsers]);
   
@@ -164,9 +142,6 @@ export default function UserManagement() {
     return () => clearTimeout(timer);
   }, [filter.email]);
   
-  useEffect(() => {
-    console.log('tempFilter', tempFilter)
-  }, [tempFilter]);
 
   function SortIcon({ sortOrder }: { sortOrder: string }) {
     return sortOrder ? sortOrder === 'descend' ?
@@ -179,175 +154,13 @@ export default function UserManagement() {
       : null;
   }
 
-  const updateUser = async (password) => {
-    const payload = {
-      name: selectedRowData.name,
-      password: password,
-    };
-    showLoader();
-    try {
-      const response: any = await AppRequest.Patch(
-        `/users/${selectedRowData?.id}`,
-        payload
-      );
-      successToast(response.data.message);
-      load(filter);
-      setPassModalOpen(false);
-      hideLoader();
-    } catch (error) {
-      console.error("Error creating model:", error);
-      hideLoader();
+  const openUserPermissions = async (data) => {
+    const user = await getUsersDetails(data.id);
+    if (user) {
+      openDrawer('view-user');
     }
-  };
-  const addUser = async (payload) => {
-    showLoader();
-    try {
-      const response: any = await AppRequest.Post(`/auth/register`, payload);
-      successToast(response.data.message);
-      load(filter);
-      hideLoader();
-    } catch (error) {
-      console.error("Error creating model:", error);
-      hideLoader();
-    }
-  };
-  const deleteUser = async () => {
-    showLoader();
-    try {
-      const response: any = await AppRequest.Delete(
-        `/users/${selectedRowData?.id}`
-      );
-      successToast(response.data.message);
-      load(filter);
-      handleCloseDialogAddDelete();
-      setSelectedRowData(null);
-      hideLoader();
-    } catch (error) {
-      console.error("Error Deleting user:", error);
-      hideLoader();
-    }
-  };
-
-  const activateUser = async () => {
-    const payload = {
-      user_id: selectedRowData?.id,
-    };
-    showLoader();
-    try {
-      const response: any = await AppRequest.Patch(
-        `/users/${selectedRowData?.id}/reactivate`,
-        payload
-      );
-      successToast(response.data.message);
-      load(filter);
-      handleCloseDialogAddDelete();
-      setSelectedRowData(null);
-      hideLoader();
-    } catch (error) {
-      console.error("Error activating user:", error);
-      hideLoader();
-    }
-  };
-  const updateUserPermission = async (userPermissions) => {
-    // Call API to create model
-    showLoader();
-    try {
-      const response: any = await AppRequest.Put(
-        `/permissions/${selectedRowData?.id}/global`,
-        userPermissions
-      );
-      // If API call is successful, close the dialog
-      successToast(response.data.message);
-      setModalOpen(false);
-      setInitialValues("");
-      hideLoader();
-    } catch (error) {
-      console.error("Error creating model:", error);
-      hideLoader();
-    }
-  };
-  const searchUser = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const data = event.target.value;
-    // getUsers(currentPage, pageSize, data);
-  };
-
-  const handleModalSubmit = (data) => {
-    updateUserPermission(data);
-  };
-  const handleAddSubmit = (data) => {
-    addUser(data);
-  };
-  const handlePasswordSubmit = (data) => {
-    updateUser(data.password);
-  };
-  const openUserPermissions = (data) => {
-    setInitialValues(data.id);
-    setSelectedRowData(data);
-    // setModalOpen(true);
-
-    getUsersDetails(data.id)
     getUsersPermissions(data.id)
-    openDrawer('view-user');
   };
-  const openPasswordPopup = (data) => {
-    setSelectedRowData(data);
-    setPassModalOpen(true);
-    setInitialValues(data.id);
-  };
-  const handleOpenDialog = (item: any, action: any) => {
-    setSelectedRowData(item);
-    if (action == "delete") {
-      setSelectedRowData((prevState) => ({
-        ...prevState,
-        itemTitle: `Remove ${item?.name}  from Bud Inference`,
-        itemDescription: `You're about to remove a user from the platform, they will have no access.`,
-        buttonLabel: `Delete User`,
-        action: "delete",
-      }));
-    } else if (action == "add") {
-      setSelectedRowData((prevState) => ({
-        ...prevState,
-        itemTitle: `Add ${item?.name}  to Bud Inference`,
-        itemDescription: `You're about to add a user back to the platform, they will get their previous access.`,
-        buttonLabel: `Restore`,
-        action: "add",
-      }));
-    }
-    setIsAddDeleteOpen(true);
-  };
-  const handleAddDeleteUser = () => {
-    if (selectedRowData.action == "delete") {
-      deleteUser();
-    } else if (selectedRowData.action == "add") {
-      activateUser();
-    }
-  };
-  const handleCloseDialogAddDelete = () => {
-    setIsAddDeleteOpen(false);
-  };
-  const handleViewClose = () => {
-    setInitialValues("null");
-  };
-  useEffect(() => {
-    if (!isModalOpen) {
-      setInitialValues("null");
-    }
-  }, [isModalOpen]);
-  useEffect(() => {
-    // getUsers(currentPage, pageSize);
-  }, [currentPage, pageSize, getUsers]);
-
-  useEffect(() => {
-    // openDrawer('add-user');
-  }, []);
-  // useEffect(() => {
-  //   console.log('userDetails', userDetails)
-  // }, [userDetails]);
- 
-  useEffect(() => {
-    console.log('userPermissions', userPermissions)
-  }, [userPermissions]);
-
 
   const columns: ColumnsType<User> = [
     {
@@ -389,69 +202,6 @@ export default function UserManagement() {
       sorter: (a, b) => a.status.localeCompare(b.status),
       sortIcon: SortIcon,
     },
-    {
-      title: '',
-      dataIndex: 'actions',
-      key: 'actions',
-      render: (text, record) => <div className="visible-on-hover">
-        {hasPermission(PermissionEnum.UserManage) && (
-          <>
-            {/* {record.status == "active" && (
-              <Button
-                className="bg-transparent p-0 m-0 w-[0.875rem] h-[0.875rem] border-[0]"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openUserPermissions(record);
-                }}
-              >
-                <Image
-                  preview={false}
-                  style={{ width: '0.9375rem', height: 'auto' }}
-                  className="mainLogo"
-                  src="icons/lock.png"
-                  alt="Logo"
-                />
-              </Button>
-            )}
-            {record.status == "active" && (
-              <Button
-                className="bg-transparent p-0 m-0 w-[0.875rem] h-[0.875rem]  border-[0]"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenDialog(record, "delete")
-                }}
-              >
-                <Image
-                  preview={false}
-                  style={{ width: '0.9375rem', height: 'auto' }}
-                  className="mainLogo"
-                  src="icons/deleteRed.png"
-                  alt="Logo"
-                />
-              </Button>
-            )} */}
-            {record.status == "deleted" && (
-              <Button
-                className="bg-transparent p-0 m-0 w-[0.875rem] h-[0.875rem] border-[0]"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenDialog(record, "add")
-                }}
-              >
-                <Image
-                  preview={false}
-                  style={{ width: '0.9375rem', height: 'auto' }}
-                  className="mainLogo"
-                  src="icons/restore.png"
-                  alt="Logo"
-                />
-              </Button>
-            )}
-          </>
-        )}
-      </div>,
-      sortIcon: SortIcon,
-    },
   ];
 
   const handlePageChange = (currentPage, pageSize) => {
@@ -468,10 +218,8 @@ export default function UserManagement() {
             headding="User Management"
             ButtonIcon={PlusIcon}
             buttonLabel={hasPermission(PermissionEnum.UserManage) ? "Add User" : ""}
-            // buttonAction={() => openFlow("project-success")}
             buttonAction={() => {
               openDrawer('add-user');
-              // setAddModalOpen(true)
             }}
             rightComponent={hasPermission(PermissionEnum.UserManage) &&
               <>
@@ -543,16 +291,6 @@ export default function UserManagement() {
                                 onChange={(value) => {
                                   setTempFilter({ ...tempFilter, role: value });
                                 }}
-                                // tagRender={(props) => {
-                                //   const { label } = props;
-                                //   return (
-                                //     <Tags
-                                //       name={label}
-                                //       color="#D1B854"
-                                //     >
-                                //     </Tags>
-                                //   );
-                                // }}
                               />
                             </ConfigProvider>
                           </div>
@@ -638,40 +376,11 @@ export default function UserManagement() {
                       style={{ width: '0.875rem', height: '0.875rem' }}
                       className="text-[#B3B3B3] group-hover:text-[#FFFFFF]"
                     />
-                    {/* <Text_12_400_C7C7C7>Filter</Text_12_400_C7C7C7> */}
                   </label>
                 </Popover>
               </>
             }
           />
-        </div>
-        <div className="searchWrap max-w-[320px] pt-4 tablePadding">
-          {/* <TextInput
-            textFieldSlot={
-              <TextField.Slot>
-                <MagnifyingGlassIcon
-                  height="16"
-                  width="16"
-                  className={`text-[#BBBBBB] ${isFocused ? "text-[#FFFFFF]" : "hover:text-[#FFFFFF]"
-                    }`}
-                />
-              </TextField.Slot>
-            }
-            name="seatch"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            onChange={searchUser}
-            placeholder="Search by user email"
-            maxLength={100}
-            className="[text-[#FFFFFF]]"
-          /> */}
-          {/* <TextField.Root placeholder="Search user" className="rounded-lg shadow-none border border-[#B0B4BA] h-[1.75rem] text-sm text-[#787B83]"
-            onChange={searchUser}
-          >
-            <TextField.Slot>
-              <MagnifyingGlassIcon height="16" width="16" />
-            </TextField.Slot>
-          </TextField.Root> */}
         </div>
         {hasPermission(PermissionEnum.UserManage) ?
           <div className="pt-4 tablePadding userTable relative CommonCustomPagination">
@@ -695,7 +404,6 @@ export default function UserManagement() {
                 return {
                   onClick: async event => {
                     event.stopPropagation();
-                    // openUserPermissions(record)
                     if (hasPermission(PermissionEnum.UserManage) && record.status == "active") {
                       openUserPermissions(record)
                     }
@@ -718,57 +426,6 @@ export default function UserManagement() {
           </>
         }
       </div>
-      {isAddModalOpen && (
-        <>
-          <AddUserPopup
-            isOpen={isAddModalOpen}
-            onOpenChange={setAddModalOpen}
-            title={"Add New User"}
-            description={
-              "Enter Information below to add a new user to  the platform"
-            }
-            initialValues={initialValues}
-            onSubmit={handleAddSubmit}
-          ></AddUserPopup>
-        </>
-      )}
-      {isModalOpen && (
-        <>
-          <ViewUserPopup
-            onClose={handleViewClose}
-            isOpen={isModalOpen}
-            onOpenChange={setModalOpen}
-            title={"User Permission"}
-            description={"Update access for projects"}
-            initialValues={initialValues}
-            onSubmit={handleModalSubmit}
-          ></ViewUserPopup>
-        </>
-      )}
-      {isPassModalOpen && (
-        <>
-          <GeneratePassPopup
-            isOpen={isPassModalOpen}
-            onOpenChange={setPassModalOpen}
-            title={"Generate Password"}
-            description={""}
-            initialValues={initialValues}
-            onSubmit={handlePasswordSubmit}
-          ></GeneratePassPopup>
-        </>
-      )}
-      {isAddDeleteOpen && (
-        <>
-          <AddDeleteDialog
-            isOpen={isAddDeleteOpen}
-            onClose={handleCloseDialogAddDelete}
-            onSubmit={handleAddDeleteUser}
-            itemTitle={selectedRowData?.itemTitle}
-            itemDescription={selectedRowData?.itemDescription}
-            buttonLabel={selectedRowData?.buttonLabel}
-          />
-        </>
-      )}
     </DashBoardLayout>
   );
 }

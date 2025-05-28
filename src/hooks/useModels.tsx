@@ -9,6 +9,15 @@ type LeaderBoardValue = {
     "value": number;
 }
 
+export const cloudProviders = [
+    { modality: "text_input", label: "Text Input" },
+    { modality: "text_output", label: "Text Output" },
+    { modality: "image_input", label: "Image Input" },
+    { modality: "image_output", label: "Image Output" },
+    { modality: "audio_input", label: "Audio Input" },
+    { modality: "audio_output", label: "Audio Output" },
+];
+
 export type LeaderBoardBenchmark = {
     [key: string]: LeaderBoardValue;
 }
@@ -85,6 +94,12 @@ export type ScanResult = {
     modified_at: string;
 };
 
+type EndpointInfo = {
+    path: string;
+    enabled: boolean;
+    label: string;
+};
+
 export type Model = {
     provider: Provider;
     provider_type: string;
@@ -97,7 +112,18 @@ export type Model = {
         image: { input: boolean; output: boolean, label: string };
         text: { input: boolean; output: boolean, label: string };
     };
-    supported_endpoints: {};
+    supported_endpoints: {
+        chat: EndpointInfo;
+        completion: EndpointInfo;
+        image_generation: EndpointInfo;
+        audio_transcription: EndpointInfo;
+        audio_speech: EndpointInfo;
+        embedding: EndpointInfo;
+        batch: EndpointInfo;
+        response: EndpointInfo;
+        rerank: EndpointInfo;
+        moderation: EndpointInfo;
+    };
     type?: string;
     source: string;
     uri: string;
@@ -182,7 +208,7 @@ type GetModelParams = {
     description?: string;
     tag?: string;
     tasks?: string[]
-    // modality?: string[];
+    modality?: string[];
     author?: string[];
     model_size_min?: number;
     model_size_max?: number;
