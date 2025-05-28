@@ -15,33 +15,60 @@ export function CustomBreadcrumb({
   data: string[];
   urls?: string[];
 }) {
-  return <Breadcrumb
-    separator={<Text_12_400_5B6168 className="mx-2">/</Text_12_400_5B6168>}
-    items={data?.map((item, index) => ({
-      href: "#",
-      title:
-        index === 0 ? (
-          <Link href={urls ? urls[index] : "#"}>
-            <Text_12_400_5B6168 className="inline-flex items-center ">
-              {item}
-            </Text_12_400_5B6168>
-          </Link>
-        ) : (
-          urls ? urls[index] != '' ? (
-            <Link href={urls ? urls[index] : "#"}>
-              <Text_12_400_787B83 className="text-white">
+  return (
+    // <Breadcrumb
+    //   separator={<Text_12_400_5B6168 className="mx-2">/</Text_12_400_5B6168>}
+    //   items={data?.map((item, index) => ({
+    //     href: "#",
+    //     title:
+    //       index === 0 ? (
+    //         <Link href={urls ? urls[index] : "#"}>
+    //           <Text_12_400_5B6168 className="inline-flex items-center ">
+    //             {item}
+    //           </Text_12_400_5B6168>
+    //         </Link>
+    //       ) : (
+    //         urls ? urls[index] != '' ? (
+    //           <Link href={urls ? urls[index] : "#"}>
+    //             <Text_12_400_787B83 className="text-white">
+    //               {item}
+    //             </Text_12_400_787B83>
+    //           </Link>
+    //         ) : (
+    //           <Text_12_400_787B83 className="text-white cursor-normal">
+    //             {item}
+    //           </Text_12_400_787B83>
+    //         ) : null
+    //       )
+    //   })) || []
+    //   }
+    // />
+    <Breadcrumb
+      separator={<Text_12_400_5B6168 className="mx-2">/</Text_12_400_5B6168>}
+      items={
+        data?.map((item, index) => {
+          const isLast = index === data.length - 1;
+          const hasUrl = urls?.[index];
+
+          return {
+            href: !isLast && hasUrl ? hasUrl : undefined, // only set href if it's not the last
+            title: (
+              <Text_12_400_787B83
+                key={index}
+                className={
+                  isLast || !hasUrl
+                    ? 'cursor-default text-[#EEEEEE]'
+                    : 'hover:cursor-pointer hover:text-[#EEEEEE]'
+                }
+              >
                 {item}
               </Text_12_400_787B83>
-            </Link>
-          ) : (
-            <Text_12_400_787B83 className="text-white cursor-normal">
-              {item}
-            </Text_12_400_787B83>
-          ) : null
-        )
-    })) || []
-    }
-  />
+            ),
+          };
+        }) || []
+      }
+    />
+  )
 }
 
 export function DeawerCustomBreadcrumb({

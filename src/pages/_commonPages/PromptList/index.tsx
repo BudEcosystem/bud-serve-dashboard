@@ -201,6 +201,8 @@ const HarmfulnessPromptList = () => {
     if (!deploymentId) return;
     load();
   }, [currentPage, pageSize, searchValue]);
+  
+
   useEffect(() => {
     setPromptPage(matched?.key, matchedTitle)
     setTimeout(() => {
@@ -381,15 +383,18 @@ const HarmfulnessPromptList = () => {
             <BackButton onClick={goBack} />
             <CustomBreadcrumb
               data={[
-                `${'Clusters'}`,
-                `${clusterDetails?.cluster?.icon} ${clusterDetails?.cluster?.name}`,
+                `${projectId ? 'Projects' : "Clusters"}`,
+                `${selectedProject ? selectedProject?.icon : clusterDetails?.cluster?.icon} ${selectedProject ? selectedProject?.name : clusterDetails?.cluster?.name}`,
                 `${clusterDetails?.name}`,
                 `${matchedTitle}`,
               ]}
               urls={[
-                `/${pageSource.toLocaleLowerCase() || 'Clusters'}`,
-                `/${pageSource.toLocaleLowerCase()}/${clustersId}`,
-                `/${pageSource.toLocaleLowerCase()}/${clustersId}/deployments/${deploymentId ? deploymentId : clusterDetails?.id}`,
+                `/${pageSource.toLocaleLowerCase() || projectId ? 'projects' : "Clusters"}}`,
+                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
+                }`,
+                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
+                }/deployments/${deploymentId ? deploymentId : clusterDetails?.id
+                }`,
                 ``,
               ]}
             />
