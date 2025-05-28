@@ -76,6 +76,11 @@ export default {
         destination: '/home/deployments/[deploymentId]',
       },
       {
+        source: '/clusters/:clustersId/endpoint/:endpointId/:scoreType',
+        destination:
+          '/home/clusters/[clustersId]/endpoint/[endpointId]/[scoreType]',
+      },
+      {
         source: '/clusters/:clustersId/perfomanceBenchmarks',
         destination: '/home/clusters/[clustersId]/PerfomanceBenchmarks',
       },
