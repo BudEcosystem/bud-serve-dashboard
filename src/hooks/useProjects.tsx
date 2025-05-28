@@ -129,7 +129,6 @@ export const useProjects = create<
     set({ loading: true });
     try {
       const response: any = await AppRequest.Get(url);
-      console.log("response", response);
       set({
         projects: response.data.projects,
         totalProjects: response.data.total_record,

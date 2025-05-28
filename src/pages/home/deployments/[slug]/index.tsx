@@ -143,7 +143,7 @@ const ProjectDetailsPage = () => {
           </div>
           <div className="flex items-center gap-4 justify-between flex-row px-[3.5rem]">
             <div className="w-full" >
-              <Text_26_600_FFFFFF textClass="text-[#EEE] ">
+              <Text_26_600_FFFFFF className="text-[#EEE] ">
                 {clusterDetails?.name}
               </Text_26_600_FFFFFF>
               <div className="flex items-center gap-2 mt-[1rem]">
