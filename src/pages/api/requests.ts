@@ -112,6 +112,7 @@ axiosInstance.interceptors.response.use(
 
 const handleErrorResponse = (err) => {
   if (err.response && err.response.status === 401) {
+    localStorage.clear();
     router.push("/login");
     return false;
   }
