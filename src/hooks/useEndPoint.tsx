@@ -4,6 +4,8 @@ import { create } from "zustand";
 import { tempApiBaseUrl } from "@/components/environment";
 import { Model } from "./useModels";
 import { Cluster } from "./useCluster";
+import { persist } from 'zustand/middleware';
+
 
 export interface IEndPoint {
   users_count?: number;
@@ -129,8 +131,8 @@ export const useEndPoints = create<{
   setPageSource: async (data) => {
     set({ pageSource: data });
   },
-  setPromptPage: async (type, title) => {
-    set({ scoreType: type });
+  setPromptPage: async (scoreType, title) => {
+    set({ scoreType: scoreType });
     set({ pageTitle: title });
   },
   getEndpointClusterDetails: async (endpointId: string, source?: string) => {
@@ -266,7 +268,7 @@ export const useEndPoints = create<{
 
 
   getInferenceQualityPrompts: async (params: any, id: string): Promise<any> => {
-    
+
     function convertToISOString(dateStr: string): string | null {
       if (!dateStr) return null;
       const [month, day, year] = dateStr.split('/');

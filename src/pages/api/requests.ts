@@ -1,6 +1,7 @@
 import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import { errorToast } from "./../../components/toast";
+import router from "next/router";
 
 export const axiosInstance = axios.create({
   baseURL: baseUrl,
@@ -45,7 +46,7 @@ axiosInstance.interceptors.request.use(
 
     // ✅ Optional: Check for network quality
     // Use type assertion to access non-standard properties
-        const connection = (navigator as any).connection || (navigator as any)['mozConnection'] || (navigator as any)['webkitConnection'];
+    const connection = (navigator as any).connection || (navigator as any)['mozConnection'] || (navigator as any)['webkitConnection'];
     if (connection) {
       const { effectiveType, downlink } = connection;
       const slowConnection = ['2g', 'slow-2g'].includes(effectiveType) || downlink < 0.5;
@@ -110,6 +111,11 @@ axiosInstance.interceptors.response.use(
 );
 
 const handleErrorResponse = (err) => {
+  if (err.response && err.response.status === 401) {
+    localStorage.clear();
+    router.push("/login");
+    return false;
+  }
   if (err.response && err.response.status === 403) {
     localStorage.clear();
     // setTimeout(() => {
@@ -135,6 +141,10 @@ const handleErrorResponse = (err) => {
     return Promise.reject(err.response.data);
   } else {
     console.log(err)
+    if (err) {
+      console.log(err.response?.data?.message)
+      errorToast(err.response?.data?.message);
+    }
     // errorToast(err.response?.data?.message || "Internal Server Error");
     return false;
   }
@@ -165,6 +175,7 @@ const refreshToken = async () => {
     localStorage.setItem("refresh_token", data.token.refresh_token);
     return data.token.access_token;
   } catch (error) {
+    router.push("/login");
     // console.log("data.token", error);
     // errorToast(error?.response?.data?.error?.message || "Unauthorized Access");
     localStorage.clear();

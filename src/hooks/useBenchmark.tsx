@@ -219,7 +219,6 @@ export const useBenchmarks = create<{
 
   getBenchmarks: async (params: any) => {
     let updatedListData = await get().fetchBenchmarks(params);
-    console.log("updatedListData", updatedListData);
     if (params.page !== 1) {
       updatedListData = [...get().benchmarks, ...updatedListData];
     }

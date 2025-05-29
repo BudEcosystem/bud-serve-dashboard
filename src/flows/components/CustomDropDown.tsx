@@ -49,7 +49,7 @@ const CustomDropDown: React.FC<CustomDropDownProps> = ({
         <Dropdown
         // open={text=='test10'}
           onOpenChange={(value)=> {
-            console.log('value', value)
+            // console.log('value', value)
           }}
           disabled={isDisabled}
           menu={{ items, className: "custom-dropdown-menu" }}

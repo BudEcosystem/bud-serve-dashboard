@@ -129,7 +129,6 @@ export const useProjects = create<
     set({ loading: true });
     try {
       const response: any = await AppRequest.Get(url);
-      console.log("response", response);
       set({
         projects: response.data.projects,
         totalProjects: response.data.total_record,
@@ -163,7 +162,6 @@ export const useProjects = create<
     if (result && result?.page !== 1) {
       updatedListData = [...get().globalProjects, ...updatedListData];
     }
-    console.log("updatedListData", updatedListData);
     set({ globalProjects: updatedListData });
   },
   createProject: async (data: any): Promise<any> => {

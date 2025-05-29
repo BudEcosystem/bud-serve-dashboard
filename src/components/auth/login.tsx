@@ -163,7 +163,7 @@ const LoginPage = ({ onSubmit }: LoginPageModalProps) => {
           name="password"
           className="mb-[1rem]"
           // validateDebounce={500}
-          validateTrigger={['onBlur']}
+          validateTrigger="onChange"
           rules={[
             // {
             //   required: true,

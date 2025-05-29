@@ -259,7 +259,7 @@ const BudIsland: React.FC = () => {
                     transition: 'opacity 0.5s ease-in-out',
                     padding: 0,
                 }}
-                onClose={() => {
+                onCancel={() => {
                     close();
                 }}
                 footer={null}

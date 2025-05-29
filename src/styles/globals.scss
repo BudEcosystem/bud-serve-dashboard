@@ -2546,7 +2546,16 @@ svg.ant-progress-circle {
   display: flex;
   align-items: center;
 }
-
+.ant-breadcrumb {
+  display: flex !important;
+  align-items: center !important;
+}
+.ant-breadcrumb a {
+  height: auto !important;
+}
+.ant-breadcrumb-link {
+  display: inline-block;
+}
 .ant-avatar-group .ant-avatar {
   border: none;
 }
@@ -3149,7 +3158,7 @@ svg.ant-progress-circle {
   border-left: .25rem solid;
   border-image-slice: 1;
   border-width: 2px;
-  margin-left: .25rem;
+  // margin-left: .25rem;
 }
 
 .border-gradient-purple {

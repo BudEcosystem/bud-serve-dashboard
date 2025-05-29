@@ -21,7 +21,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
   useEffect(() => {
     setBarChartData(data);
   }, [data]);
-  
+
   const chartRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (chartRef.current) {
@@ -78,9 +78,9 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
             color: '#6A6E76', // Set x-axis label color to white for better visibility
             fontSize: 12,
             formatter: (value) => {
-              const maxLength = 7; // Maximum length of visible text
-              return value.substring(0, maxLength) + '...';
-            },
+              const maxLength = 7;
+              return value.length > maxLength ? value.substring(0, maxLength) + '...' : value;
+            }
           },
         },
         yAxis: {
@@ -113,7 +113,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
             return `
               <div style="text-align: left;text-transform: capitalize">
                 ${params.name}<br/>
-                ${params.value}<br/>
+                ${params.value.toFixed(2)}<br/>
               </div>`;
           },
         },

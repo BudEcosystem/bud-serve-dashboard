@@ -54,10 +54,16 @@ export default {
           '/home/projects/[projectId]/endpoint/[endpointId]/[scoreType]',
       },
       {
-        source: '/projects/:projectId/deployments/:deploymentId/PromptList',
+        source: '/projects/:projectId/deployments/:deploymentId/:scoreType',
         destination:
-          '/home/projects/[projectId]/PromptList',
+          // '/home/projects/[projectId]/PromptList',
+          '/_commonPages/PromptList',
       },
+      // {
+      //   source: '/projects/:projectId/deployments/:deploymentId/PromptList',
+      //   destination:
+      //     '/home/projects/[projectId]/PromptList',
+      // },
       {
         source: '/clusters',
         destination: '/home/clusters',
@@ -69,6 +75,12 @@ export default {
       {
         source: '/clusters/:clustersId/deployments/:deploymentId',
         destination: '/home/deployments/[deploymentId]',
+      },
+      {
+        source: '/clusters/:clustersId/deployments/:deploymentId/:scoreType',
+        destination:
+          '/_commonPages/PromptList',
+          // '/home/clusters/[clustersId]/PromptList',
       },
       {
         source: '/clusters/:clustersId/perfomanceBenchmarks',

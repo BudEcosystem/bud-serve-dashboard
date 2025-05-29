@@ -847,11 +847,16 @@ export default function DeploymentAnalysis({
     getInferenceQualityPrompts,
     clusterDetails
   } = useEndPoints();
+  useEffect(() => {
+   console.log('projectId', projectId)
+   console.log('projectId', projectId)
+   console.log('clustersId', clustersId)
+  }, [router.isReady]);
   const navigateToHarmfulness = (key, title) => {
     if (deploymentId) {
       setPromptPage(key, title);
       router.push(
-        `/projects/${projectId || clustersId}/deployments/${deploymentId}/PromptList`
+        `/${projectId ? 'projects' : 'clusters'}/${projectId ? projectId : clustersId}/deployments/${deploymentId}/${key}`
       );
     }
   };

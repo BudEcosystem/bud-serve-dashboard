@@ -160,7 +160,8 @@ function ModelTags(props: ModelTagsProps) {
                     }} />
                 </div>}
             />}
-            {props.model?.modality && !props.hideModality && <Tags
+            
+            {/* {props.model?.modality && !props.hideModality && <Tags
                 key={'modality'}
                 name={props.model.modality}
                 color={'#D1B854'}
@@ -171,7 +172,7 @@ function ModelTags(props: ModelTagsProps) {
                         </div>
                     )
                 }
-            />}
+            />} */}
             {props?.model?.author && !props.hideAuthor && <Tags
                 name={props?.model?.author}
                 color={'#D1B854'}

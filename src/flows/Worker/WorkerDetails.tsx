@@ -134,9 +134,6 @@ export default function WorkerDetails() {
 
   useEffect(() => {
     if (selectedWorker) {
-
-      console.log(selectedWorker)
-
       getWorkerMetrics(deploymentId, selectedWorker.id).then((metrics) => {
         setWrokerMetrics(metrics);
       });
@@ -159,7 +156,7 @@ export default function WorkerDetails() {
     {
       icon: '/images/drawer/calander.png',
       name: 'Created Date',
-      value: formatDate(new Date(selectedWorker?.created_datetime)),
+      value: selectedWorker?.created_datetime && formatDate(new Date(selectedWorker?.created_datetime)),
       // value: selectedWorker?.created_datetime,
       type: 'text'
     },
@@ -172,7 +169,7 @@ export default function WorkerDetails() {
     {
       icon: '/images/drawer/calander.png',
       name: 'Last Updated',
-      value: formatDistanceCustom(new Date(selectedWorker?.last_updated_datetime)),
+      value: selectedWorker?.last_updated_datetime && formatDistanceCustom(new Date(selectedWorker?.last_updated_datetime)),
       // value: selectedWorker?.last_updated_datetime,
       type: 'text'
     },

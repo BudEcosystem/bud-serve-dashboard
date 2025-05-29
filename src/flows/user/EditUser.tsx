@@ -177,7 +177,7 @@ export default function EditUser() {
   ]
 
   const prepareProjectsList = () => {
-    let prjt = globalProjects.map(item => {
+    let prjt = globalProjects?.map(item => {
       const matchingPermissions = userPermissions?.project_scopes?.find(p => p.id === item.project.id);
 
       return {

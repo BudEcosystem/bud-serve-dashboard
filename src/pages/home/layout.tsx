@@ -90,7 +90,7 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
   const [isHovered, setIsHovered] = useState<any>();
   const pathname = usePathname();
   const { isVisible } = useOverlay();
-  const { getUser, user, hasPermission } = useUser();
+  const { getUser, user, hasPermission, permissions } = useUser();
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [generalOpen, setGeneralOpen] = React.useState(false);
   const tabs = [

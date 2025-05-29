@@ -21,21 +21,21 @@ import { useEndPoints } from "src/hooks/useEndPoint";
 import { useDrawer } from "src/hooks/useDrawer";
 import { PermissionEnum, useUser } from "src/stores/useUser";
 import AdaptersTable from "./adapters";
+import { useCluster } from "src/hooks/useCluster";
 
 
 const ProjectDetailsPage = () => {
+  const router = useRouter();
+  const { projectId, clustersId, deploymentId } = router.query;
   const { hasPermission, loadingUser } = useUser();
   const { clusterDetails, getEndpointClusterDetails, pageSource, setPageSource } = useEndPoints();
+  const { getClusterById } = useCluster();
   const { openDrawer } = useDrawer();
 
   const { selectedProject, getProject } = useProjects();
 
   const [activeTab, setActiveTab] = useState("1");
   const { showLoader, hideLoader } = useLoader();
-  const router = useRouter();
-  const { projectId, deploymentId
-
-  } = router.query; // Access the dynamic part of the route
 
   const [isMounted, setIsMounted] = useState(false);
 
@@ -50,8 +50,14 @@ const ProjectDetailsPage = () => {
 
   const load = async () => {
     showLoader();
-    if (!selectedProject || selectedProject.id !== projectId && projectId) {
+    // if (!selectedProject || selectedProject.id !== projectId && projectId) {
+    //   await getProject(projectId as string);
+    // }
+    if (projectId) {
       await getProject(projectId as string);
+    }
+    if (clustersId) {
+      getClusterById(clustersId as string);
     }
     if (deploymentId) {
       await getEndpointClusterDetails(deploymentId as string);
@@ -60,19 +66,25 @@ const ProjectDetailsPage = () => {
   }
 
   useEffect(() => {
-    if (projectId && deploymentId) {
+    console.log('router', router)
+    console.log('ClusterId', clustersId)
+    console.log('projectId', projectId)
+  }, [router.isReady]);
+
+  useEffect(() => {
+    if (projectId || clustersId && deploymentId) {
       load();
     }
-  }, [projectId, deploymentId]);
+  }, [projectId, deploymentId, clustersId]);
 
   useEffect(() => {
     console.log('clusterDetails', clusterDetails);
   }, [clusterDetails]);
-  
+
   useEffect(() => {
     console.log('pageSource', pageSource);
   }, [pageSource]);
-  
+
   useEffect(() => {
     setPageSource(pageSource)
   }, [pageSource]);
@@ -96,7 +108,7 @@ const ProjectDetailsPage = () => {
           /> */}
             <CustomBreadcrumb
               data={[
-                `${pageSource}`,
+                `${projectId ? 'Projects' : "Clusters"}`,
                 `${selectedProject ? selectedProject?.icon : clusterDetails?.cluster?.icon} ${selectedProject ? selectedProject?.name : clusterDetails?.cluster?.name}`,
                 `${clusterDetails?.name}`
               ]}
@@ -131,7 +143,7 @@ const ProjectDetailsPage = () => {
           </div>
           <div className="flex items-center gap-4 justify-between flex-row px-[3.5rem]">
             <div className="w-full" >
-              <Text_26_600_FFFFFF textClass="text-[#EEE] ">
+              <Text_26_600_FFFFFF className="text-[#EEE] ">
                 {clusterDetails?.name}
               </Text_26_600_FFFFFF>
               <div className="flex items-center gap-2 mt-[1rem]">
@@ -176,11 +188,11 @@ const ProjectDetailsPage = () => {
               {
                 label: <div className="flex items-center gap-2">
                   <Image
-                      preview={false}
-                      src={'/images/icons/adapter.png'}
-                      alt="info"
-                      width={16}
-                      height={16}
+                    preview={false}
+                    src={'/images/icons/adapter.png'}
+                    alt="info"
+                    width={16}
+                    height={16}
                   />
                   <Text_14_600_FFFFFF
                     className="hover:text-[#EEEEEE]"

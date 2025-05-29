@@ -33,11 +33,32 @@ import type { DatePickerProps } from "antd";
 import { DatePicker } from "antd";
 import React from "react";
 import { set } from "date-fns";
+import { useCluster } from "src/hooks/useCluster";
+import { SortIcon } from "@/components/ui/bud/table/SortIcon";
 const defaultFilter = {
   min_score: 0,
   max_score: 10,
   created_at: "",
 };
+
+const promptKeys = [
+  {
+    title: "Harmfulness",
+    key: "harmfulness",
+  },
+  {
+    title: "Hallucinations",
+    key: "hallucination",
+  },
+  {
+    title: "Sensitive Information",
+    key: "sensitive_info",
+  },
+  {
+    title: "Prompt Injection",
+    key: "prompt_injection",
+  },
+];
 
 const HarmfulnessPromptList = () => {
   const [filter, setFilter] = useState<{
@@ -46,19 +67,22 @@ const HarmfulnessPromptList = () => {
     created_at?: any;
   }>(defaultFilter);
   const { selectedProject, getProject } = useProjects();
+  const { getClusterById } = useCluster();
   const {
     getInferenceQualityPrompts,
     inferenceQualityPrompts,
     totalRecords,
     pageSource,
     clusterDetails,
+    getEndpointClusterDetails,
     pageTitle,
+    setPromptPage
   } = useEndPoints();
   const [copyText, setCopiedText] = useState<string>("Copy");
   const { showLoader, hideLoader } = useLoader();
   const router = useRouter();
   const [showPrompt, setShowPrompt] = useState<boolean>(false);
-  const { projectId, deploymentId } = router.query;
+  const { projectId, clustersId, deploymentId } = router.query;
   const [order, setOrder] = useState<"-" | "">("-");
   const [orderBy, setOrderBy] = useState<string>("field1");
   const [promptDetail, setPromptDetail] = useState<PromptDetail>();
@@ -67,6 +91,14 @@ const HarmfulnessPromptList = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isMounted, setIsMounted] = useState(false);
   const [filterOpen, setFilterOpen] = React.useState(false);
+
+  // Get last route segment
+  const lastSegment = router.asPath.split('/').filter(Boolean).pop();
+
+  // Find matching title
+  const matched = promptKeys.find(item => item.key === lastSegment);
+  const matchedTitle = matched ? matched.title : 'Unknown';
+
   const handlePageChange = (currentPage, pageSize) => {
     setCurrentPage(currentPage);
     setPageSize(pageSize);
@@ -94,49 +126,112 @@ const HarmfulnessPromptList = () => {
       setCopiedText("Copy");
     }, 3000);
   }, [copyText]);
+ 
+  useEffect(() => {
+    if (!router.isReady) return;
+    console.log("router.isReady", router);
+    console.log("query", router.query);
+  }, [router.isReady]);
+
+  const initialLoad= async () => {
+    showLoader();
+    // if (!selectedProject || selectedProject.id !== projectId && projectId) {
+    //   await getProject(projectId as string);
+    // }
+    if (projectId) {
+      await getProject(projectId as string);
+    }
+    if (clustersId) {
+      getClusterById(clustersId as string);
+    }
+    if (deploymentId) {
+      await getEndpointClusterDetails(deploymentId as string);
+    }
+    hideLoader();
+  }
+
+  useEffect(() => {
+    if (projectId || clustersId && deploymentId) {
+      initialLoad();
+    }
+  }, [projectId, clustersId, deploymentId]);
 
   const textToCopy1 = promptDetail?.prompt;
   const textToCopy2 = promptDetail?.response;
+
+  const applyFilter = () => {
+    setFilterOpen(false);
+    if (deploymentId) {
+      load();
+    }
+  };
+
+  const clearFilter = () => {
+    setFilter({
+      min_score: "",
+      max_score: "",
+      created_at: null
+    }
+    );
+    setCurrentPage(1);
+    // setFilterOpen(false);
+    // load(defaultFilter);
+  };
+
+  const load = async () => {
+    showLoader();
+    await getInferenceQualityPrompts(
+      {
+        ...filter,
+        page: currentPage,
+        limit: pageSize,
+        name: searchValue ? searchValue : undefined,
+        search: !!searchValue,
+        order_by: `${order}${orderBy}`,
+        min_score: filter.min_score,
+        max_score: filter.max_score,
+        created_at: filter.created_at,
+      },
+      deploymentId as string
+    );
+    hideLoader();
+  };
+
+  useEffect(() => {
+    if (!deploymentId) return;
+    load();
+  }, [currentPage, pageSize, searchValue]);
+  
+
+  useEffect(() => {
+    setPromptPage(matched?.key, matchedTitle)
+    setTimeout(() => {
+      load();
+    }, 500);
+  }, [deploymentId]);
+
+
+  const goBack = () => {
+    if (showPrompt) {
+      setShowPrompt(false);
+      return;
+    }
+    router.back();
+  };
+
+  const toPromptDetail = (data) => {
+    setPromptDetail(data);
+    setShowPrompt(true);
+  };
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+    console.log(date, dateString);
+  };
 
   interface DataType {
     score: string;
     created_at: string;
     prompt: string;
     response: string;
-  }
-
-  function SortIcon({ sortOrder }: { sortOrder: string }) {
-    return sortOrder ? (
-      sortOrder === "descend" ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="13"
-          viewBox="0 0 12 13"
-          fill="none"
-        >
-          <path
-            fillRule="evenodd"
-            d="M6.00078 2.10938C6.27692 2.10938 6.50078 2.33324 6.50078 2.60938L6.50078 9.40223L8.84723 7.05578C9.04249 6.86052 9.35907 6.86052 9.55433 7.05578C9.7496 7.25104 9.7496 7.56763 9.55433 7.76289L6.35433 10.9629C6.15907 11.1582 5.84249 11.1582 5.64723 10.9629L2.44723 7.76289C2.25197 7.56763 2.25197 7.25104 2.44723 7.05578C2.64249 6.86052 2.95907 6.86052 3.15433 7.05578L5.50078 9.40223L5.50078 2.60938C5.50078 2.33324 5.72464 2.10938 6.00078 2.10938Z"
-            fill="#B3B3B3"
-          />
-        </svg>
-      ) : (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="13"
-          viewBox="0 0 12 13"
-          fill="none"
-        >
-          <path
-            fillRule="evenodd"
-            d="M6.00078 10.8906C6.27692 10.8906 6.50078 10.6668 6.50078 10.3906L6.50078 3.59773L8.84723 5.94418C9.04249 6.13944 9.35907 6.13944 9.55433 5.94418C9.7496 5.74892 9.7496 5.43233 9.55433 5.23707L6.35433 2.03707C6.15907 1.84181 5.84249 1.84181 5.64723 2.03707L2.44723 5.23707C2.25197 5.43233 2.25197 5.74892 2.44723 5.94418C2.64249 6.13944 2.95907 6.13944 3.15433 5.94418L5.50078 3.59773L5.50078 10.3906C5.50078 10.6668 5.72464 10.8906 6.00078 10.8906Z"
-            fill="#B3B3B3"
-          />
-        </svg>
-      )
-    ) : null;
   }
 
   const columns: ColumnsType<DataType> = [
@@ -193,65 +288,6 @@ const HarmfulnessPromptList = () => {
     },
   ];
 
-  const applyFilter = () => {
-    setFilterOpen(false);
-    load();
-  };
-
-  const clearFilter = () => {
-    setFilter({
-      min_score: "",
-      max_score: "",
-      created_at: null
-    }
-    );
-    setCurrentPage(1);
-    // setFilterOpen(false);
-    // load(defaultFilter);
-  };
-
-  const load = async () => {
-    showLoader();
-    await getInferenceQualityPrompts(
-      {
-        ...filter,
-        page: currentPage,
-        limit: pageSize,
-        name: searchValue ? searchValue : undefined,
-        search: !!searchValue,
-        order_by: `${order}${orderBy}`,
-        min_score: filter.min_score,
-        max_score: filter.max_score,
-        created_at: filter.created_at,
-      },
-      deploymentId as string
-    );
-    hideLoader();
-  };
-
-  useEffect(() => {
-    load();
-  }, [deploymentId, currentPage, pageSize, searchValue]);
-
-  useEffect(() => {
-    console.log("filter", filter);
-  }, [filter]);
-
-  const goBack = () => {
-    if (showPrompt) {
-      setShowPrompt(false);
-      return;
-    }
-    router.back();
-  };
-
-  const toPromptDetail = (data) => {
-    setPromptDetail(data);
-    setShowPrompt(true);
-  };
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-    console.log(date, dateString);
-  };
   const content = (
     // bg-[#161616]
     <div className="mt-[.55rem] border border-[1px] border-[#1F1F1F] rounded-[6px] bg-[#161616] max-w-[296px]">
@@ -337,27 +373,23 @@ const HarmfulnessPromptList = () => {
     </div>
   );
 
+
+
   const HeaderContent = () => {
     return (
       <div className="flex justify-between items-center">
-        {isMounted && (
+        {isMounted && router.isReady && (
           <div className="flex justify-start items-center">
             <BackButton onClick={goBack} />
             <CustomBreadcrumb
               data={[
-                `${pageSource}`,
-                `${selectedProject
-                  ? selectedProject?.icon
-                  : clusterDetails?.cluster?.icon
-                } ${selectedProject
-                  ? selectedProject?.name
-                  : clusterDetails?.cluster?.name
-                }`,
+                `${projectId ? 'Projects' : "Clusters"}`,
+                `${selectedProject ? selectedProject?.icon : clusterDetails?.cluster?.icon} ${selectedProject ? selectedProject?.name : clusterDetails?.cluster?.name}`,
                 `${clusterDetails?.name}`,
-                `${pageTitle}`,
+                `${matchedTitle}`,
               ]}
               urls={[
-                `/${pageSource.toLocaleLowerCase()}`,
+                `/${pageSource.toLocaleLowerCase() || projectId ? 'projects' : "Clusters"}}`,
                 `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
                 }`,
                 `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
@@ -381,7 +413,7 @@ const HarmfulnessPromptList = () => {
       <div className="boardPageView">
         <div className="boardPageTop pt-[1.7rem] flex items-center gap-4 justify-between flex-row !mb-[.4rem]">
           <div className="w-full ">
-            <Text_26_600_EEEEEE textClass="leading-[100%]">
+            <Text_26_600_EEEEEE className="leading-[100%]">
               {pageTitle} Prompt list
             </Text_26_600_EEEEEE>
             <Text_12_400_757575 className="mt-[.2rem]">

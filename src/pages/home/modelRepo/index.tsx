@@ -23,7 +23,7 @@ import { useDrawer } from "src/hooks/useDrawer";
 import { useDeployModel } from "src/stores/useDeployModel";
 import { getChromeColor } from "@/components/ui/bud/dataEntry/TagsInputData";
 import { formatDate } from "src/utils/formatDate";
-import { Model, useModels } from "src/hooks/useModels";
+import { cloudProviders, Model, useModels } from "src/hooks/useModels";
 import Tags from "src/flows/components/DrawerTags";
 import {
   PrimaryButton,
@@ -194,7 +194,7 @@ interface Filters {
   tasks?: string[];
   model_size_min?: string;
   model_size_max?: string;
-  modality?: string[];
+  // modality?: string[];
   // Add other filter properties as needed
 }
 
@@ -241,7 +241,7 @@ const SelectedFilters = ({
           onClose={() => removeTag("model_size_max", filters.model_size_max)}
         />
       )}
-      {filters?.modality?.length > 0 &&
+      {/* {filters?.modality?.length > 0 &&
         filters.modality.map((item, index) => (
           <Tags
             name={item}
@@ -250,7 +250,7 @@ const SelectedFilters = ({
             closable
             onClose={() => removeTag("modality", item)}
           />
-        ))}
+        ))} */}
       {/* Uncomment and update if needed
       {filters?.table_source?.length > 0 &&
         filters.table_source.map((item, index) => (
@@ -290,13 +290,7 @@ export default function ModelRepo() {
   }>(defaultFilter);
   const [filterOpen, setFilterOpen] = React.useState(false);
 
-  const [modalityFilters, setModalityFilters] = useState([
-    { modality: "llm", label: "LLM" },
-    { modality: "image", label: "Image" },
-    // { modality: "embedding", label: "Embedding" },
-    // { modality: "text_to_speech", label: "Text-to-Speech" },
-    // { modality: "speech_to_text", label: "Speech-to-Text" },
-  ]);
+  const [modalityFilters, setModalityFilters] = useState(cloudProviders);
   const [filterReset, setFilterReset] = useState(false);
 
   const load = useCallback(
@@ -363,6 +357,10 @@ export default function ModelRepo() {
     setFilterReset(true);
   };
 
+  useEffect(() => {
+    console.log("models", models);
+  }, [models]);
+  
   useEffect(() => {
     if (filterReset) {
       applyFilter();
@@ -678,7 +676,7 @@ export default function ModelRepo() {
                                     value={tempFilter.modality}
                                     maxTagCount={2}
                                     size="large"
-                                    className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.59338rem] outline-none"
+                                    className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.15rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.59338rem] outline-none"
                                     options={modalityFilters.map((modality) => ({
                                       label: modality.label,
                                       value: modality.modality,
