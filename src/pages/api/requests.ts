@@ -1,6 +1,7 @@
 import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import { errorToast } from "./../../components/toast";
+import router from "next/router";
 
 export const axiosInstance = axios.create({
   baseURL: baseUrl,
@@ -169,6 +170,7 @@ const refreshToken = async () => {
     localStorage.setItem("refresh_token", data.token.refresh_token);
     return data.token.access_token;
   } catch (error) {
+    router.push("/login");
     // console.log("data.token", error);
     // errorToast(error?.response?.data?.error?.message || "Unauthorized Access");
     localStorage.clear();
