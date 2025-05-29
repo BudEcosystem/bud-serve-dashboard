@@ -46,7 +46,7 @@ axiosInstance.interceptors.request.use(
 
     // ✅ Optional: Check for network quality
     // Use type assertion to access non-standard properties
-        const connection = (navigator as any).connection || (navigator as any)['mozConnection'] || (navigator as any)['webkitConnection'];
+    const connection = (navigator as any).connection || (navigator as any)['mozConnection'] || (navigator as any)['webkitConnection'];
     if (connection) {
       const { effectiveType, downlink } = connection;
       const slowConnection = ['2g', 'slow-2g'].includes(effectiveType) || downlink < 0.5;
@@ -111,6 +111,10 @@ axiosInstance.interceptors.response.use(
 );
 
 const handleErrorResponse = (err) => {
+  if (err.response && err.response.status === 401) {
+    router.push("/login");
+    return false;
+  }
   if (err.response && err.response.status === 403) {
     localStorage.clear();
     // setTimeout(() => {
