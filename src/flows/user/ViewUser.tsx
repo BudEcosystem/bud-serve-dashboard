@@ -2,50 +2,21 @@
 import { BudWraperBox } from "@/components/ui/bud/card/wraperBox";
 import { BudDrawerLayout } from "@/components/ui/bud/dataEntry/BudDrawerLayout";
 import { BudForm } from "@/components/ui/bud/dataEntry/BudForm";
-import { Text_12_300_EEEEEE, Text_12_400_757575, Text_12_400_B3B3B3, Text_12_400_EEEEEE, Text_12_600_EEEEEE, Text_14_400_EEEEEE } from "@/components/ui/text";
-import React, { use, useCallback, useEffect, useState } from "react";
+import { Text_12_400_757575, Text_12_400_EEEEEE, Text_12_600_EEEEEE, Text_14_400_EEEEEE } from "@/components/ui/text";
+import React, { useEffect, useState } from "react";
 import { useDrawer } from "src/hooks/useDrawer";
-import { CredentialDetailEndpoint, useProprietaryCredentials } from "src/stores/useProprietaryCredentials";
-import { Badge, Checkbox, Dropdown, Image, Space, Table } from "antd";
+import { useProprietaryCredentials } from "src/stores/useProprietaryCredentials";
+import { Checkbox, Image } from "antd";
 
 import BudStepAlert from "src/flows/components/BudStepAlert";
 import { successToast } from "@/components/toast";
 import Tags from "../components/DrawerTags";
 import CustomDropDown from "../components/CustomDropDown";
-import NoDataFount from "@/components/ui/noDataFount";
-import { ColumnsType } from "antd/es/table";
-import type { CheckboxProps, TableColumnsType } from 'antd';
-import { DownOutlined } from "@ant-design/icons";
 import { useUsers } from "src/hooks/useUsers";
 import { useProjects } from "src/hooks/useProjects";
 import { endpointStatusMapping } from "@/lib/colorMapping";
 import { capitalize } from "@/lib/utils";
 import { useLoader } from "src/context/appContext";
-
-function SortIcon({ sortOrder }: { sortOrder: string }) {
-  return sortOrder ? sortOrder === 'descend' ?
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
-      <path fillRule="evenodd" clipRule="evenodd" d="M6.00078 2.10938C6.27692 2.10938 6.50078 2.33324 6.50078 2.60938L6.50078 9.40223L8.84723 7.05578C9.04249 6.86052 9.35907 6.86052 9.55433 7.05578C9.7496 7.25104 9.7496 7.56763 9.55433 7.76289L6.35433 10.9629C6.15907 11.1582 5.84249 11.1582 5.64723 10.9629L2.44723 7.76289C2.25197 7.56763 2.25197 7.25104 2.44723 7.05578C2.64249 6.86052 2.95907 6.86052 3.15433 7.05578L5.50078 9.40223L5.50078 2.60938C5.50078 2.33324 5.72464 2.10938 6.00078 2.10938Z" fill="#B3B3B3" />
-    </svg>
-    : <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
-      <path fillRule="evenodd" clipRule="evenodd" d="M6.00078 10.8906C6.27692 10.8906 6.50078 10.6668 6.50078 10.3906L6.50078 3.59773L8.84723 5.94418C9.04249 6.13944 9.35907 6.13944 9.55433 5.94418C9.7496 5.74892 9.7496 5.43233 9.55433 5.23707L6.35433 2.03707C6.15907 1.84181 5.84249 1.84181 5.64723 2.03707L2.44723 5.23707C2.25197 5.43233 2.25197 5.74892 2.44723 5.94418C2.64249 6.13944 2.95907 6.13944 3.15433 5.94418L5.50078 3.59773L5.50078 10.3906C5.50078 10.6668 5.72464 10.8906 6.00078 10.8906Z" fill="#B3B3B3" />
-    </svg>
-    : null;
-}
-
-interface DataType {
-  key?: React.Key;
-  accessLevel: string;
-  view: string;
-  manage: string;
-}
-
-interface ExpandedDataType {
-  key: React.Key;
-  date: string;
-  name: string;
-  upgradeNum: string;
-}
 
 const defaultFilter = {
   name: "",
@@ -55,15 +26,14 @@ const defaultFilter = {
 }
 
 export default function ViewUser() {
-  const { isLoading, showLoader, hideLoader } = useLoader();
+  const { isLoading} = useLoader();
   const { openDrawerWithStep } = useDrawer();
   const [showConfirm, setShowConfirm] = useState(false);
-  const { credentialDetails, deleteProprietaryCredential, refresh } = useProprietaryCredentials();
+  const { refresh } = useProprietaryCredentials();
   const { closeDrawer } = useDrawer();
-  const [checked, setChecked] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const { users, getUsers, getUsersDetails, userDetails, getUsersPermissions, userPermissions, deleteUser } = useUsers();
-  const { globalProjects, getGlobalProjects, getProject, totalProjects, totalPages } = useProjects();
+  const {  userDetails, userPermissions, deleteUser } = useUsers();
+  const { globalProjects, getGlobalProjects } = useProjects();
   const [projectList, setProjectList] = useState<any>([]);
 
   // for pagination
@@ -83,40 +53,6 @@ export default function ViewUser() {
   useEffect(() => {
     setCurrentUserDetails(userDetails);
   }, [userDetails]);
-
-  const load = useCallback(async (filter) => {
-    showLoader();
-    await getUsers({
-      page: currentPage,
-      limit: pageSize,
-      name: filter.name,
-      email: filter.email,
-      role: filter.role,
-      status: filter.status,
-    });
-    hideLoader();
-  }, [currentPage, pageSize, getUsers]);
-
-  useEffect(() => {
-    console.log("filter", filter);
-    load(filter);
-  }, [currentPage, pageSize, getUsers]);
-
-  const toggleChecked = () => {
-    setChecked(!checked);
-  };
-
-  const toggleDisable = () => {
-    setDisabled(!disabled);
-  };
-
-  // useEffect(() => {
-  //   console.log('userPermissions', userPermissions)
-  // }, [userPermissions]);
-
-  // useEffect(() => {
-  //   console.log('globalProjects', globalProjects)
-  // }, [globalProjects]);
 
   useEffect(() => {
     getGlobalProjects(1, 1000)
@@ -328,7 +264,6 @@ export default function ViewUser() {
               }
               setShowConfirm(false)
               closeDrawer();
-              load(filter);
             }}
             cancelAction={() => {
               setShowConfirm(false)
