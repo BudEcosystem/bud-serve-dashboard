@@ -63,7 +63,12 @@ export default function LicenseDetails() {
             <MessageTop
               actionLabel="View LICENSE file"
               onClick={() => {
-                messageContentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                if (data?.model_licenses?.data_type == 'url') {
+                  window.open(`${assetBaseUrl}${data?.model_licenses?.url}`, '_blank');
+                } else {
+                  messageContentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+                }
               }}
               classNames="w-full bg-[transparent]"
               showAll={true}

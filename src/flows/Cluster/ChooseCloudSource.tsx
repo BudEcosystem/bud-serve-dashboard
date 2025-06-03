@@ -16,13 +16,15 @@ export default function ChooseCloudSource() {
       id: "existing",
       name: "Connect to Existing Cluster",
       description: "Connect to an already deployed Kubernetes cluster",
-      icon: "icons/providers/azure_ai_studio.png",
+      icon: "images/drawer/compare.png",
+      iconLocal: true
     },
     {
       id: "new",
       name: "Create New Cluster",
       description: "Deploy a new Kubernetes cluster on your cloud provider",
-      icon: "icons/providers/azure_ai_studio.png",
+      icon: "images/drawer/textToSpeach.png",
+      iconLocal: true
     },
   ];
 
