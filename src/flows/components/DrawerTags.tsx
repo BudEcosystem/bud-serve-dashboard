@@ -56,6 +56,11 @@ export const MessageContent = forwardRef<HTMLDivElement, MessageContentProps>((p
   const displayData = showAll ? props.data : props.data.slice(0, 2);
   const { openDrawerWithExpandedStep } = useDrawer();
 
+  useEffect(() => {
+    console.log('data', props.data)
+    console.log('data', props.file)
+
+  }, [props.data])
   return (
     <div className={`MessageContent ${props.messageContentclassNames}`}
       style={{
@@ -138,25 +143,28 @@ export const MessageContent = forwardRef<HTMLDivElement, MessageContentProps>((p
             </div>
           </div>
         ))}
-        <div ref={ref}>
-          {showAll && (
-            <>
-              <div className="hR mt-[1.3rem]"></div>
-              <Text_18_600_EEEEEE className="pt-[1.5rem] pb-[1rem]">License</Text_18_600_EEEEEE>
-            </>
-          )}
-          {showAll && (
-            <>
-              {props.file?.url ? (
-                <div className="w-full h-[65vh]">
-                  <FileViewer fileUrl={props.file?.url} />
-                </div>
-              ) : (
-                <Text_12_400_B3B3B3>No file available</Text_12_400_B3B3B3>
-              )}
-            </>
-          )}
-        </div>
+        {props.file?.data_type != "url" && (
+          <div ref={ref}>
+            {showAll && (
+              <>
+                <div className="hR mt-[1.3rem]"></div>
+                <Text_18_600_EEEEEE className="pt-[1.5rem] pb-[1rem]">License</Text_18_600_EEEEEE>
+              </>
+            )}
+            {showAll && (
+              <>
+                {props.file?.url ? (
+                  <div className="w-full h-[65vh]">
+                    <FileViewer fileUrl={props.file?.url} />
+                  </div>
+                ) : (
+                  <Text_12_400_B3B3B3>No file available</Text_12_400_B3B3B3>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
       </div>
       {!showAll && (
         <div className="flex justify-end pr-[1rem] pb-[.5rem]">

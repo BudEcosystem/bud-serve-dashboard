@@ -356,10 +356,6 @@ export default function ModelRepo() {
     }
     setFilterReset(true);
   };
-
-  useEffect(() => {
-    console.log("models", models);
-  }, [models]);
   
   useEffect(() => {
     if (filterReset) {
