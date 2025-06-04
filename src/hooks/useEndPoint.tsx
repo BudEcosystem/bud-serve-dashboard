@@ -269,6 +269,8 @@ export const useEndPoints = create<{
 
   getInferenceQualityPrompts: async (params: any, id: string): Promise<any> => {
 
+    console.log('params', params)
+
     function convertToISOString(dateStr: string): string | null {
       if (!dateStr) return null;
       const [month, day, year] = dateStr.split('/');

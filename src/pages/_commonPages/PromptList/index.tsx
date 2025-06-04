@@ -66,6 +66,8 @@ const HarmfulnessPromptList = () => {
     max_score?: any;
     created_at?: any;
   }>(defaultFilter);
+  const [tempFilter, setTempFilter] = useState<any>({});
+  const [filterReset, setFilterReset] = useState(false);
   const { selectedProject, getProject } = useProjects();
   const { getClusterById } = useCluster();
   const {
@@ -105,6 +107,7 @@ const HarmfulnessPromptList = () => {
   };
   const handleOpenChange = (open) => {
     setFilterOpen(open);
+    setTempFilter(filter);
   };
   type ColumnsType<T extends object> = TableProps<T>["columns"];
 
@@ -162,22 +165,26 @@ const HarmfulnessPromptList = () => {
   const applyFilter = () => {
     setFilterOpen(false);
     if (deploymentId) {
+      setFilter(tempFilter);
       load();
     }
+    setFilterReset(false);
   };
 
   const clearFilter = () => {
-    setFilter({
-      min_score: "",
-      max_score: "",
-      created_at: null
-    }
-    );
+    setTempFilter({ defaultFilter });
     setCurrentPage(1);
+    setFilterReset(true);
     // setFilterOpen(false);
-    // load(defaultFilter);
+    // load();
   };
 
+  useEffect(() => {
+      if (filterReset) {
+        applyFilter();
+      }
+    }, [filterReset]);
+    
   const load = async () => {
     showLoader();
     await getInferenceQualityPrompts(
@@ -188,9 +195,6 @@ const HarmfulnessPromptList = () => {
         name: searchValue ? searchValue : undefined,
         search: !!searchValue,
         order_by: `${order}${orderBy}`,
-        min_score: filter.min_score,
-        max_score: filter.max_score,
-        created_at: filter.created_at,
       },
       deploymentId as string
     );
@@ -200,7 +204,7 @@ const HarmfulnessPromptList = () => {
   useEffect(() => {
     if (!deploymentId) return;
     load();
-  }, [currentPage, pageSize, searchValue]);
+  }, [currentPage, pageSize, searchValue, filter]);
   
 
   useEffect(() => {
@@ -307,10 +311,10 @@ const HarmfulnessPromptList = () => {
           rules={[
             { required: false, message: "Please enter Prompt Score Min" },
           ]}
-          value={filter.min_score}
+          value={tempFilter.min_score}
           onChange={(value) => {
-            setFilter({
-              ...filter,
+            setTempFilter({
+              ...tempFilter,
               min_score: value,
             });
           }}
@@ -325,10 +329,10 @@ const HarmfulnessPromptList = () => {
           rules={[
             { required: false, message: "Please enter Prompt Score Max" },
           ]}
-          value={filter.max_score}
+          value={tempFilter.max_score}
           onChange={(value) => {
-            setFilter({
-              ...filter,
+            setTempFilter({
+              ...tempFilter,
               max_score: value,
             });
           }}
@@ -344,10 +348,10 @@ const HarmfulnessPromptList = () => {
           placeholder="Enter date"
           rules={[{ required: false, message: "Please enter date" }]}
           ClassNames="mt-[.4rem]"
-          value={filter.created_at}
+          value={tempFilter.created_at}
           onChange={(value) => {
-            setFilter({
-              ...filter,
+            setTempFilter({
+              ...tempFilter,
               created_at: value,
             });
           }}
