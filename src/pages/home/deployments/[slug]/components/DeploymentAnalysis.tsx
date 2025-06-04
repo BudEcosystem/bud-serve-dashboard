@@ -430,12 +430,12 @@ function WorkersCard({ switchTab, clusterdata }: { switchTab: (key: string) => v
     {
       color: "#4077E6",
       title: "Running workers",
-      value: clusterdata?.cluster?.cpu_available_workers,
+      value: clusterdata?.running_worker_count || '-',
     },
     {
       color: "#E36E4F",
       title: "Crashed workers",
-      value: clusterdata?.cluster?.cpu_available_workers,
+      value: clusterdata?.crashed_worker_count || '-',
     },
   ]);
 
