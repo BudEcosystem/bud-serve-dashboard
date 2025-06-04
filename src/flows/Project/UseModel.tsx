@@ -35,7 +35,7 @@ export default function UseModel() {
   ];
 
   const codeSnippets = {
-    curl: `bash 
+    curl: `
   curl --location '${copyCodeApiBaseUrl}' \\
     --header 'Authorization: Bearer {API_KEY_HERE}' \\
     --header 'Content-Type: application/json' \\
@@ -43,8 +43,8 @@ export default function UseModel() {
             "max_tokens": "256",
             "messages": [{"role": "user", "content": "Summarize the given text"}]
             }'`,
-    python: 
-    `import requests
+    python:
+      `import requests
 import json
 url = "${copyCodeApiBaseUrl}"
 payload = json.dumps({
@@ -63,7 +63,7 @@ headers = {
 }
 response = requests.request("POST", url, headers=headers, data=payload)
 print(response.text)`,
-    javascript: `\`\`\`javascript
+    javascript: `
   var data = JSON.stringify({
     "model": "${clusterDetails?.name}",
     "max_tokens": "10",
@@ -84,7 +84,7 @@ print(response.text)`,
   xhr.open("POST", "${copyCodeApiBaseUrl}");
   xhr.setRequestHeader('Authorization: Bearer {API_KEY_HERE}');
   xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(data);\`\`\``,
+  xhr.send(data);`,
   };
 
 
@@ -179,7 +179,7 @@ print(response.text)`,
             </div>
             <div className="custom-code rounded-[8px] relative bg-[#FFFFFF08] mt-[1.5rem] w-full overflow-hidden">
               <CustomPopover title={copyText} contentClassNames="py-[.3rem]"
-              Placement="topRight"
+                Placement="topRight"
               >
                 <div className="w-[1.25rem] h-[1.25rem] rounded-[4px] flex justify-center items-center absolute right-[0.35rem] top-[0.65rem] cursor-pointer hover:bg-[#1F1F1F]"
                   onClick={() => handleCopy(selectedText)}
