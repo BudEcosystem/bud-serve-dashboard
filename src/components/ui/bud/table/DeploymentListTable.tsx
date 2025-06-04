@@ -187,14 +187,14 @@ function DeploymentListTable() {
                         ),
                         sortIcon: SortIcon,
                     },
-                    {
-                        title: 'Type',
-                        dataIndex: 'model',
-                        key: 'type',
-                        render: (text) => <Text_12_400_EEEEEE>nill</Text_12_400_EEEEEE>,
-                        // render: (text) => <Text_12_400_EEEEEE>{text?.modality.toUpperCase()}</Text_12_400_EEEEEE>,
-                        sortIcon: SortIcon,
-                    },
+                    // {
+                    //     title: 'Type',
+                    //     dataIndex: 'model',
+                    //     key: 'type',
+                    //     render: (text) => <Text_12_400_EEEEEE>nill</Text_12_400_EEEEEE>,
+                    //     // render: (text) => <Text_12_400_EEEEEE>{text?.modality.toUpperCase()}</Text_12_400_EEEEEE>,
+                    //     sortIcon: SortIcon,
+                    // },
                     {
                         title: 'Created On',
                         dataIndex: 'created_at',
