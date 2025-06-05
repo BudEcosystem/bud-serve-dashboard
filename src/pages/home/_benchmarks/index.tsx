@@ -214,7 +214,6 @@ const PerfomanceBenchmarks = () => {
   );
 
   useEffect(() => {
-    console.log("filter", filter);
     load(filter);
   }, [currentPage, pageSize, getBenchmarks, filter]);
 
