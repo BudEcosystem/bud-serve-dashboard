@@ -98,7 +98,7 @@ export default function AdaptersTable() {
                         onClick={async (event) => {
                             event.stopPropagation();
                             // await getEndpointClusterDetails(record.id)
-                            openDrawer('use-model');
+                            openDrawer('use-model', record);
                         }}
                     >
                         Use this model
