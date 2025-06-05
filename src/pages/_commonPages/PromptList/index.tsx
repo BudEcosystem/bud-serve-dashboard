@@ -129,14 +129,14 @@ const HarmfulnessPromptList = () => {
       setCopiedText("Copy");
     }, 3000);
   }, [copyText]);
- 
+
   useEffect(() => {
     if (!router.isReady) return;
     console.log("router.isReady", router);
     console.log("query", router.query);
   }, [router.isReady]);
 
-  const initialLoad= async () => {
+  const initialLoad = async () => {
     showLoader();
     // if (!selectedProject || selectedProject.id !== projectId && projectId) {
     //   await getProject(projectId as string);
@@ -180,11 +180,11 @@ const HarmfulnessPromptList = () => {
   };
 
   useEffect(() => {
-      if (filterReset) {
-        applyFilter();
-      }
-    }, [filterReset]);
-    
+    if (filterReset) {
+      applyFilter();
+    }
+  }, [filterReset]);
+
   const load = async () => {
     showLoader();
     await getInferenceQualityPrompts(
@@ -205,7 +205,7 @@ const HarmfulnessPromptList = () => {
     if (!deploymentId) return;
     load();
   }, [currentPage, pageSize, searchValue, filter]);
-  
+
 
   useEffect(() => {
     setPromptPage(matched?.key, matchedTitle)
@@ -387,21 +387,19 @@ const HarmfulnessPromptList = () => {
             <BackButton onClick={goBack} />
             <CustomBreadcrumb
               data={[
-                `${projectId ? 'Projects' : "Clusters"}`,
-                `${selectedProject ? selectedProject?.icon : clusterDetails?.cluster?.icon} ${selectedProject ? selectedProject?.name : clusterDetails?.cluster?.name}`,
+                projectId ? "Projects" : "Clusters",
+                `${selectedProject?.icon || clusterDetails?.cluster?.icon} ${selectedProject?.name || clusterDetails?.cluster?.name}`,
                 `${clusterDetails?.name}`,
                 `${matchedTitle}`,
               ]}
               urls={[
-                `/${pageSource.toLocaleLowerCase() || projectId ? 'projects' : "Clusters"}}`,
-                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
-                }`,
-                `/${pageSource.toLocaleLowerCase()}/${projectId ? projectId : clusterDetails?.cluster?.id
-                }/deployments/${deploymentId ? deploymentId : clusterDetails?.id
-                }`,
+                `/${projectId ? 'projects' : 'clusters'}`,
+                `/${projectId?'projects':'clusters'}/${projectId || clusterDetails?.cluster?.id}`,
+                `/${projectId?'projects':'clusters'}/${projectId || clusterDetails?.cluster?.id}/deployments/${deploymentId || clusterDetails?.id}`,
                 ``,
               ]}
             />
+
           </div>
         )}
       </div>
