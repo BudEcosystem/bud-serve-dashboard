@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Text_12_300_EEEEEE, Text_12_400_EEEEEE, Text_16_600_FFFFFF } from "@/components/ui/text";
 import { useDrawer } from "src/hooks/useDrawer";
-import { Tabs, Image, Popover, ConfigProvider, Select, Table } from "antd";
+import { Tabs, Image, Popover, ConfigProvider, Select, Table, Slider } from "antd";
 import { formatDate } from "src/utils/formatDate";
 import { notification } from "antd";
 import useHandleRouteChange from "@/lib/useHandleRouteChange";
@@ -60,6 +60,9 @@ const BenchmarksTable = ({
     setSelectedBenchmark,
     selectedBenchmark,
     getBenchmarkModelClusterDetails,
+    getfilterList,
+    modelFilterList,
+    clusterFilterList
   } = useBenchmarks();
   const { isLoading, showLoader, hideLoader } = useLoader();
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null);
@@ -78,6 +81,23 @@ const BenchmarksTable = ({
   const [orderBy, setOrderBy] = useState<string>("created_at");
 
   const [isMounted, setIsMounted] = useState(false);
+
+
+  useEffect(() => {
+    getfilterList({
+      page: 1,
+      limit: 10000,
+      search: false,
+      resource: 'model'
+    })
+    getfilterList({
+      page: 1,
+      limit: 10000,
+      search: false,
+      resource: 'cluster'
+    })
+  }, []);
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -410,6 +430,7 @@ const BenchmarksTable = ({
                   <Popover
                     open={filterOpen}
                     onOpenChange={handleOpenChange}
+                    placement="left"
                     content={
                       <div className="bg-[#111113] shadow-none  border border-[#1F1F1F] rounded-[6px] width-348">
                         <div className="p-[1.5rem] flex items-start justify-start flex-col">
@@ -417,77 +438,320 @@ const BenchmarksTable = ({
                             Filter
                           </div>
                           <div className="text-12 font-400 text-[#757575]">
-                            Apply the following filters to find model of your
+                            Apply the following filters to find benchmark of your
                             choice.
                           </div>
                         </div>
                         <div className="height-1 bg-[#1F1F1F] mb-[1.5rem] w-full"></div>
                         <div className="w-full flex flex-col gap-size-20 px-[1.5rem] pb-[1.5rem]">
-                          <div
-                            className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
-                          >
-                            <div className="w-full">
-                              <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
-                                Status
-                                <CustomPopover title="This is the author">
-                                  <Image
-                                    src="/images/info.png"
-                                    preview={false}
-                                    alt="info"
+                          <div className="w-full flex flex-col gap-size-20 pt-[.5rem] max-h-[40vh] overflow-y-auto scroll-smooth">
+                            <div
+                              className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
+                            >
+                              <div className="w-full">
+                                <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
+                                  Status
+                                  <CustomPopover title="Select benchmark status">
+                                    <Image
+                                      src="/images/info.png"
+                                      preview={false}
+                                      alt="info"
+                                      style={{
+                                        width: ".75rem",
+                                        height: ".75rem",
+                                      }}
+                                    />
+                                  </CustomPopover>
+                                </Text_12_300_EEEEEE>
+                              </div>
+                              <div className="custom-select-two w-full rounded-[6px] relative">
+                                <ConfigProvider
+                                  theme={{
+                                    token: {
+                                      colorTextPlaceholder: "#808080",
+                                      boxShadowSecondary: "none",
+                                    },
+                                  }}
+                                >
+                                  <Select
+                                    variant="borderless"
+                                    placeholder="Select status"
                                     style={{
-                                      width: ".75rem",
-                                      height: ".75rem",
+                                      backgroundColor: "transparent",
+                                      color: "#EEEEEE",
+                                      border: "0.5px solid #757575",
+                                      width: "100%",
+                                    }}
+                                    value={tempFilter.status || undefined}
+                                    size="large"
+                                    className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.5rem] outline-none"
+                                    options={[
+                                      { label: "Success", value: "success" },
+                                      { label: "Failed", value: "failed" },
+                                      {
+                                        label: "Processing",
+                                        value: "processing",
+                                      },
+                                    ]}
+                                    onChange={(value) => {
+                                      setTempFilter({
+                                        ...tempFilter,
+                                        status: value,
+                                      });
+                                    }}
+                                    tagRender={(props) => {
+                                      const { label } = props;
+                                      return (
+                                        <Tags name={label} color="#D1B854"></Tags>
+                                      );
                                     }}
                                   />
-                                </CustomPopover>
-                              </Text_12_300_EEEEEE>
+                                </ConfigProvider>
+                              </div>
                             </div>
-                            <div className="custom-select-two w-full rounded-[6px] relative">
-                              <ConfigProvider
-                                theme={{
-                                  token: {
-                                    colorTextPlaceholder: "#808080",
-                                    boxShadowSecondary: "none",
-                                  },
-                                }}
-                              >
-                                <Select
-                                  variant="borderless"
-                                  placeholder="Select status"
-                                  style={{
-                                    backgroundColor: "transparent",
-                                    color: "#EEEEEE",
-                                    border: "0.5px solid #757575",
-                                    width: "100%",
-                                  }}
-                                  value={tempFilter.status}
-                                  size="large"
-                                  className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.5rem] outline-none"
-                                  options={[
-                                    { label: "Success", value: "success" },
-                                    { label: "Failed", value: "failed" },
-                                    {
-                                      label: "Processing",
-                                      value: "processing",
+                            <div
+                              className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
+                            >
+                              <div className="w-full">
+                                <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
+                                  Model Name
+                                  <CustomPopover title="Select model name">
+                                    <Image
+                                      src="/images/info.png"
+                                      preview={false}
+                                      alt="info"
+                                      style={{
+                                        width: ".75rem",
+                                        height: ".75rem",
+                                      }}
+                                    />
+                                  </CustomPopover>
+                                </Text_12_300_EEEEEE>
+                              </div>
+                              <div className="custom-select-two w-full rounded-[6px] relative">
+                                <ConfigProvider
+                                  theme={{
+                                    token: {
+                                      colorTextPlaceholder: "#808080",
+                                      boxShadowSecondary: "none",
                                     },
-                                  ]}
-                                  onChange={(value) => {
-                                    setTempFilter({
-                                      ...tempFilter,
-                                      status: value,
-                                    });
                                   }}
-                                  tagRender={(props) => {
-                                    const { label } = props;
-                                    return (
-                                      <Tags name={label} color="#D1B854"></Tags>
-                                    );
+                                >
+                                  <Select
+                                    variant="borderless"
+                                    placeholder="Select model name"
+                                    style={{
+                                      backgroundColor: "transparent",
+                                      color: "#EEEEEE",
+                                      border: "0.5px solid #757575",
+                                      width: "100%",
+                                    }}
+                                    value={tempFilter.model_name || undefined}
+                                    size="large"
+                                    className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.5rem] outline-none"
+                                    options={modelFilterList?.map((item) => ({
+                                      label: item,
+                                      value: item,
+                                    }))}
+                                    onChange={(value) => {
+                                      setTempFilter({
+                                        ...tempFilter,
+                                        model_name: value,
+                                      });
+                                    }}
+                                    tagRender={(props) => {
+                                      const { label } = props;
+                                      return (
+                                        <Tags name={label} color="#D1B854"></Tags>
+                                      );
+                                    }}
+                                  />
+                                </ConfigProvider>
+                              </div>
+                            </div>
+                            <div
+                              className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
+                            >
+                              <div className="w-full">
+                                <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
+                                  Cluster Name
+                                  <CustomPopover title="Select cluster name">
+                                    <Image
+                                      src="/images/info.png"
+                                      preview={false}
+                                      alt="info"
+                                      style={{
+                                        width: ".75rem",
+                                        height: ".75rem",
+                                      }}
+                                    />
+                                  </CustomPopover>
+                                </Text_12_300_EEEEEE>
+                              </div>
+                              <div className="custom-select-two w-full rounded-[6px] relative">
+                                <ConfigProvider
+                                  theme={{
+                                    token: {
+                                      colorTextPlaceholder: "#808080",
+                                      boxShadowSecondary: "none",
+                                    },
                                   }}
-                                />
-                              </ConfigProvider>
+                                >
+                                  <Select
+                                    variant="borderless"
+                                    placeholder="Select cluster name"
+                                    style={{
+                                      backgroundColor: "transparent",
+                                      color: "#EEEEEE",
+                                      border: "0.5px solid #757575",
+                                      width: "100%",
+                                    }}
+                                    value={tempFilter.cluster_name || undefined}
+                                    size="large"
+                                    className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.5rem] outline-none"
+                                    options={clusterFilterList?.map((item) => ({
+                                      label: item,
+                                      value: item,
+                                    }))}
+                                    onChange={(value) => {
+                                      setTempFilter({
+                                        ...tempFilter,
+                                        cluster_name: value,
+                                      });
+                                    }}
+                                    tagRender={(props) => {
+                                      const { label } = props;
+                                      return (
+                                        <Tags name={label} color="#D1B854"></Tags>
+                                      );
+                                    }}
+                                  />
+                                </ConfigProvider>
+                              </div>
+                            </div>
+                            <div
+                              className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
+                            >
+                              <div className="w-full">
+                                <Text_12_300_EEEEEE className="absolute px-1.4 tracking-[.035rem] flex items-center gap-1 text-nowrap">
+                                  TPOT
+                                  <CustomPopover title="The minimum and maximum of tpot.">
+                                    <Image
+                                      preview={false}
+                                      src="/images/info.png"
+                                      alt="info"
+                                      style={{
+                                        width: ".75rem",
+                                        height: ".75rem",
+                                      }}
+                                    />
+                                  </CustomPopover>
+                                </Text_12_300_EEEEEE>
+                                <div className="flex items-center justify-center">
+                                  <div className="text-[#757575] text-[.75rem] h-[4px] mr-1  leading-8">
+                                    1
+                                  </div>
+                                  <Slider
+                                    className="budSlider mt-[3.2rem] w-full"
+                                    min={0}
+                                    max={500}
+                                    step={1}
+                                    range
+                                    defaultValue={[
+                                      tempFilter.min_tpot || undefined,
+                                      tempFilter.max_tpot || undefined,
+                                    ]}
+                                    onChange={(value) => {
+                                      setTempFilter({
+                                        ...tempFilter,
+                                        min_tpot: value[0],
+                                        max_tpot: value[1],
+                                      });
+                                    }}
+                                    tooltip={{
+                                      open: true,
+                                      getPopupContainer: (trigger) =>
+                                        (trigger.parentNode as HTMLElement) ||
+                                        document.body, // Cast parentNode to HTMLElement
+                                    }}
+                                    styles={{
+                                      track: {
+                                        backgroundColor: "#965CDE",
+                                      },
+                                      rail: {
+                                        backgroundColor: "#212225",
+                                        height: 4,
+                                      },
+                                    }}
+                                  />
+                                  <div className="text-[#757575] text-[.75rem] h-[4px] ml-1 leading-8">
+                                    500
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              className={`rounded-[6px] relative !bg-[transparent] !w-[100%] mb-[0]`}
+                            >
+                              <div className="w-full">
+                                <Text_12_300_EEEEEE className="absolute px-1.4 tracking-[.035rem] flex items-center gap-1 text-nowrap">
+                                  TTFT
+                                  <CustomPopover title="The minimum and maximum of ttft.">
+                                    <Image
+                                      preview={false}
+                                      src="/images/info.png"
+                                      alt="info"
+                                      style={{
+                                        width: ".75rem",
+                                        height: ".75rem",
+                                      }}
+                                    />
+                                  </CustomPopover>
+                                </Text_12_300_EEEEEE>
+                                <div className="flex items-center justify-center">
+                                  <div className="text-[#757575] text-[.75rem] h-[4px] mr-1  leading-8">
+                                    1
+                                  </div>
+                                  <Slider
+                                    className="budSlider mt-[3.2rem] w-full"
+                                    min={0}
+                                    max={500}
+                                    step={1}
+                                    range
+                                    defaultValue={[
+                                      tempFilter.min_ttft || undefined,
+                                      tempFilter.max_ttft || undefined,
+                                    ]}
+                                    onChange={(value) => {
+                                      setTempFilter({
+                                        ...tempFilter,
+                                        min_ttft: value[0],
+                                        max_ttft: value[1],
+                                      });
+                                    }}
+                                    tooltip={{
+                                      open: true,
+                                      getPopupContainer: (trigger) =>
+                                        (trigger.parentNode as HTMLElement) ||
+                                        document.body, // Cast parentNode to HTMLElement
+                                    }}
+                                    styles={{
+                                      track: {
+                                        backgroundColor: "#965CDE",
+                                      },
+                                      rail: {
+                                        backgroundColor: "#212225",
+                                        height: 4,
+                                      },
+                                    }}
+                                  />
+                                  <div className="text-[#757575] text-[.75rem] h-[4px] ml-1 leading-8">
+                                    500
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
-
                           <div className="flex items-center justify-between">
                             <SecondaryButton
                               type="button"
