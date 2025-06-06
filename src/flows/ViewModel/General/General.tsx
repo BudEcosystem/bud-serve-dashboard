@@ -149,19 +149,20 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
         <div>
           <div className="">
             <Text_14_400_EEEEEE>Modalities</Text_14_400_EEEEEE>
-            <div className="modality flex items-center justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
-              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
-                <Text_14_400_EEEEEE>INPUT</Text_14_400_EEEEEE>
-                <div className="flex justify-center items-center gap-[.5rem]">
-                  <div>
+            <Text_12_400_757575 className="pt-[.33rem]">Following is the list of things model is really good at doing</Text_12_400_757575>
+            <div className="modality flex items-center justify-start gap-[.5rem] mt-[1rem]">
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem] bg-[#ffffff08] w-[50%] p-[1rem] rounded-[6px]">
+                <Text_14_400_EEEEEE className="leading-[100%]">INPUT</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-x-[.5rem]">
+                  <div className="h-[1.25rem]">
                     <Image
                       preview={false}
                       src={data.modality.text.input ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
                       alt={data.modality.text.label}
-                      style={{ height: "1.25rem" }}
+                      style={{ width: '1.25rem', height: "1.25rem" }}
                     />
                   </div>
-                  <div>
+                  <div className="h-[1.25rem]">
                     <Image
                       preview={false}
                       src={data.modality.image.input ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
@@ -169,7 +170,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                       style={{ height: "1.25rem" }}
                     />
                   </div>
-                  <div>
+                  <div className="h-[1.25rem]">
                     <Image
                       preview={false}
                       src={data.modality.audio.input ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
@@ -178,7 +179,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                     />
                   </div>
                 </div>
-                <Text_12_400_EEEEEE>
+                <Text_12_400_EEEEEE className="leading-[100%]">
                   {[
                     data.modality.text.input && data.modality.text.label,
                     data.modality.image.input && data.modality.image.label,
@@ -188,11 +189,10 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                     .join(', ')}
                 </Text_12_400_EEEEEE>
               </div>
-              <div className="w-[2px] h-[90px] bg-[#1F1F1F]"></div>
-              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
-                <Text_14_400_EEEEEE>OUTPUT</Text_14_400_EEEEEE>
-                <div className="flex justify-center items-center gap-[.5rem]">
-                  <div>
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem] bg-[#ffffff08] w-[50%] p-[1rem] rounded-[6px]">
+                <Text_14_400_EEEEEE className="leading-[100%]">OUTPUT</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-x-[.5rem]">
+                  <div className="h-[1.25rem]">
                     <Image
                       preview={false}
                       src={data.modality.text.output ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
@@ -200,7 +200,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                       style={{ height: "1.25rem" }}
                     />
                   </div>
-                  <div>
+                  <div className="h-[1.25rem]">
                     <Image
                       preview={false}
                       src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
@@ -208,7 +208,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                       style={{ height: "1.25rem" }}
                     />
                   </div>
-                  <div>
+                  <div className="h-[1.25rem]">
                     <Image
                       preview={false}
                       src={data.modality.audio.output ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
@@ -217,7 +217,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                     />
                   </div>
                 </div>
-                <Text_12_400_EEEEEE>
+                <Text_12_400_EEEEEE className="leading-[100%]">
                   {[
                     data.modality.text.output && data.modality.text.label,
                     data.modality.image.output && data.modality.image.label,
@@ -229,22 +229,23 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
               </div>
             </div>
           </div>
-          <div className="hR mt-[1.1rem]"></div>
+          <div className="hR mt-[1.5rem]"></div>
         </div>
         <div>
           <div className="pt-[1.3rem]">
             <Text_14_400_EEEEEE>Supported Endpoints</Text_14_400_EEEEEE>
-            <div className="modality flex flex-wrap items-start justify-start gap-y-[2rem] ml-[1rem] mt-[1rem]">
+            <Text_12_400_757575 className="pt-[.33rem]">Following is the list of things model is really good at doing</Text_12_400_757575>
+            <div className="modality flex flex-wrap items-start justify-between gap-y-[.5rem] gap-x-[.75rem] mt-[1.5rem]">
               {Object.entries(data.supported_endpoints).map(([key, value]) => {
                 const iconName = value.enabled ? `${key}.png` : `${key}-not.png`;
                 return (
-                  <div key={key} className="flex items-center justify-start gap-[.8rem] w-[49%]">
-                    <div>
+                  <div key={key} className="flex items-center justify-start gap-[.8rem] w-[calc(50%-0.4rem)] bg-[#ffffff08] p-[1rem] rounded-[6px]">
+                    <div className="h-[1.25rem]">
                       <Image
                         preview={false}
                         src={`/images/drawer/endpoints/${iconName}`}
                         alt={value.label}
-                        style={{ height: "1.5rem" }}
+                        style={{ height: "1.25rem", width: "1.25rem" }}
                         onError={(e) => {
                           e.currentTarget.src = value.enabled
                             ? "/images/drawer/endpoints/default.png"
@@ -263,7 +264,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
               })}
             </div>
           </div>
-          <div className="hR mt-[1.1rem]"></div>
+          <div className="hR mt-[1.5rem]"></div>
         </div>
         {data?.description ? (
           <>
