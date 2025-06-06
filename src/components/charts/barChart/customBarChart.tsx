@@ -25,26 +25,26 @@ const CustomLegend: React.FC<CustomLegendProps> = ({ onToggleSeries, extraChartD
       <div className="flex flex-col justify-center items-start mt-[1.45rem] gap-[.3rem] mt-[1.5rem]">
 
         <div className='flex items-center justify-center'>
-          <div 
-            onClick={() => onToggleSeries('Input Tokens')} 
-            style={{ cursor: 'pointer' }} 
+          <div
+            onClick={() => onToggleSeries('Input Tokens')}
+            style={{ cursor: 'pointer' }}
             className='flex justify-start items-center gap-[.5rem] w-[8.8rem]'
           >
-            <div 
-              style={{ 
-                width: '.68rem', 
-                height: '.68rem', 
-                backgroundColor: legendSelection['Input Tokens'] ? '#D1B854' : 'white', 
-                borderRadius: '2px' 
-              }} 
+            <div
+              style={{
+                width: '.68rem',
+                height: '.68rem',
+                backgroundColor: legendSelection['Input Tokens'] ? '#D1B854' : 'white',
+                borderRadius: '2px'
+              }}
             />
             <Text_15_400_EEEEEE>Input Tokens</Text_15_400_EEEEEE>
           </div>
 
-          <div 
+          <div
             className="flex justify-between items-center gap-[.5rem]  pt-[.3rem] pb-[.3rem] px-[.6rem] rounded-md"
             style={{
-            
+
             }}
           >
             <Text_18_400_EEEEEE className='min-w-[70px]'>
@@ -64,26 +64,26 @@ const CustomLegend: React.FC<CustomLegendProps> = ({ onToggleSeries, extraChartD
         </div>
 
         <div className='flex items-center justify-center'>
-          <div 
-            onClick={() => onToggleSeries('Output Tokens')} 
-            style={{ cursor: 'pointer' }} 
+          <div
+            onClick={() => onToggleSeries('Output Tokens')}
+            style={{ cursor: 'pointer' }}
             className='flex justify-start items-center gap-[.5rem]  w-[8.8rem]'
           >
-            <div 
-              style={{ 
-                width: '.68rem', 
-                height: '.68rem', 
-                backgroundColor: legendSelection['Output Tokens'] ? '#479D5F' : 'white', 
-                borderRadius: '2px' 
-              }} 
+            <div
+              style={{
+                width: '.68rem',
+                height: '.68rem',
+                backgroundColor: legendSelection['Output Tokens'] ? '#479D5F' : 'white',
+                borderRadius: '2px'
+              }}
             />
             <Text_15_400_EEEEEE>Output Tokens</Text_15_400_EEEEEE>
           </div>
 
-          <div 
+          <div
             className="flex justify-between items-center gap-[.5rem] pt-[.3rem] pb-[.3rem] px-[.6rem] rounded-md"
             style={{
-             
+
             }}
           >
             <Text_18_400_EEEEEE className='min-w-[70px]'>
@@ -125,11 +125,11 @@ const TokenMetricsChart: React.FC<TokenMetricsChartProps> = ({ data, extraChartD
   });
 
   useEffect(() => {
-    if (data) { 
-      setBarChartData(data); 
+    if (data) {
+      setBarChartData(data);
     }
   }, [data]);
-  
+
   useEffect(() => {
     console.log('legendSelection', legendSelection)
     console.log('legendSelection', legendSelection['Input Tokens'])
@@ -221,7 +221,26 @@ const TokenMetricsChart: React.FC<TokenMetricsChartProps> = ({ data, extraChartD
           splitNumber: 6,
           splitLine: { lineStyle: { type: 'solid', color: '#171717' } },
           axisLine: { lineStyle: { color: '#2d2d2d' } },
-          axisLabel: { color: '#6A6E76', fontSize: 12},
+          axisLabel: {
+            color: '#6A6E76',
+            fontSize: 12,
+            formatter: function (value: number) {
+              const abs = Math.abs(value);
+              if (abs >= 1_000_000_000) {
+                const scaled = value / 1_000_000_000;
+                return (scaled >= 100 ? scaled.toFixed(0) : scaled.toFixed(1)) + 'B';
+              }
+              if (abs >= 1_000_000) {
+                const scaled = value / 1_000_000;
+                return (scaled >= 100 ? scaled.toFixed(0) : scaled.toFixed(1)) + 'M';
+              }
+              if (abs >= 1_000) {
+                const scaled = value / 1_000;
+                return (scaled >= 100 ? scaled.toFixed(0) : scaled.toFixed(1)) + 'K';
+              }
+              return value.toString();
+            }
+          },
         },
         series: [
           {
@@ -252,7 +271,7 @@ const TokenMetricsChart: React.FC<TokenMetricsChartProps> = ({ data, extraChartD
               },
             },
           },
-        ],        
+        ],
       };
 
       myChart.setOption(option);
@@ -276,10 +295,10 @@ const TokenMetricsChart: React.FC<TokenMetricsChartProps> = ({ data, extraChartD
       [seriesName]: !legendSelection[seriesName],
     };
     setLegendSelection(newSelection);
-    if(!newSelection['Input Tokens'] && !newSelection['Output Tokens']) {
-      chartInstanceRef.current.setOption({yAxis: { show: false}});
+    if (!newSelection['Input Tokens'] && !newSelection['Output Tokens']) {
+      chartInstanceRef.current.setOption({ yAxis: { show: false } });
     } else {
-      chartInstanceRef.current.setOption({yAxis: { show: true}});
+      chartInstanceRef.current.setOption({ yAxis: { show: true } });
     }
     if (chartInstanceRef.current) {
       const option = chartInstanceRef.current.getOption();
@@ -308,10 +327,10 @@ const TokenMetricsChart: React.FC<TokenMetricsChartProps> = ({ data, extraChartD
 
   return (
     <Box className="relative h-full">
-      <CustomLegend 
-        onToggleSeries={handleToggleSeries} 
-        extraChartDetails={extraChartDetails} 
-        legendSelection={legendSelection} 
+      <CustomLegend
+        onToggleSeries={handleToggleSeries}
+        extraChartDetails={extraChartDetails}
+        legendSelection={legendSelection}
       />
       <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
     </Box>
