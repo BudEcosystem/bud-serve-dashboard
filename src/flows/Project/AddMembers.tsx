@@ -19,7 +19,7 @@ import CustomDropDown from "../components/CustomDropDown";
 
 
 function UserItem({ name, color, permissions, id, project_role }: ProjectMember) {
-  const { removeMembers, selectedProject, getMembers, updatePermissions } = useProjects();
+  const { removeMembers, selectedProject, getMembers, updatePermissions, projectMembers } = useProjects();
 
   const managePermission = permissions?.find((permission) => permission.name === 'endpoint:manage').has_permission;
   const viewPermission = permissions?.find((permission) => permission.name === 'endpoint:view').has_permission;
@@ -98,6 +98,9 @@ function UserItem({ name, color, permissions, id, project_role }: ProjectMember)
     return <Text_12_400_EEEEEE>No Permission</Text_12_400_EEEEEE>;
   };
 
+  useEffect(() => {
+    console.log('projectMembers', projectMembers)
+  }, [projectMembers]);
 
   return (
     <div className="flex justify-between items-center">
@@ -148,7 +151,7 @@ function UserItem({ name, color, permissions, id, project_role }: ProjectMember)
 }
 
 export default function AddMembers() {
-  const { selectedProject, getProjects, inviteMembers, getProject, projectMembers } = useProjects();
+  const { selectedProject, getProjects, inviteMembers, getProject, projectMembers, getMembers } = useProjects();
   const { openDrawerWithStep, closeDrawer } = useDrawer();
   const { submittable, form, values } = useContext(BudFormContext);
   const [users, setUsers] = React.useState<InviteUser[]>([]);
@@ -172,7 +175,11 @@ export default function AddMembers() {
     }
   }, [selectedRole]);
 
-  
+  useEffect(() => {
+    getMembers(selectedProject?.id);
+    console.log('projectMembers', projectMembers)
+  }, []);
+
   return (
     <BudForm
       data={{
