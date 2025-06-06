@@ -264,7 +264,8 @@ export const useProjects = create<
   },
   getMembers: async (projectId: string) => {
     try {
-      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/projects/${projectId}/users?order_by=project_role`);
+      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/projects/${projectId}/users?page=1&limit=10000&search=false`);
+      console.log('response', response)
       set({ projectMembers: response.data.users });
     } catch (error) {
       console.error("Error creating model:", error);
