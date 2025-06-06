@@ -47,7 +47,7 @@ export default function QuantizationSpecificationCard() {
             // edits made to fix ui issue
         }
         if(quantizationWorkflow.method){
-            addSpecification("Method", quantizationWorkflow.method, "/images/drawer/template-1.png")
+            addSpecification("Method", quantizationWorkflow.method, "/images/drawer/template-1.png", true)
         }
         setSpecifcations(specifications)
     }
@@ -57,7 +57,7 @@ export default function QuantizationSpecificationCard() {
     }, [quantizationWorkflow])
 
     useEffect(()=> {
-    //    console.log("specifications", specifications)
+       console.log("specifications", specifications)
     }, [specifications])
 
     return <SelectedModeInfoCard specTitle="Specification" specifications={specifications}  />
