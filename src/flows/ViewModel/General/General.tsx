@@ -152,7 +152,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
             <Text_12_400_757575 className="pt-[.33rem]">Following is the list of things model is really good at doing</Text_12_400_757575>
             <div className="modality flex items-center justify-start gap-[.5rem] mt-[1rem]">
               <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem] bg-[#ffffff08] w-[50%] p-[1rem] rounded-[6px]">
-                <Text_14_400_EEEEEE className="leading-[100%]">INPUT</Text_14_400_EEEEEE>
+                <Text_14_400_EEEEEE className="leading-[100%]">Input</Text_14_400_EEEEEE>
                 <div className="flex justify-center items-center gap-x-[.5rem]">
                   <div className="h-[1.25rem]">
                     <Image
@@ -190,7 +190,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                 </Text_12_400_EEEEEE>
               </div>
               <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem] bg-[#ffffff08] w-[50%] p-[1rem] rounded-[6px]">
-                <Text_14_400_EEEEEE className="leading-[100%]">OUTPUT</Text_14_400_EEEEEE>
+                <Text_14_400_EEEEEE className="leading-[100%]">Output</Text_14_400_EEEEEE>
                 <div className="flex justify-center items-center gap-x-[.5rem]">
                   <div className="h-[1.25rem]">
                     <Image
