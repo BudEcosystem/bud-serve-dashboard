@@ -24,7 +24,7 @@ export function Notification({ item, onClick }: { item?: NotificationPayload; on
             <div className="flex justify-start items-center  max-w-[80%]">
                 <IconRender icon={item?.icon} size={44} imageSize={24}/>
                 <div className="pt-[.3rem] max-w-[94%] ml-[.75rem]">
-                    <Text_12_400_A4A4A9 className={`tracking-[-.01rem] max-w-[150px] transition-all duration-300 truncate`}>
+                    <Text_12_400_A4A4A9 className={`tracking-[-.01rem] max-w-[80%] transition-all duration-300 truncate`}>
                         {item?.title}
                     </Text_12_400_A4A4A9>
                     <div className="flex justify-between items-center ">
