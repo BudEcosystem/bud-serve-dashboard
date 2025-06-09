@@ -38,7 +38,6 @@ export default function AdaptersTable() {
     const [confirmVisible, setConfirmVisible] = useState(false);
 
     useEffect(() => {
-      console.log('deploymentId', deploymentId)
       getAdapters(deploymentId as string, 1, 20);
     }, [deploymentId])
 
