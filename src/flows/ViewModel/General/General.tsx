@@ -3,6 +3,7 @@ import {
   Text_12_400_B3B3B3,
   Text_12_400_EEEEEE,
   Text_12_600_EEEEEE,
+  Text_14_400_757575,
   Text_14_400_EEEEEE,
 } from "@/components/ui/text";
 import React, { useContext, useEffect, useRef } from "react";
@@ -254,10 +255,24 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                       />
                     </div>
                     <div>
-                      <Text_14_400_EEEEEE>{value.label}</Text_14_400_EEEEEE>
-                      <Text_12_400_B3B3B3 className="leading-[180%]">
-                        {value.path}
-                      </Text_12_400_B3B3B3>
+                      {value.enabled ? (
+                        <>
+                          <Text_14_400_EEEEEE>{value.label}</Text_14_400_EEEEEE>
+                          <Text_12_400_B3B3B3 className="leading-[180%]">
+                            {value.path}
+                          </Text_12_400_B3B3B3>
+                        </>
+                      ) : (
+                        <>
+                          <Text_14_400_757575>{value.label}</Text_14_400_757575>
+                           <Text_12_400_757575 className="leading-[180%]">
+                            {value.path}
+                          </Text_12_400_757575>
+                        </>
+                      )}
+
+
+
                     </div>
                   </div>
                 );
