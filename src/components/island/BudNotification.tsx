@@ -21,7 +21,7 @@ export function Notification({ item, onClick }: { item?: NotificationPayload; on
         <div
             onClick={() => onClick()}
             className={`fileInput flex justify-between items-start px-[1.3rem] py-[1.25rem] bg-[#161616] border border-[#1F1F1F] rounded-[1rem] box-border width-300 transition-all duration-300 cursor-pointer height-88 `}>
-            <div className="flex justify-start items-center  max-w-[80%]">
+            <div className="flex justify-start items-center  max-w-[65%]">
                 <IconRender icon={item?.icon} size={44} imageSize={24}/>
                 <div className="pt-[.3rem] max-w-[94%] ml-[.75rem]">
                     <Text_12_400_A4A4A9 className={`tracking-[-.01rem] max-w-[80%] transition-all duration-300 truncate`}>
@@ -45,7 +45,7 @@ export function Notification({ item, onClick }: { item?: NotificationPayload; on
                 </div>
             </div>
             <div className="flex flex-col items-end justify-between h-[2.75rem]">
-                <Text_10_400_757575 className="nowrap">
+                <Text_10_400_757575 className="whitespace-nowrap">
                     {/* {formatDistanceToNow(new Date(item?.createdAt), { addSuffix: true })} */}
                     {/* {format(new Date(item?.createdAt), 'hh:mm')} */}
                     {item?.time}
