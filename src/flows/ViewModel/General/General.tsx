@@ -147,8 +147,59 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
     <div className="pt-[.25rem]">
       {/* <ModelTags model={data} hideEndPoints hideTags showExternalLink /> */}
       <div className="">
+        {data?.description ? (
+          <>
+            <div className="pt-[1.3rem]">
+              <div
+                ref={descriptionRef}
+                className={`leading-[1.05rem] tracking-[.01em max-w-[100%] ${isExpanded ? "" : "line-clamp-2"
+                  } overflow-hidden`}
+                style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
+              >
+                <Text_12_400_B3B3B3 className="leading-[180%]">
+                  {data?.description}
+                </Text_12_400_B3B3B3>
+              </div>
+              {isOverflowing && (
+                <div className="flex justify-end">
+                  <Text_12_600_EEEEEE
+                    className="cursor-pointer leading-[1.05rem] tracking-[.01em] mt-[.3rem]"
+                    onClick={toggleDescription}
+                  >
+                    {isExpanded ? "See less" : "See more"}
+                  </Text_12_600_EEEEEE>
+                </div>
+              )}
+            </div>
+            <div className="hR mt-[1.1rem]"></div>
+          </>
+        ) : (
+          hasPermission(PermissionEnum.ModelManage) && (
+            <>
+              <div className="flex justify-between items-center pt-[1.3rem]">
+                <div>
+                  <Text_14_400_EEEEEE>Description</Text_14_400_EEEEEE>
+                  <Text_12_400_757575 className="pt-[.45rem]">
+                    Description not available
+                  </Text_12_400_757575>
+                </div>
+                <PrimaryButton
+                  disabled={isExpandedViewOpen}
+                  classNames="mt-[1rem]"
+                  onClick={() => {
+                    if (isExpandedViewOpen) return;
+                    openDrawerWithStep("edit-model");
+                  }}
+                >
+                  Add Description
+                </PrimaryButton>
+              </div>
+              <div className="hR mt-[1.5rem]"></div>
+            </>
+          )
+        )}
         <div>
-          <div className="">
+          <div className="pt-[1.3rem]">
             <Text_14_400_EEEEEE>Modalities</Text_14_400_EEEEEE>
             <Text_12_400_757575 className="pt-[.33rem]">Following is the list of things model is really good at doing</Text_12_400_757575>
             <div className="modality flex items-center justify-start gap-[.5rem] mt-[1rem]">
@@ -281,58 +332,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
           </div>
           <div className="hR mt-[1.5rem]"></div>
         </div>
-        {data?.description ? (
-          <>
-            <div className="pt-[1.3rem]">
-              <div
-                ref={descriptionRef}
-                className={`leading-[1.05rem] tracking-[.01em max-w-[100%] ${isExpanded ? "" : "line-clamp-2"
-                  } overflow-hidden`}
-                style={{ display: "-webkit-box", WebkitBoxOrient: "vertical" }}
-              >
-                <Text_12_400_B3B3B3 className="leading-[180%]">
-                  {data?.description}
-                </Text_12_400_B3B3B3>
-              </div>
-              {isOverflowing && (
-                <div className="flex justify-end">
-                  <Text_12_600_EEEEEE
-                    className="cursor-pointer leading-[1.05rem] tracking-[.01em] mt-[.3rem]"
-                    onClick={toggleDescription}
-                  >
-                    {isExpanded ? "See less" : "See more"}
-                  </Text_12_600_EEEEEE>
-                </div>
-              )}
-            </div>
-            <div className="hR mt-[1.1rem]"></div>
-          </>
-        ) : (
-          hasPermission(PermissionEnum.ModelManage) && (
-            <>
-              <div className="flex justify-between items-center pt-[1.3rem]">
-                <div>
-                  <Text_14_400_EEEEEE>Description</Text_14_400_EEEEEE>
-                  <Text_12_400_757575 className="pt-[.45rem]">
-                    Description not available
-                  </Text_12_400_757575>
-                </div>
-                <PrimaryButton
-                  disabled={isExpandedViewOpen}
-                  classNames="mt-[1rem]"
-                  onClick={() => {
-                    if (isExpandedViewOpen) return;
-                    openDrawerWithStep("edit-model");
-                  }}
-                >
-                  Add Description
-                </PrimaryButton>
-              </div>
-              <div className="hR mt-[1.5rem]"></div>
-            </>
-          )
-        )}
-
+        
         {data?.strengths?.length > 0 && (
           <>
             <div className="pt-[1.5rem] mb-[1.4rem]">
