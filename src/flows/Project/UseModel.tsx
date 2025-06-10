@@ -27,21 +27,24 @@ export default function UseModel() {
 
   const tags = [
     {
-      name: drawerProps?.model?.name || clusterDetails?.model?.name,
+      name: drawerProps?.name || clusterDetails?.model?.name,
       color: '#D1B854'
     },
     {
-      name: drawerProps?.model?.name || clusterDetails?.cluster?.name,
+      name: drawerProps?.name || clusterDetails?.cluster?.name,
       color: '#D1B854'
     },
   ];
+  useEffect(() => {
+     console.log('drawerProps', drawerProps)
+    }, [drawerProps]);
 
   const codeSnippets = {
     curl: `
   curl --location '${copyCodeApiBaseUrl}' \\
     --header 'Authorization: Bearer {API_KEY_HERE}' \\
     --header 'Content-Type: application/json' \\
-    --data '{ "model": "${drawerProps?.model?.name || clusterDetails?.name}",
+    --data '{ "model": "${drawerProps?.name || clusterDetails?.name}",
             "max_tokens": "256",
             "messages": [{"role": "user", "content": "Summarize the given text"}]
             }'`,
@@ -50,7 +53,7 @@ export default function UseModel() {
 import json
 url = "${copyCodeApiBaseUrl}"
 payload = json.dumps({
- "model": "${drawerProps?.model?.name || clusterDetails?.name}",
+ "model": "${drawerProps?.name || clusterDetails?.name}",
  "max_tokens": "10",
  "messages": [
  {
@@ -67,7 +70,7 @@ response = requests.request("POST", url, headers=headers, data=payload)
 print(response.text)`,
     javascript: `
   var data = JSON.stringify({
-    "model": "${drawerProps?.model?.name || clusterDetails?.name}",
+    "model": "${drawerProps?.name || clusterDetails?.name}",
     "max_tokens": "10",
     "messages": [
       {
@@ -128,7 +131,7 @@ print(response.text)`,
             <div className="py-[.25rem]">
               <div className="flex justify-start items-center">
                 <div className="text-[#EEEEEE] text-[1.125rem] leadign-[100%]">
-                  {drawerProps?.model?.name || clusterDetails?.name}
+                  {drawerProps?.name || clusterDetails?.name}
                 </div>
               </div>
               <div className="flex items-center justify-start gap-[.5rem] mt-[.3rem] flex-wrap	">

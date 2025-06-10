@@ -3,6 +3,7 @@ import {
   Text_12_400_B3B3B3,
   Text_12_400_EEEEEE,
   Text_12_600_EEEEEE,
+  Text_14_400_757575,
   Text_14_400_EEEEEE,
 } from "@/components/ui/text";
 import React, { useContext, useEffect, useRef } from "react";
@@ -146,125 +147,6 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
     <div className="pt-[.25rem]">
       {/* <ModelTags model={data} hideEndPoints hideTags showExternalLink /> */}
       <div className="">
-        <div>
-          <div className="">
-            <Text_14_400_EEEEEE>Modalities</Text_14_400_EEEEEE>
-            <div className="modality flex items-center justify-start gap-[4rem] ml-[1rem] mt-[1rem]">
-              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
-                <Text_14_400_EEEEEE>INPUT</Text_14_400_EEEEEE>
-                <div className="flex justify-center items-center gap-[.5rem]">
-                  <div>
-                    <Image
-                      preview={false}
-                      src={data.modality.text.input ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
-                      alt={data.modality.text.label}
-                      style={{ height: "1.25rem" }}
-                    />
-                  </div>
-                  <div>
-                    <Image
-                      preview={false}
-                      src={data.modality.image.input ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
-                      alt={data.modality.image.label}
-                      style={{ height: "1.25rem" }}
-                    />
-                  </div>
-                  <div>
-                    <Image
-                      preview={false}
-                      src={data.modality.audio.input ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
-                      alt={data.modality.audio.label}
-                      style={{ height: "1.25rem" }}
-                    />
-                  </div>
-                </div>
-                <Text_12_400_EEEEEE>
-                  {[
-                    data.modality.text.input && data.modality.text.label,
-                    data.modality.image.input && data.modality.image.label,
-                    data.modality.audio.input && data.modality.audio.label
-                  ]
-                    .filter(Boolean)
-                    .join(', ')}
-                </Text_12_400_EEEEEE>
-              </div>
-              <div className="w-[2px] h-[90px] bg-[#1F1F1F]"></div>
-              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem]">
-                <Text_14_400_EEEEEE>OUTPUT</Text_14_400_EEEEEE>
-                <div className="flex justify-center items-center gap-[.5rem]">
-                  <div>
-                    <Image
-                      preview={false}
-                      src={data.modality.text.output ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
-                      alt={data.modality.text.label}
-                      style={{ height: "1.25rem" }}
-                    />
-                  </div>
-                  <div>
-                    <Image
-                      preview={false}
-                      src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
-                      alt={data.modality.image.label}
-                      style={{ height: "1.25rem" }}
-                    />
-                  </div>
-                  <div>
-                    <Image
-                      preview={false}
-                      src={data.modality.audio.output ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
-                      alt={data.modality.audio.label}
-                      style={{ height: "1.25rem" }}
-                    />
-                  </div>
-                </div>
-                <Text_12_400_EEEEEE>
-                  {[
-                    data.modality.text.output && data.modality.text.label,
-                    data.modality.image.output && data.modality.image.label,
-                    data.modality.audio.output && data.modality.audio.label
-                  ]
-                    .filter(Boolean)
-                    .join(', ')}
-                </Text_12_400_EEEEEE>
-              </div>
-            </div>
-          </div>
-          <div className="hR mt-[1.1rem]"></div>
-        </div>
-        <div>
-          <div className="pt-[1.3rem]">
-            <Text_14_400_EEEEEE>Supported Endpoints</Text_14_400_EEEEEE>
-            <div className="modality flex flex-wrap items-start justify-start gap-y-[2rem] ml-[1rem] mt-[1rem]">
-              {Object.entries(data.supported_endpoints).map(([key, value]) => {
-                const iconName = value.enabled ? `${key}.png` : `${key}-not.png`;
-                return (
-                  <div key={key} className="flex items-center justify-start gap-[.8rem] w-[49%]">
-                    <div>
-                      <Image
-                        preview={false}
-                        src={`/images/drawer/endpoints/${iconName}`}
-                        alt={value.label}
-                        style={{ height: "1.5rem" }}
-                        onError={(e) => {
-                          e.currentTarget.src = value.enabled
-                            ? "/images/drawer/endpoints/default.png"
-                            : "/images/drawer/endpoints/default-not.png";
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Text_14_400_EEEEEE>{value.label}</Text_14_400_EEEEEE>
-                      <Text_12_400_B3B3B3 className="leading-[180%]">
-                        {value.path}
-                      </Text_12_400_B3B3B3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div className="hR mt-[1.1rem]"></div>
-        </div>
         {data?.description ? (
           <>
             <div className="pt-[1.3rem]">
@@ -316,7 +198,141 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
             </>
           )
         )}
+        <div>
+          <div className="pt-[1.3rem]">
+            <Text_14_400_EEEEEE>Modalities</Text_14_400_EEEEEE>
+            <Text_12_400_757575 className="pt-[.33rem]">Following is the list of things model is really good at doing</Text_12_400_757575>
+            <div className="modality flex items-center justify-start gap-[.5rem] mt-[1rem]">
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem] bg-[#ffffff08] w-[50%] p-[1rem] rounded-[6px]">
+                <Text_14_400_EEEEEE className="leading-[100%]">Input</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-x-[.5rem]">
+                  <div className="h-[1.25rem]">
+                    <Image
+                      preview={false}
+                      src={data.modality.text.input ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      alt={data.modality.text.label}
+                      style={{ width: '1.25rem', height: "1.25rem" }}
+                    />
+                  </div>
+                  <div className="h-[1.25rem]">
+                    <Image
+                      preview={false}
+                      src={data.modality.image.input ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      alt={data.modality.image.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div className="h-[1.25rem]">
+                    <Image
+                      preview={false}
+                      src={data.modality.audio.input ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      alt={data.modality.audio.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                </div>
+                <Text_12_400_EEEEEE className="leading-[100%]">
+                  {[
+                    data.modality.text.input && data.modality.text.label,
+                    data.modality.image.input && data.modality.image.label,
+                    data.modality.audio.input && data.modality.audio.label
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Text_12_400_EEEEEE>
+              </div>
+              <div className="flex flex-col items-center gap-[.5rem] gap-y-[1rem] bg-[#ffffff08] w-[50%] p-[1rem] rounded-[6px]">
+                <Text_14_400_EEEEEE className="leading-[100%]">Output</Text_14_400_EEEEEE>
+                <div className="flex justify-center items-center gap-x-[.5rem]">
+                  <div className="h-[1.25rem]">
+                    <Image
+                      preview={false}
+                      src={data.modality.text.output ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      alt={data.modality.text.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div className="h-[1.25rem]">
+                    <Image
+                      preview={false}
+                      src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      alt={data.modality.image.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                  <div className="h-[1.25rem]">
+                    <Image
+                      preview={false}
+                      src={data.modality.audio.output ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      alt={data.modality.audio.label}
+                      style={{ height: "1.25rem" }}
+                    />
+                  </div>
+                </div>
+                <Text_12_400_EEEEEE className="leading-[100%]">
+                  {[
+                    data.modality.text.output && data.modality.text.label,
+                    data.modality.image.output && data.modality.image.label,
+                    data.modality.audio.output && data.modality.audio.label
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Text_12_400_EEEEEE>
+              </div>
+            </div>
+          </div>
+          <div className="hR mt-[1.5rem]"></div>
+        </div>
+        <div>
+          <div className="pt-[1.3rem]">
+            <Text_14_400_EEEEEE>Supported Endpoints</Text_14_400_EEEEEE>
+            <Text_12_400_757575 className="pt-[.33rem]">Following is the list of things model is really good at doing</Text_12_400_757575>
+            <div className="modality flex flex-wrap items-start justify-between gap-y-[.5rem] gap-x-[.75rem] mt-[1.5rem]">
+              {Object.entries(data.supported_endpoints).map(([key, value]) => {
+                const iconName = value.enabled ? `${key}.png` : `${key}-not.png`;
+                return (
+                  <div key={key} className="flex items-center justify-start gap-[.8rem] w-[calc(50%-0.4rem)] bg-[#ffffff08] p-[1rem] rounded-[6px]">
+                    <div className="h-[1.25rem]">
+                      <Image
+                        preview={false}
+                        src={`/images/drawer/endpoints/${iconName}`}
+                        alt={value.label}
+                        style={{ height: "1.25rem", width: "1.25rem" }}
+                        onError={(e) => {
+                          e.currentTarget.src = value.enabled
+                            ? "/images/drawer/endpoints/default.png"
+                            : "/images/drawer/endpoints/default-not.png";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      {value.enabled ? (
+                        <>
+                          <Text_14_400_EEEEEE>{value.label}</Text_14_400_EEEEEE>
+                          <Text_12_400_B3B3B3 className="leading-[180%]">
+                            {value.path}
+                          </Text_12_400_B3B3B3>
+                        </>
+                      ) : (
+                        <>
+                          <Text_14_400_757575>{value.label}</Text_14_400_757575>
+                           <Text_12_400_757575 className="leading-[180%]">
+                            {value.path}
+                          </Text_12_400_757575>
+                        </>
+                      )}
 
+
+
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="hR mt-[1.5rem]"></div>
+        </div>
+        
         {data?.strengths?.length > 0 && (
           <>
             <div className="pt-[1.5rem] mb-[1.4rem]">

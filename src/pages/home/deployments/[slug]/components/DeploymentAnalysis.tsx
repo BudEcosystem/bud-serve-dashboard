@@ -583,11 +583,10 @@ function TokenUsageCard(deployment) {
         <div className="flex items-center justify-between w-full mt-[.95rem]">
           {/* <Tags name={ */}
           <Flex
-            className={`${
-              Number(extraChartDetails.apiCalls.avg) >= 0
+            className={`${Number(extraChartDetails.apiCalls.avg) >= 0
                 ? "text-[#479D5F] bg-[#122F1140]"
                 : "bg-[#861A1A33] text-[#EC7575]"
-            } rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem]`}
+              } rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem]`}
           >
             <span className="font-[400] text-[0.8125rem] leading-[100%]">
               Avg.{" "}
@@ -779,11 +778,10 @@ function APICallsCard(endpoint) {
               <div className="flex items-center justify-between w-full mt-[.95rem]">
                 {/* <Tags name={ */}
                 <Flex
-                  className={`${
-                    Number(extraChartDetails.apiCalls.avg) >= 0
+                  className={`${Number(extraChartDetails.apiCalls.avg) >= 0
                       ? "text-[#479D5F] bg-[#122F1140]"
                       : "bg-[#861A1A33] text-[#EC7575]"
-                  } rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem]`}
+                    } rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem]`}
                 >
                   <span className="font-[400] text-[0.8125rem] leading-[100%]">
                     Avg. {Number(extraChartDetails.apiCalls.avg).toFixed(2)}%{" "}
@@ -848,9 +846,9 @@ export default function DeploymentAnalysis({
     clusterDetails
   } = useEndPoints();
   useEffect(() => {
-   console.log('projectId', projectId)
-   console.log('projectId', projectId)
-   console.log('clustersId', clustersId)
+    console.log('projectId', projectId)
+    console.log('projectId', projectId)
+    console.log('clustersId', clustersId)
   }, [router.isReady]);
   const navigateToHarmfulness = (key, title) => {
     if (deploymentId) {
@@ -860,7 +858,7 @@ export default function DeploymentAnalysis({
       );
     }
   };
-  useEffect(()=> {
+  useEffect(() => {
     console.log('getInferenceQualityAnalytics', inferenceQualityAnalytics)
   }, [inferenceQualityAnalytics])
   const [data, setData] = React.useState([
@@ -950,21 +948,22 @@ export default function DeploymentAnalysis({
       </div>
       <div className="flex gap-[.75rem] mt-[.5rem] justify-between items-stretch	">
         {/* {inferenceQualityAnalytics?.harmfulness_score != undefined && ( */}
-          <>
-            {data.map((item, index) => (
-              <CircleProgress
-                key={index}
-                {...item}
-                ToHarmfulness={() =>{
-                  console.log("ToHarmfulness", item)
-                  navigateToHarmfulness(item.key, item.title)
-                }}
-              />
-            ))}
-          </>
+        <>
+          {data.map((item, index) => (
+            <CircleProgress
+              key={index}
+              {...item}
+              ToHarmfulness={() => {
+                console.log("ToHarmfulness", item)
+                navigateToHarmfulness(item.key, item.title)
+              }}
+            />
+          ))}
+        </>
         {/* )} */}
-
-        <WorkersCard switchTab={switchTab} clusterdata={clusterDetails}/>
+        {clusterDetails && (
+          <WorkersCard switchTab={switchTab} clusterdata={clusterDetails} />
+        )}
       </div>
       <div className="flex  gap-[.8rem]">
         {deploymentId && <TokenUsageCard deploymentId={deploymentId} />}

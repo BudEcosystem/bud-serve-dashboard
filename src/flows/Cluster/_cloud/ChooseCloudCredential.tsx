@@ -8,6 +8,7 @@ import { useCluster } from "src/hooks/useCluster";
 import { useDrawer } from "src/hooks/useDrawer";
 import ProviderCardWithCheckBox from "src/flows/components/ProviderCardWithCheckBox";
 import { useCloudCredentials } from "src/stores/useCloudCredentials";
+import NoDataFount from "@/components/ui/noDataFount";
 
 export default function ChooseCloudCredentialStep() {
   const { cloudID } = useCluster();
@@ -70,7 +71,7 @@ export default function ChooseCloudCredentialStep() {
                   key={index}
                   data={{
                     id: credential.id,
-                    name: credential.credential_name , //selectedProvider.name,
+                    name: credential.credential_name, //selectedProvider.name,
                     description: selectedProvider.description,
                     icon: selectedProvider.logo_url,
                     created_at: credential.created_at,
@@ -82,10 +83,15 @@ export default function ChooseCloudCredentialStep() {
                 />
               ))
             ) : (
-              <div className="p-4 text-center">
-                No credentials found for {selectedProvider.name}. Please add
-                credentials first.
-              </div>
+              <NoDataFount
+                classNames="min-h-[70px] text-center p-[2rem]"
+                textMessage="Let’s start adding models to Bud Inference engine.
+                        Currently there are no models in the model repository."
+              />
+              // <div className="p-4 text-center">
+              //   No credentials found for {selectedProvider.name}. Please add
+              //   credentials first.
+              // </div>
             )}
           </div>
         </BudDrawerLayout>
