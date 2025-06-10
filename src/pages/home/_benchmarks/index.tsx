@@ -312,7 +312,7 @@ const PerfomanceBenchmarks = () => {
                             Filter
                           </div>
                           <div className="text-12 font-400 text-[#757575]">
-                            Apply the following filters to find model of your
+                            Apply the following filters to find benchmark of your
                             choice.
                           </div>
                         </div>
