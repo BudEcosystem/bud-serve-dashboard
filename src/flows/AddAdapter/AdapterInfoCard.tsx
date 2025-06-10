@@ -9,7 +9,7 @@ export const AdapterInfoCard = () => {
     const informationSpecs = [
         {
             name: "Deployment Name",
-            value: clusterDetails.name,
+            value: clusterDetails?.name,
             icon: "/images/drawer/tag.png",
             full: true,
         },
