@@ -99,6 +99,8 @@ axiosInstance.interceptors.response.use(
           return Promise.reject(error);
         });
     } else if (status === 401 && isRefreshing) {
+      localStorage.clear();
+      router.push("/login");
       return new Promise((resolve) => {
         subscribeTokenRefresh((newToken) => {
           err.config.headers.Authorization = `Bearer ${newToken}`;
