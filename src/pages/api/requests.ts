@@ -99,8 +99,6 @@ axiosInstance.interceptors.response.use(
           return Promise.reject(error);
         });
     } else if (status === 401 && isRefreshing) {
-      localStorage.clear();
-      router.push("/login");
       return new Promise((resolve) => {
         subscribeTokenRefresh((newToken) => {
           err.config.headers.Authorization = `Bearer ${newToken}`;
@@ -166,12 +164,13 @@ const refreshToken = async () => {
       refresh_token: localStorage.getItem("refresh_token"),
     });
     const data = response.data;
+    console.log( "refresh data", data)
     if (!data?.token) {
       localStorage.clear();
       return Promise.reject(data);
     }
 
-    // console.log("data.token", data.token)
+    console.log("data.token", data.token)
 
     localStorage.setItem("access_token", data.token.access_token);
     localStorage.setItem("refresh_token", data.token.refresh_token);
