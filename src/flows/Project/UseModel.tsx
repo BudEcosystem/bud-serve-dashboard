@@ -18,18 +18,20 @@ import CustomPopover from "../components/customPopover";
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { useDrawer } from "src/hooks/useDrawer";
 
 
 export default function UseModel() {
+  const {drawerProps} = useDrawer()
   const { clusterDetails } = useEndPoints();
 
   const tags = [
     {
-      name: clusterDetails?.model?.name,
+      name: drawerProps?.model?.name || clusterDetails?.model?.name,
       color: '#D1B854'
     },
     {
-      name: clusterDetails?.cluster?.name,
+      name: drawerProps?.model?.name || clusterDetails?.cluster?.name,
       color: '#D1B854'
     },
   ];
@@ -39,7 +41,7 @@ export default function UseModel() {
   curl --location '${copyCodeApiBaseUrl}' \\
     --header 'Authorization: Bearer {API_KEY_HERE}' \\
     --header 'Content-Type: application/json' \\
-    --data '{ "model": "${clusterDetails?.name}",
+    --data '{ "model": "${drawerProps?.model?.name || clusterDetails?.name}",
             "max_tokens": "256",
             "messages": [{"role": "user", "content": "Summarize the given text"}]
             }'`,
@@ -48,7 +50,7 @@ export default function UseModel() {
 import json
 url = "${copyCodeApiBaseUrl}"
 payload = json.dumps({
- "model": "${clusterDetails?.name}",
+ "model": "${drawerProps?.model?.name || clusterDetails?.name}",
  "max_tokens": "10",
  "messages": [
  {
@@ -65,7 +67,7 @@ response = requests.request("POST", url, headers=headers, data=payload)
 print(response.text)`,
     javascript: `
   var data = JSON.stringify({
-    "model": "${clusterDetails?.name}",
+    "model": "${drawerProps?.model?.name || clusterDetails?.name}",
     "max_tokens": "10",
     "messages": [
       {
@@ -118,6 +120,7 @@ print(response.text)`,
   return (
     <BudForm
       data={{}}
+      
     >
       <BudWraperBox>
         <BudDrawerLayout>
@@ -125,7 +128,7 @@ print(response.text)`,
             <div className="py-[.25rem]">
               <div className="flex justify-start items-center">
                 <div className="text-[#EEEEEE] text-[1.125rem] leadign-[100%]">
-                  {clusterDetails?.name}
+                  {drawerProps?.model?.name || clusterDetails?.name}
                 </div>
               </div>
               <div className="flex items-center justify-start gap-[.5rem] mt-[.3rem] flex-wrap	">
