@@ -115,12 +115,12 @@ function AddModelForm() {
       />
     </Form.Item>
     {selectedModel?.modality ? null : (
-    <Form.Item hasFeedback
-      rules={[{ required: true, message: "Please select modality!" }]}
-      name={"modality"}
-      className={`flex items-center rounded-[6px] relative !bg-[transparent] w-[100%] mb-[0]`}
-    >
-      {/* <div className="w-full">
+      <Form.Item hasFeedback
+        rules={[{ required: true, message: "Please select modality!" }]}
+        name={"modality"}
+        className={`flex items-center rounded-[6px] relative !bg-[transparent] w-[100%] mb-[0]`}
+      >
+        {/* <div className="w-full">
         <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1">
           Modality
           <span className="text-[red] text-[1rem]">*</span>
@@ -166,65 +166,65 @@ function AddModelForm() {
           />
         </ConfigProvider>
       </div> */}
-      <div className="w-full">
-        <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1">
-          Modality
-          <CustomPopover title="This is the modality">
-            <Image
-              src="/images/info.png"
-              preview={false}
-              alt="info"
+        <div className="w-full">
+          <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1">
+            Modality
+            <CustomPopover title="This is the modality">
+              <Image
+                src="/images/info.png"
+                preview={false}
+                alt="info"
+                style={{
+                  width: ".75rem",
+                  height: ".75rem",
+                }}
+              />
+            </CustomPopover>
+          </Text_12_300_EEEEEE>
+        </div>
+        <div className="custom-select-two w-full rounded-[6px] relative">
+          <ConfigProvider
+            theme={{
+              token: {
+                colorTextPlaceholder: "#808080",
+              },
+            }}
+          >
+            <Select
+              placeholder="Select Modality"
               style={{
-                width: ".75rem",
-                height: ".75rem",
+                backgroundColor: "transparent",
+                color: "#EEEEEE",
+                border: "0.5px solid #757575",
+                width: "100%",
+              }}
+              // value={tempFilter.modality}
+              maxTagCount={4}
+              size="large"
+              className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.15rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.59338rem] outline-none"
+              options={modalityFilters.map((modality) => ({
+                label: modality.label,
+                value: modality.modality,
+              }))}
+              tagRender={(props) => {
+                const { label } = props;
+                return (
+                  <Tags name={label} color="#D1B854"></Tags>
+                );
+              }}
+              mode="multiple"
+              onChange={(value) => {
+                form.setFieldsValue({ modality: value });
+                form.validateFields(['modality']);
+                setCloudModelDetails({
+                  ...cloudModelDetails,
+                  modality: value
+                });
               }}
             />
-          </CustomPopover>
-        </Text_12_300_EEEEEE>
-      </div>
-      <div className="custom-select-two w-full rounded-[6px] relative">
-        <ConfigProvider
-          theme={{
-            token: {
-              colorTextPlaceholder: "#808080",
-            },
-          }}
-        >
-          <Select
-            placeholder="Select Modality"
-            style={{
-              backgroundColor: "transparent",
-              color: "#EEEEEE",
-              border: "0.5px solid #757575",
-              width: "100%",
-            }}
-            // value={tempFilter.modality}
-            maxTagCount={4}
-            size="large"
-            className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.15rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.59338rem] outline-none"
-            options={modalityFilters.map((modality) => ({
-              label: modality.label,
-              value: modality.modality,
-            }))}
-            tagRender={(props) => {
-              const { label } = props;
-              return (
-                <Tags name={label} color="#D1B854"></Tags>
-              );
-            }}
-            mode="multiple"
-            onChange={(value) => {
-              form.setFieldsValue({ modality: value });
-              form.validateFields(['modality']);
-              setCloudModelDetails({
-                ...cloudModelDetails,
-                modality: value
-              });
-            }}
-          />
-        </ConfigProvider>
-      </div>
-    </Form.Item>
+          </ConfigProvider>
+        </div>
+      </Form.Item>
     )}
     {selectedModel?.uri ? null : (<Form.Item hasFeedback
       name={"uri"}
@@ -353,23 +353,25 @@ export default function AddModel() {
       }}
     >
       <BudWraperBox>
-        <BudDrawerLayout>
-          <DrawerTitleCard
-            title={selectedModel ? 'Selected Model' : 'Provider'}
-            description={selectedModel ? `From ${selectedProvider.name} the following model has been selected` : 'Below is the cloud provider you have selected'}
-          />
-          <ModelFlowInfoCard
-            selectedModel={selectedModel}
-            informationSpecs={[
-              {
-                name: 'URI',
-                value: selectedModel?.uri,
-                full: true,
-                icon: "/images/drawer/tag.png",
-              }
-            ]}
-          />
-        </BudDrawerLayout>
+        {selectedModel && (
+          <BudDrawerLayout>
+            <DrawerTitleCard
+              title={selectedModel ? 'Selected Model' : 'Provider'}
+              description={selectedModel ? `From ${selectedProvider.name} the following model has been selected` : 'Below is the cloud provider you have selected'}
+            />
+            <ModelFlowInfoCard
+              selectedModel={selectedModel}
+              informationSpecs={[
+                {
+                  name: 'URI',
+                  value: selectedModel?.uri,
+                  full: true,
+                  icon: "/images/drawer/tag.png",
+                }
+              ]}
+            />
+          </BudDrawerLayout>
+        )}
         <BudDrawerLayout>
           <DrawerTitleCard
             title={selectedModel ? 'Give this model a name you recognize' : 'Add Model'}
