@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Table } from "antd";
+import { Table, Tooltip } from "antd";
 import ProjectTags from "src/flows/components/ProjectTags";
 import { LeaderBoardItem } from "src/hooks/useModels";
 import {
@@ -43,7 +43,7 @@ function SortIcon({ sortOrder }: { sortOrder: string }) {
   ) : null;
 }
 
-function LeaderboardsTable({ data, leaderboardClasses}: { data: LeaderBoardItem[], leaderboardClasses?: string }) {
+function LeaderboardsTable({ data, leaderboardClasses }: { data: LeaderBoardItem[], leaderboardClasses?: string }) {
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<string>("");
 
@@ -102,6 +102,8 @@ function LeaderboardsTable({ data, leaderboardClasses}: { data: LeaderBoardItem[
       <Table<LeaderBoardItem>
         columns={[
           {
+            width: 120,
+            ellipsis: true,
             title: "Benchmark",
             dataIndex: "label",
             key: "label",
@@ -109,6 +111,8 @@ function LeaderboardsTable({ data, leaderboardClasses}: { data: LeaderBoardItem[
             sortIcon: SortIcon,
           },
           {
+            width: 120,
+            ellipsis: true,
             title: "Type",
             dataIndex: "dataset",
             key: "dataset",
@@ -119,6 +123,8 @@ function LeaderboardsTable({ data, leaderboardClasses}: { data: LeaderBoardItem[
             ?.filter((item) => item.model.is_selected)
             .map((item) => {
               return {
+                width: 120,
+                ellipsis: true,
                 title: "Selected Model",
                 dataIndex: item.model?.uri,
                 key: item.model?.uri,
@@ -128,21 +134,25 @@ function LeaderboardsTable({ data, leaderboardClasses}: { data: LeaderBoardItem[
                 sortIcon: SortIcon,
               };
             })?.[0] || {
-                title: "Selected Model",
-                dataIndex: "selected",
-                key: "selected",
-                render: (text) => <Text_12_300_EEEEEE>{text}</Text_12_300_EEEEEE>,
-                sortIcon: SortIcon,
-            },
+            title: "Selected Model",
+            dataIndex: "selected",
+            key: "selected",
+            render: (text) => <Text_12_300_EEEEEE>{text}</Text_12_300_EEEEEE>,
+            sortIcon: SortIcon,
+          },
           ...data
             ?.filter((item) => !item.model.is_selected)
             .map((item) => {
               return {
-                title: item.model?.uri,
+                width: 120,
+                ellipsis: true,
+                title: <Tooltip placement="topLeft" title={item.model?.uri}>{item.model?.uri}</Tooltip>,
                 dataIndex: item.model?.uri,
                 key: item.model?.uri,
                 render: (text) => (
-                  <Text_12_300_EEEEEE>{text}</Text_12_300_EEEEEE>
+                  <Text_12_300_EEEEEE className="">
+                    {text}
+                  </Text_12_300_EEEEEE>
                 ),
                 sortIcon: SortIcon,
               };
