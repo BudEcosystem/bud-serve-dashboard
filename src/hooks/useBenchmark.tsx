@@ -109,6 +109,15 @@ export type Field1VsFieldParams = {
   field2?: any;
 };
 
+export type FilterParams = {
+  page?: number;
+  limit?: number;
+  search?: boolean;
+  model_name?: string;
+  cluster_name?: string;
+  resource?: string;
+};
+
 export type DistributionParams = {
   benchmark_id?: string;
   num_bins?: any;
@@ -128,8 +137,11 @@ export type RequestMetricsData = {
   ttft: number;
   errorCode: any;
 };
+
 // create zustand store
 export const useBenchmarks = create<{
+  modelFilterList: any;
+  clusterFilterList: any;
   totalPages: number;
   totalUsers: number;
   filters: any;
@@ -163,7 +175,10 @@ export const useBenchmarks = create<{
   getOutputSizeVsLatency: (benchmarkId: string) => void;
   getInputDistribution: (params: DistributionParams) => void;
   getOutputDistribution: (params: DistributionParams) => void;
+  getfilterList: (params: FilterParams) => Promise<any>;
 }>((set, get) => ({
+  modelFilterList: undefined,
+  clusterFilterList: undefined,
   filters: {},
   totalPages: 0,
   totalUsers: 0,
@@ -264,20 +279,18 @@ export const useBenchmarks = create<{
 
   getInputDistribution: async (params: DistributionParams) => {
     const response: any = await AppRequest.Post(
-      `${tempApiBaseUrl}/benchmark/dataset/input-distribution?benchmark_id=${
-        params.benchmark_id
+      `${tempApiBaseUrl}/benchmark/dataset/input-distribution?benchmark_id=${params.benchmark_id
       }&num_bins=${params.num_bins || 10}`,
       get().selectedBenchmark?.dataset_ids
     );
     set({ inputDistribution: response?.data?.param?.result });
     // console.log("inputDistribution", response);
   },
-  
-  
+
+
   getOutputDistribution: async (params: DistributionParams) => {
     const response: any = await AppRequest.Post(
-      `${tempApiBaseUrl}/benchmark/dataset/output-distribution?benchmark_id=${
-        params.benchmark_id
+      `${tempApiBaseUrl}/benchmark/dataset/output-distribution?benchmark_id=${params.benchmark_id
       }&num_bins=${params.num_bins || 10}`,
       get().selectedBenchmark?.dataset_ids
     );
@@ -365,6 +378,27 @@ export const useBenchmarks = create<{
       .catch((error) => {
         console.error("Error fetching TTFT vs Tokens:", error);
       });
+  },
+
+  getfilterList: async (params: FilterParams) => {
+    const query = new URLSearchParams();
+
+    if (params.page) query.append("page", String(params.page));
+    if (params.limit) query.append("limit", String(params.limit));
+    if (params.search) query.append("search", String(params.search));
+    if (params.model_name) query.append("model_name", params.model_name);
+    if (params.cluster_name) query.append("cluster_name", params.cluster_name);
+    if (params.resource) query.append("resource", params.resource);
+
+    const response: any = await AppRequest.Get(
+      `${tempApiBaseUrl}/benchmark/filters?${query.toString()}`
+    );
+    if (params.resource == 'model') {
+      set({ modelFilterList: response?.data?.result });
+    } else {
+      set({ clusterFilterList: response?.data?.result });
+    }
+    return response?.data;
   },
   // OutputSizeVslatency line chart ============================= /
 }));

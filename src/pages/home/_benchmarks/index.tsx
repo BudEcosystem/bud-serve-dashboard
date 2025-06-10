@@ -41,10 +41,10 @@ const defaultFilter = {
   status: "",
   model_name: "",
   cluster_name: "",
-  min_tpot: 0,
-  max_tpot: 500,
-  min_ttft: 0,
-  max_ttft: 500
+  min_tpot: undefined,
+  max_tpot: undefined,
+  min_ttft: undefined,
+  max_ttft: undefined
 };
 
 interface DataType {
@@ -75,6 +75,9 @@ const PerfomanceBenchmarks = () => {
     setSelectedBenchmark,
     selectedBenchmark,
     getBenchmarkModelClusterDetails,
+    getfilterList,
+    modelFilterList,
+    clusterFilterList,
   } = useBenchmarks();
   const { isLoading, showLoader, hideLoader } = useLoader();
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null);
@@ -127,6 +130,29 @@ const PerfomanceBenchmarks = () => {
 
   useEffect(() => {
     setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    console.log('modelFilterList', modelFilterList)
+  }, [modelFilterList]);
+
+  useEffect(() => {
+    console.log('clusterFilterList', clusterFilterList)
+  }, [clusterFilterList]);
+
+  useEffect(() => {
+    getfilterList({
+      page: 1,
+      limit: 10000,
+      search: false,
+      resource: 'model'
+    })
+    getfilterList({
+      page: 1,
+      limit: 10000,
+      search: false,
+      resource: 'cluster'
+    })
   }, []);
 
   useEffect(() => {
@@ -300,7 +326,7 @@ const PerfomanceBenchmarks = () => {
                               <div className="w-full">
                                 <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
                                   Status
-                                  <CustomPopover title="This is the author">
+                                  <CustomPopover title="Select benchmark status">
                                     <Image
                                       src="/images/info.png"
                                       preview={false}
@@ -331,7 +357,7 @@ const PerfomanceBenchmarks = () => {
                                       border: "0.5px solid #757575",
                                       width: "100%",
                                     }}
-                                    value={tempFilter.status}
+                                    value={tempFilter.status || undefined} 
                                     size="large"
                                     className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.5rem] outline-none"
                                     options={[
@@ -364,7 +390,7 @@ const PerfomanceBenchmarks = () => {
                               <div className="w-full">
                                 <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
                                   Model Name
-                                  <CustomPopover title="This is the author">
+                                  <CustomPopover title="Select model name">
                                     <Image
                                       src="/images/info.png"
                                       preview={false}
@@ -388,28 +414,24 @@ const PerfomanceBenchmarks = () => {
                                 >
                                   <Select
                                     variant="borderless"
-                                    placeholder="Select status"
+                                    placeholder="Select model name"
                                     style={{
                                       backgroundColor: "transparent",
                                       color: "#EEEEEE",
                                       border: "0.5px solid #757575",
                                       width: "100%",
                                     }}
-                                    value={tempFilter.status}
+                                    value={tempFilter.model_name || undefined}
                                     size="large"
                                     className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.5rem] outline-none"
-                                    options={[
-                                      { label: "Success", value: "success" },
-                                      { label: "Failed", value: "failed" },
-                                      {
-                                        label: "Processing",
-                                        value: "processing",
-                                      },
-                                    ]}
+                                    options={modelFilterList?.map((item) => ({
+                                      label: item,
+                                      value: item,
+                                    }))}
                                     onChange={(value) => {
                                       setTempFilter({
                                         ...tempFilter,
-                                        status: value,
+                                        model_name: value,
                                       });
                                     }}
                                     tagRender={(props) => {
@@ -428,7 +450,7 @@ const PerfomanceBenchmarks = () => {
                               <div className="w-full">
                                 <Text_12_300_EEEEEE className="absolute bg-[#101010] -top-1.5 left-[1.1rem] tracking-[.035rem] z-10 flex items-center gap-1 text-nowrap">
                                   Cluster Name
-                                  <CustomPopover title="This is the author">
+                                  <CustomPopover title="Select cluster name">
                                     <Image
                                       src="/images/info.png"
                                       preview={false}
@@ -452,28 +474,24 @@ const PerfomanceBenchmarks = () => {
                                 >
                                   <Select
                                     variant="borderless"
-                                    placeholder="Select status"
+                                    placeholder="Select cluster name"
                                     style={{
                                       backgroundColor: "transparent",
                                       color: "#EEEEEE",
                                       border: "0.5px solid #757575",
                                       width: "100%",
                                     }}
-                                    value={tempFilter.status}
+                                    value={tempFilter.cluster_name || undefined}
                                     size="large"
                                     className="drawerInp !bg-[transparent] text-[#EEEEEE] py-[.6rem] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE] h-[2.5rem] outline-none"
-                                    options={[
-                                      { label: "Success", value: "success" },
-                                      { label: "Failed", value: "failed" },
-                                      {
-                                        label: "Processing",
-                                        value: "processing",
-                                      },
-                                    ]}
+                                    options={clusterFilterList?.map((item) => ({
+                                      label: item,
+                                      value: item,
+                                    }))}
                                     onChange={(value) => {
                                       setTempFilter({
                                         ...tempFilter,
-                                        status: value,
+                                        cluster_name: value,
                                       });
                                     }}
                                     tagRender={(props) => {
@@ -492,7 +510,7 @@ const PerfomanceBenchmarks = () => {
                               <div className="w-full">
                                 <Text_12_300_EEEEEE className="absolute px-1.4 tracking-[.035rem] flex items-center gap-1 text-nowrap">
                                   TPOT
-                                  <CustomPopover title="The maximum input length you want the model can process.">
+                                  <CustomPopover title="The minimum and maximum of tpot.">
                                     <Image
                                       preview={false}
                                       src="/images/info.png"
@@ -510,19 +528,19 @@ const PerfomanceBenchmarks = () => {
                                   </div>
                                   <Slider
                                     className="budSlider mt-[3.2rem] w-full"
-                                    min={1}
+                                    min={0}
                                     max={500}
                                     step={1}
                                     range
-                                    value={[
-                                      tempFilter.model_size_min || 1,
-                                      tempFilter.model_size_max || 500,
+                                    defaultValue={[
+                                      tempFilter.min_tpot || undefined,
+                                      tempFilter.max_tpot || undefined,
                                     ]}
                                     onChange={(value) => {
                                       setTempFilter({
                                         ...tempFilter,
-                                        model_size_min: value[0],
-                                        model_size_max: value[1],
+                                        min_tpot: value[0],
+                                        max_tpot: value[1],
                                       });
                                     }}
                                     tooltip={{
@@ -553,7 +571,7 @@ const PerfomanceBenchmarks = () => {
                               <div className="w-full">
                                 <Text_12_300_EEEEEE className="absolute px-1.4 tracking-[.035rem] flex items-center gap-1 text-nowrap">
                                   TTFT
-                                  <CustomPopover title="The maximum input length you want the model can process.">
+                                  <CustomPopover title="The minimum and maximum of ttft.">
                                     <Image
                                       preview={false}
                                       src="/images/info.png"
@@ -571,19 +589,19 @@ const PerfomanceBenchmarks = () => {
                                   </div>
                                   <Slider
                                     className="budSlider mt-[3.2rem] w-full"
-                                    min={1}
+                                    min={0}
                                     max={500}
                                     step={1}
                                     range
-                                    value={[
-                                      tempFilter.model_size_min || 1,
-                                      tempFilter.model_size_max || 500,
+                                    defaultValue={[
+                                      tempFilter.min_ttft || undefined,
+                                      tempFilter.max_ttft || undefined,
                                     ]}
                                     onChange={(value) => {
                                       setTempFilter({
                                         ...tempFilter,
-                                        model_size_min: value[0],
-                                        model_size_max: value[1],
+                                        min_ttft: value[0],
+                                        max_ttft: value[1],
                                       });
                                     }}
                                     tooltip={{
@@ -638,7 +656,6 @@ const PerfomanceBenchmarks = () => {
                         style={{ width: "0.875rem", height: "0.875rem" }}
                         className="mr-2"
                       />
-                      {/* <Text_12_400_C7C7C7>Filter</Text_12_400_C7C7C7> */}
                     </label>
                   </Popover>
                 </>
