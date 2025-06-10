@@ -5,9 +5,6 @@ import { useEndPoints } from 'src/hooks/useEndPoint';
 
 function AddWorkerInfoCard() {
     const { clusterDetails } = useEndPoints();
-    useEffect(() => {
-        console.log('clusterDetails', clusterDetails)
-    }, [clusterDetails])
     const informationSpecs = [
         {
             name: "Deployment Name",
