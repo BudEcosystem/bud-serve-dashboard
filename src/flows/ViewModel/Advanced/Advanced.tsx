@@ -136,10 +136,20 @@ const Advanced: React.FC<GeneralProps> = ({ data }) => {
     },
     {
       name: "Modality",
+      // value: "",
       value: data.modality ? [`${data.modality}`.toUpperCase()] : "",
       full: true,
       icon: "/images/drawer/tag.png",
-      children: [],
+      children: Object.entries(data.modality || {})
+        .filter(([_, value]) => value.input || value.output)
+        .map(([key, value], index) => ({
+          name: `#${index + 1} ${value.label}`,
+          value: [value.input && 'Input', value.output && 'Output'],
+          full: true,
+          icon: "/images/drawer/tag.png",
+          children: [],
+        })),
+
     },
     data.base_model?.length > 0 && {
       name: "Base Models",
