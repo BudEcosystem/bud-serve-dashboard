@@ -16,43 +16,6 @@ if (typeof window !== "undefined") {
   Token = localStorage.getItem("access_token");
 }
 
-// Request interceptor
-// axiosInstance.interceptors.request.use(
-//   async (config) => {
-//     // ✅ Check Internet Connection
-//     if (typeof window !== 'undefined' && !navigator.onLine) {
-//       errorToast('No internet connection');
-//       return Promise.reject(new Error('No internet connection'));
-//     }
-//     // ✅ Optional: Check for network quality
-//     // Use type assertion to access non-standard properties
-//     const connection = (navigator as any).connection || (navigator as any)['mozConnection'] || (navigator as any)['webkitConnection'];
-//     if (connection) {
-//       const { effectiveType, downlink } = connection;
-//       const slowConnection = ['2g', 'slow-2g'].includes(effectiveType) || downlink < 0.5;
-
-//       if (slowConnection) {
-//         errorToast('Network is too slow or throttled');
-//         return Promise.reject(new Error('Poor network connection'));
-//       }
-//     }
-//     // 🛡️ Token logic
-//     if (config.url === "auth/refresh-token") {
-//       Token = "";
-//     } else if (!Token) {
-//       Token = localStorage.getItem("access_token");
-//     }
-//     const accessToken = Token ? Token : "";
-//     if (accessToken && config.headers) {
-//       config.headers.Authorization = `Bearer ${accessToken}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
 axiosInstance.interceptors.request.use(
   async (config) => {
     // ✅ Check Internet Connection
