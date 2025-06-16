@@ -18,16 +18,33 @@ if (typeof window !== "undefined") {
 
 // Request interceptor
 // axiosInstance.interceptors.request.use(
-//   (config) => {
-//     if (config.url === "token/refresh") {
+//   async (config) => {
+//     // ✅ Check Internet Connection
+//     if (typeof window !== 'undefined' && !navigator.onLine) {
+//       errorToast('No internet connection');
+//       return Promise.reject(new Error('No internet connection'));
+//     }
+//     // ✅ Optional: Check for network quality
+//     // Use type assertion to access non-standard properties
+//     const connection = (navigator as any).connection || (navigator as any)['mozConnection'] || (navigator as any)['webkitConnection'];
+//     if (connection) {
+//       const { effectiveType, downlink } = connection;
+//       const slowConnection = ['2g', 'slow-2g'].includes(effectiveType) || downlink < 0.5;
+
+//       if (slowConnection) {
+//         errorToast('Network is too slow or throttled');
+//         return Promise.reject(new Error('Poor network connection'));
+//       }
+//     }
+//     // 🛡️ Token logic
+//     if (config.url === "auth/refresh-token") {
 //       Token = "";
 //     } else if (!Token) {
 //       Token = localStorage.getItem("access_token");
 //     }
 //     const accessToken = Token ? Token : "";
-//     if (accessToken) {
-//       if (config.headers)
-//         config.headers.Authorization = `Bearer ${accessToken}`;
+//     if (accessToken && config.headers) {
+//       config.headers.Authorization = `Bearer ${accessToken}`;
 //     }
 //     return config;
 //   },
@@ -36,38 +53,56 @@ if (typeof window !== "undefined") {
 //   }
 // );
 
-// Request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
     // ✅ Check Internet Connection
-    if (typeof window !== 'undefined' && !navigator.onLine) {
-      errorToast('No internet connection');
-      return Promise.reject(new Error('No internet connection'));
+    if (typeof window !== "undefined" && !navigator.onLine) {
+      errorToast("No internet connection");
+      return Promise.reject(new Error("No internet connection"));
     }
 
-    // ✅ Optional: Check for network quality
-    // Use type assertion to access non-standard properties
-    const connection = (navigator as any).connection || (navigator as any)['mozConnection'] || (navigator as any)['webkitConnection'];
+    // ✅ Optional: Network quality check
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any)["mozConnection"] ||
+      (navigator as any)["webkitConnection"];
+
     if (connection) {
       const { effectiveType, downlink } = connection;
-      const slowConnection = ['2g', 'slow-2g'].includes(effectiveType) || downlink < 0.5;
+      const slowConnection =
+        ["2g", "slow-2g"].includes(effectiveType) || downlink < 0.5;
 
       if (slowConnection) {
-        errorToast('Network is too slow or throttled');
-        return Promise.reject(new Error('Poor network connection'));
+        errorToast("Network is too slow or throttled");
+        return Promise.reject(new Error("Poor network connection"));
       }
     }
 
-    // 🛡️ Token logic
-    if (config.url === "auth/refresh-token") {
-      Token = "";
-    } else if (!Token) {
+    // 🛡️ Token check
+    if (typeof window !== "undefined") {
       Token = localStorage.getItem("access_token");
     }
 
-    const accessToken = Token ? Token : "";
-    if (accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    const isPublicEndpoint =
+      config.url?.includes("auth/login") ||
+      config.url?.includes("users/reset-password") ||
+      config.url?.includes("auth/refresh-token");
+
+    if (!Token && !isPublicEndpoint) {
+      // Prevent redirect loop
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+        if (!isRedirecting) {
+          isRedirecting = true;
+          localStorage.clear();
+          window.location.replace("/login");
+        }
+      }
+      return Promise.reject(new Error("No access token found"));
+    }
+
+
+    if (Token && config.headers) {
+      config.headers.Authorization = `Bearer ${Token}`;
     }
 
     return config;
@@ -106,12 +141,10 @@ axiosInstance.interceptors.response.use(
           console.log("Token refresh failed", err);
           isRefreshing = false;
           refreshSubscribers = [];
-
           // ✅ Don't rethrow if redirect already happened
           if (!isRedirecting) {
             return Promise.reject(err);
           }
-
           // If redirect already in progress, halt further processing
           return new Promise(() => { }); // Keeps the Promise pending
         });
@@ -160,34 +193,22 @@ const handleErrorResponse = (err) => {
   }
   if (err.response && err.response.status === 403) {
     localStorage.clear();
-    // setTimeout(() => {
-    // window.location.replace("/");
-    // });
     return false;
   } else if (err.response && err.response.code === 500) {
-    // errorToast(err.response.data?.message || "Internal Server Error");
     window.location.reload();
     return false;
   } else if (err.response && err.response.status === 500) {
-    // errorToast(err.response.data?.message || "Internal Server Error");
     return false;
   } else if (err.response && err.response.status === 422) {
-    // errorToast(
-    //   err.response?.data?.message ||
-    //     err.response?.data?.message?.[0].detail[0].msg ||
-    //     err.response?.data?.[0]?.detail[0].msg ||
-    //     "Internal Server Error"
-    // );
     return false;
   } else if (err.response && err.response.status == 400 && err.response.request.responseURL.includes('/login')) {
     return Promise.reject(err.response.data);
   } else {
     console.log(err)
-    if (err) {
+    if (err && localStorage.getItem("access_token")) {
       console.log(err.response?.data?.message)
       errorToast(err.response?.data?.message);
     }
-    // errorToast(err.response?.data?.message || "Internal Server Error");
     return false;
   }
 };
