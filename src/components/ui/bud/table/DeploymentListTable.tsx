@@ -69,7 +69,7 @@ function DeploymentListTable() {
         })
     }
     const setEndpointDetails = (id) => {
-        getEndpointClusterDetails(id)
+        getEndpointClusterDetails(id, projectId as string);
     }
 
     useHandleRouteChange(() => {
@@ -119,7 +119,7 @@ function DeploymentListTable() {
                     return;
                 };
                 setConfirmLoading(true);
-                const result = await deleteEndPoint(record?.id)
+                const result = await deleteEndPoint(record?.id, projectId as string);
                 if (result?.data) {
                     await getData();
                     successToast('Deployment deleted successfully');
@@ -218,7 +218,7 @@ function DeploymentListTable() {
                                     <PrimaryButton
                                         onClick={async (event) => {
                                             event.stopPropagation();
-                                            await getEndpointClusterDetails(record.id)
+                                            await getEndpointClusterDetails(record.id, projectId as string, 'use-model');
                                             openDrawer('use-model');
                                         }}
                                     >

@@ -235,7 +235,7 @@ export const useDeployModel = create<{
   setLocalModelDetails: (details: any) => void;
   startSecurityScan: () => Promise<any>;
 
-  cancelModelDeployment: (id: string) => Promise<any>;
+  cancelModelDeployment: (id: string, projectId?: string) => Promise<any>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   deleteWorkflow: (id: string, suppressToast?: boolean) => Promise<any>;
@@ -244,9 +244,10 @@ export const useDeployModel = create<{
   setWorkerDetails: (details: any) => void;
   createWorkerFlow: (
     endpointId: string,
-    additionalConcurrency: number
+    additionalConcurrency: number,
+    projectId?: string
   ) => Promise<any>;
-  completeCreateWorkerFlow: (workflowId: string) => Promise<any>;
+  completeCreateWorkerFlow: (workflowId: string, projectId?: string) => Promise<any>;
   getQuantizationMethods: () => Promise<any>;
   createQuantizationWorkflow: (
     model_name: string,
@@ -262,9 +263,10 @@ export const useDeployModel = create<{
   cancelQuantizationDeployment: (id: string) => Promise<any>;
   createAddAdapterWorkflow: (
     endpointId: string,
-    adapterModelId: string
+    adapterModelId: string,
+    projectId?: string
   ) => Promise<any>;
-  updateAdapterDetailWorkflow: (adapterName: string) => Promise<any>;
+  updateAdapterDetailWorkflow: (adapterName: string, projectId?: string) => Promise<any>;
   startRequest: () => void;
   endRequest: () => void;
 }>((set, get) => ({
@@ -403,7 +405,7 @@ export const useDeployModel = create<{
         name: "",
         icon:
           get().currentWorkflow?.workflow_steps?.provider?.type ===
-          "huggingface"
+            "huggingface"
             ? ""
             : "😍",
         tags: [],
@@ -459,6 +461,222 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
+  // createWorkflow: async (projectId: string) => {
+  //   const modelId = get().selectedModel?.id;
+  //   if (!modelId) {
+  //     errorToast("Please select a model");
+  //     return;
+  //   }
+  //   get().startRequest();
+  //   try {
+  //     const response: any = await AppRequest.Post(
+  //       `${tempApiBaseUrl}/models/deploy-workflow`,
+  //       {
+  //         workflow_total_steps: 8,
+  //         step_number: 1,
+  //         trigger_workflow: false,
+  //         project_id: projectId,
+  //         model_id: modelId,
+  //       }
+  //     );
+  //     set({ currentWorkflow: response.data });
+  //     get().getWorkflowCloud(response.data.id);
+  //     // successToast(response.data.message);
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error creating model:", error);
+  //   } finally {
+  //     get().endRequest();
+  //   }
+  // },
+  // updateModel: async () => {
+  //   const workflowId = get().currentWorkflow?.workflow_id;
+  //   const modelId = get().selectedModel?.id;
+  //   if (!workflowId) {
+  //     errorToast("Please create a workflow");
+  //     return;
+  //   }
+  //   get().startRequest();
+  //   try {
+  //     const response: any = await AppRequest.Post(
+  //       `${tempApiBaseUrl}/models/deploy-workflow`,
+  //       {
+  //         step_number: 1,
+  //         trigger_workflow: false,
+  //         workflow_id: workflowId,
+  //         model_id: modelId,
+  //         project_id: useProjects.getState().selectedProject?.id,
+  //       }
+  //     );
+  //     get().getWorkflowCloud();
+  //     // successToast(response.data.message);
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error creating model:", error);
+  //   } finally {
+  //     get().endRequest();
+  //   }
+  // },
+  // updateTemplate: async () => {
+  //   const workflowId = get().currentWorkflow?.workflow_id;
+  //   const templateId = get().selectedTemplate?.id;
+  //   if (!workflowId) {
+  //     errorToast("Please create a workflow");
+  //     return;
+  //   }
+  //   get().startRequest();
+  //   try {
+  //     const response: any = await AppRequest.Post(
+  //       `${tempApiBaseUrl}/models/deploy-workflow`,
+  //       {
+  //         step_number: 3,
+  //         trigger_workflow: false,
+  //         workflow_id: workflowId,
+  //         template_id: templateId,
+  //       }
+  //     );
+  //     get().getWorkflowCloud();
+  //     // successToast(response.data.message);
+  //   } catch (error) {
+  //     console.error("Error creating model:", error);
+  //   } finally {
+  //     get().endRequest();
+  //   }
+  // },
+  // updateCredentials: async (credentials: Credentials) => {
+  //   const workflowId = get().currentWorkflow?.workflow_id;
+  //   if (!workflowId) {
+  //     errorToast("Please create a workflow");
+  //     return;
+  //   }
+  //   get().startRequest();
+  //   try {
+  //     const response: any = await AppRequest.Post(
+  //       `${tempApiBaseUrl}/models/deploy-workflow`,
+  //       {
+  //         step_number: 2,
+  //         trigger_workflow: false,
+  //         workflow_id: workflowId,
+  //         credential_id: credentials?.id,
+  //       }
+  //     );
+  //     get().getWorkflowCloud();
+  //     // successToast(response.data.message);
+  //   } catch (error) {
+  //     console.error("Error creating model:", error);
+  //   } finally {
+  //     get().endRequest();
+  //   }
+  // },
+  // updateDeploymentSpecification: async () => {
+  //   const currentWorkflow = get().currentWorkflow;
+  //   const workflowId = get().currentWorkflow?.workflow_id;
+  //   const deployConfig = get().deploymentSpecifcation;
+  //   if (!workflowId) {
+  //     errorToast("Please create a workflow");
+  //     return;
+  //   }
+  //   get().startRequest();
+
+  //   try {
+  //     let deployConfigPayload: {
+  //       concurrent_requests: number;
+  //       avg_sequence_length: number;
+  //       avg_context_length: number;
+  //       per_session_tokens_per_sec?: number[];
+  //       ttft?: number[];
+  //       e2e_latency?: number[];
+  //     } = {
+  //       concurrent_requests: parseInt(`${deployConfig.concurrent_requests}`),
+  //       avg_sequence_length: deployConfig.avg_sequence_length,
+  //       avg_context_length: deployConfig.avg_context_length,
+  //     };
+
+  //     if (
+  //       currentWorkflow.workflow_steps.model.provider_type !== "cloud_model"
+  //     ) {
+  //       deployConfigPayload = {
+  //         concurrent_requests: parseInt(`${deployConfig.concurrent_requests}`),
+  //         avg_sequence_length: deployConfig.avg_sequence_length,
+  //         avg_context_length: deployConfig.avg_context_length,
+  //         per_session_tokens_per_sec: deployConfig.per_session_tokens_per_sec,
+  //         ttft: deployConfig.ttft,
+  //         e2e_latency: deployConfig.e2e_latency,
+  //       };
+  //     }
+
+  //     const response: any = await AppRequest.Post(
+  //       `${tempApiBaseUrl}/models/deploy-workflow`,
+  //       {
+  //         step_number: 4,
+  //         trigger_workflow: false,
+  //         workflow_id: workflowId,
+  //         endpoint_name: deployConfig.deployment_name,
+  //         deploy_config: deployConfigPayload,
+  //       }
+  //     );
+  //     get().getWorkflowCloud();
+  //     // successToast(response.data.message);
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error creating model:", error);
+  //   } finally {
+  //     get().endRequest();
+  //   }
+  // },
+  // updateScalingSpecification: async () => {
+  //   const workflowId = get().currentWorkflow?.workflow_id;
+  //   const scalingSpecifcation = get().scalingSpecifcation;
+  //   if (!workflowId) {
+  //     errorToast("Please create a workflow");
+  //     return;
+  //   }
+  //   try {
+  //     const response: any = await AppRequest.Post(
+  //       `${tempApiBaseUrl}/models/deploy-workflow`,
+  //       {
+  //         step_number: 7,
+  //         trigger_workflow: true,
+  //         workflow_id: workflowId,
+  //         scaling_specification: scalingSpecifcation,
+  //       }
+  //     );
+  //     get().getWorkflowCloud();
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Error creating model:", error);
+  //   } finally {
+  //     get().endRequest();
+  //   }
+  // },
+  // updateCluster: async () => {
+  //   const workflowId = get().currentWorkflow?.workflow_id;
+  //   const cluster = get().deploymentCluster;
+  //   if (!workflowId) {
+  //     errorToast("Please create a workflow");
+  //     return;
+  //   }
+  //   get().startRequest();
+
+  //   try {
+  //     const response: any = await AppRequest.Post(
+  //       `${tempApiBaseUrl}/models/deploy-workflow`,
+  //       {
+  //         step_number: 6,
+  //         trigger_workflow: false,
+  //         workflow_id: workflowId,
+  //         cluster_id: cluster?.cluster_id,
+  //       }
+  //     );
+  //     get().getWorkflowCloud();
+  //     return response;
+  //     // successToast(response.data.message);
+  //   } catch (error) {
+  //     console.error("Error creating model:", error);
+  //   } finally {
+  //     get().endRequest();
+  //   }
+  // },
   createWorkflow: async (projectId: string) => {
     const modelId = get().selectedModel?.id;
     if (!modelId) {
@@ -475,11 +693,16 @@ export const useDeployModel = create<{
           trigger_workflow: false,
           project_id: projectId,
           model_id: modelId,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       set({ currentWorkflow: response.data });
       get().getWorkflowCloud(response.data.id);
-      // successToast(response.data.message);
       return response;
     } catch (error) {
       console.error("Error creating model:", error);
@@ -487,9 +710,11 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
+
   updateModel: async () => {
     const workflowId = get().currentWorkflow?.workflow_id;
     const modelId = get().selectedModel?.id;
+    const projectId = useProjects.getState().selectedProject?.id;
     if (!workflowId) {
       errorToast("Please create a workflow");
       return;
@@ -503,11 +728,16 @@ export const useDeployModel = create<{
           trigger_workflow: false,
           workflow_id: workflowId,
           model_id: modelId,
-          project_id: useProjects.getState().selectedProject?.id,
+          project_id: projectId,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflowCloud();
-      // successToast(response.data.message);
       return response;
     } catch (error) {
       console.error("Error creating model:", error);
@@ -515,9 +745,11 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
+
   updateTemplate: async () => {
     const workflowId = get().currentWorkflow?.workflow_id;
     const templateId = get().selectedTemplate?.id;
+    const projectId = useProjects.getState().selectedProject?.id;
     if (!workflowId) {
       errorToast("Please create a workflow");
       return;
@@ -531,18 +763,25 @@ export const useDeployModel = create<{
           trigger_workflow: false,
           workflow_id: workflowId,
           template_id: templateId,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflowCloud();
-      // successToast(response.data.message);
     } catch (error) {
       console.error("Error creating model:", error);
     } finally {
       get().endRequest();
     }
   },
+
   updateCredentials: async (credentials: Credentials) => {
     const workflowId = get().currentWorkflow?.workflow_id;
+    const projectId = useProjects.getState().selectedProject?.id;
     if (!workflowId) {
       errorToast("Please create a workflow");
       return;
@@ -556,47 +795,42 @@ export const useDeployModel = create<{
           trigger_workflow: false,
           workflow_id: workflowId,
           credential_id: credentials?.id,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflowCloud();
-      // successToast(response.data.message);
     } catch (error) {
       console.error("Error creating model:", error);
     } finally {
       get().endRequest();
     }
   },
+
   updateDeploymentSpecification: async () => {
     const currentWorkflow = get().currentWorkflow;
-    const workflowId = get().currentWorkflow?.workflow_id;
+    const workflowId = currentWorkflow?.workflow_id;
     const deployConfig = get().deploymentSpecifcation;
+    const projectId = useProjects.getState().selectedProject?.id;
     if (!workflowId) {
       errorToast("Please create a workflow");
       return;
     }
     get().startRequest();
-
     try {
-      let deployConfigPayload: {
-        concurrent_requests: number;
-        avg_sequence_length: number;
-        avg_context_length: number;
-        per_session_tokens_per_sec?: number[];
-        ttft?: number[];
-        e2e_latency?: number[];
-      } = {
+      let deployConfigPayload: any = {
         concurrent_requests: parseInt(`${deployConfig.concurrent_requests}`),
         avg_sequence_length: deployConfig.avg_sequence_length,
         avg_context_length: deployConfig.avg_context_length,
       };
 
-      if (
-        currentWorkflow.workflow_steps.model.provider_type !== "cloud_model"
-      ) {
+      if (currentWorkflow.workflow_steps.model.provider_type !== "cloud_model") {
         deployConfigPayload = {
-          concurrent_requests: parseInt(`${deployConfig.concurrent_requests}`),
-          avg_sequence_length: deployConfig.avg_sequence_length,
-          avg_context_length: deployConfig.avg_context_length,
+          ...deployConfigPayload,
           per_session_tokens_per_sec: deployConfig.per_session_tokens_per_sec,
           ttft: deployConfig.ttft,
           e2e_latency: deployConfig.e2e_latency,
@@ -611,10 +845,15 @@ export const useDeployModel = create<{
           workflow_id: workflowId,
           endpoint_name: deployConfig.deployment_name,
           deploy_config: deployConfigPayload,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflowCloud();
-      // successToast(response.data.message);
       return response;
     } catch (error) {
       console.error("Error creating model:", error);
@@ -622,9 +861,11 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
+
   updateScalingSpecification: async () => {
     const workflowId = get().currentWorkflow?.workflow_id;
     const scalingSpecifcation = get().scalingSpecifcation;
+    const projectId = useProjects.getState().selectedProject?.id;
     if (!workflowId) {
       errorToast("Please create a workflow");
       return;
@@ -637,6 +878,12 @@ export const useDeployModel = create<{
           trigger_workflow: true,
           workflow_id: workflowId,
           scaling_specification: scalingSpecifcation,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflowCloud();
@@ -647,15 +894,16 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
+
   updateCluster: async () => {
     const workflowId = get().currentWorkflow?.workflow_id;
     const cluster = get().deploymentCluster;
+    const projectId = useProjects.getState().selectedProject?.id;
     if (!workflowId) {
       errorToast("Please create a workflow");
       return;
     }
     get().startRequest();
-
     try {
       const response: any = await AppRequest.Post(
         `${tempApiBaseUrl}/models/deploy-workflow`,
@@ -664,11 +912,16 @@ export const useDeployModel = create<{
           trigger_workflow: false,
           workflow_id: workflowId,
           cluster_id: cluster?.cluster_id,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflowCloud();
       return response;
-      // successToast(response.data.message);
     } catch (error) {
       console.error("Error creating model:", error);
     } finally {
@@ -995,7 +1248,7 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
-  cancelModelDeployment: async (id: string) => {
+  cancelModelDeployment: async (id: string, projectId?) => {
     try {
       if (!id) {
         return true;
@@ -1004,6 +1257,12 @@ export const useDeployModel = create<{
         `${tempApiBaseUrl}/models/cancel-deployment`,
         {
           workflow_id: id,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       return response.data;
@@ -1012,6 +1271,7 @@ export const useDeployModel = create<{
       return error;
     }
   },
+
   cancelClusterOnboarding: async (id: string) => {
     try {
       const response: any = await AppRequest.Post(
@@ -1044,7 +1304,8 @@ export const useDeployModel = create<{
   },
   createWorkerFlow: async (
     endpointId: string,
-    additionalConcurrency: number
+    additionalConcurrency: number,
+    projectId?
   ) => {
     try {
       const response: any = await AppRequest.Post(
@@ -1055,6 +1316,12 @@ export const useDeployModel = create<{
           trigger_workflow: false,
           endpoint_id: endpointId,
           additional_concurrency: additionalConcurrency,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       return response.data;
@@ -1063,7 +1330,8 @@ export const useDeployModel = create<{
       return error;
     }
   },
-  completeCreateWorkerFlow: async (workflowId: string) => {
+
+  completeCreateWorkerFlow: async (workflowId: string, projectId?) => {
     try {
       const response: any = await AppRequest.Post(
         `${tempApiBaseUrl}/endpoints/add-worker`,
@@ -1071,6 +1339,12 @@ export const useDeployModel = create<{
           step_number: 4,
           trigger_workflow: true,
           workflow_id: workflowId,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       return response.data;
@@ -1079,6 +1353,7 @@ export const useDeployModel = create<{
       return error;
     }
   },
+
   quantizationMethods: [],
   setQuantizationMethods: (methods: QuantizationMethod[]) => {
     set({ quantizationMethods: methods });
@@ -1227,9 +1502,11 @@ export const useDeployModel = create<{
       return error;
     }
   },
+
   createAddAdapterWorkflow: async (
     endpointId: string,
-    adapterModelId: string
+    adapterModelId: string,
+    projectId?: string
   ) => {
     get().startRequest();
     try {
@@ -1241,10 +1518,15 @@ export const useDeployModel = create<{
           trigger_workflow: false,
           adapter_model_id: adapterModelId,
           endpoint_id: endpointId,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflow(response.data.workflow_id);
-      // successToast(response.data.message);
       return response;
     } catch (error) {
       console.error("Error creating add adapter workflow:", error);
@@ -1252,7 +1534,8 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
-  updateAdapterDetailWorkflow: async (adapterName: string) => {
+
+  updateAdapterDetailWorkflow: async (adapterName: string, projectId?: string) => {
     const workflowId = get().currentWorkflow?.workflow_id;
     if (!workflowId) {
       errorToast("Please create a workflow");
@@ -1267,10 +1550,15 @@ export const useDeployModel = create<{
           workflow_id: workflowId,
           trigger_workflow: true,
           adapter_name: adapterName,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
         }
       );
       get().getWorkflow(response.data.workflow_id);
-      // successToast(response.data.message);
       return response;
     } catch (error) {
       console.error("Error creating add adapter workflow:", error);
@@ -1278,4 +1566,5 @@ export const useDeployModel = create<{
       get().endRequest();
     }
   },
+
 }));

@@ -74,7 +74,7 @@ const RoutesComponent: React.FC<RoutesProps> = ({ data }) => {
           })
       }
       const setEndpointDetails = (id) => {
-          getEndpointClusterDetails(id)
+          getEndpointClusterDetails(id, projectId as string);
       }
   
       useHandleRouteChange(() => {
@@ -224,7 +224,7 @@ const RoutesComponent: React.FC<RoutesProps> = ({ data }) => {
                                       <PrimaryButton
                                           onClick={async (event) => {
                                               event.stopPropagation();
-                                              await getEndpointClusterDetails(record.id)
+                                              await getEndpointClusterDetails(record.id, projectId as string);
                                               openDrawer('use-model');
                                           }}
                                       >

@@ -67,7 +67,7 @@ const CostAnalysis: React.FC<GeneralProps> = ({ data }) => {
   const [order, setOrder] = useState<'-' | ''>('');
   const [orderBy, setOrderBy] = useState<string>('created_at');
   const [searchValue, setSearchValue] = useState('');
-  const { endPoints, getEndPoints, deleteEndPoint, loading, getEndpointClusterDetails } = useEndPoints();
+  const { endPoints } = useEndPoints();
   // useLoaderOnLoding(loading);
 
   const requestOptions = [

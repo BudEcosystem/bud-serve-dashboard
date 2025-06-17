@@ -108,16 +108,29 @@ export const useRoutes = create<{
     },
 
     createRoute: async () => {
+        const projectId = get().selectedProjectId;
         const payload = {
-            "project_id": get().selectedProjectId,
-            "name": get().stepOneData?.name,
-            "description": get().stepOneData?.description,
-            "tags": get().stepOneData?.tags,
-            "routing_strategy": get().stepOneData?.routing_strategy,
-            "endpoints": get().stepTwoData
-        }
-        const response = await AppRequest.Post(`${tempApiBaseUrl}/routers/`, payload);
+            project_id: projectId,
+            name: get().stepOneData?.name,
+            description: get().stepOneData?.description,
+            tags: get().stepOneData?.tags,
+            routing_strategy: get().stepOneData?.routing_strategy,
+            endpoints: get().stepTwoData,
+        };
+
+        const response = await AppRequest.Post(
+            `${tempApiBaseUrl}/routers/`,
+            payload,
+            {
+                headers: {
+                    "x-resource-type": "project",
+                    "x-entity-id": projectId,
+                },
+            }
+        );
+
         console.log(response);
         return response;
     },
+
 }));
