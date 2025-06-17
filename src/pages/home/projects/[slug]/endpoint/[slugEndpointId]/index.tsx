@@ -113,19 +113,6 @@ export default function EndpointDashboard() {
         }
     }, [endpointId]);
 
-    const deleteEndpoint = async () => {
-        try {
-            const response: any = await AppRequest.Delete(
-                `/endpoints/${endpointDetailsData?.['id']}`
-            );
-            successToast(response.data.message);
-            router.back();
-            handleCloseDialogDelete()
-        } catch (error) {
-            console.error("Error creating model:", error);
-        }
-    };
-
     const getScoreData = useCallback(async () => {
         if (endpointId) {
             try {

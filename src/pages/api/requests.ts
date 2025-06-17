@@ -221,22 +221,32 @@ const Get = (
   return axiosInstance.get(endPoint, payload);
 };
 
-const Post = (endPoint, payload?, params?) => {
-  const config = {
-    params: params,
+const Post = (
+  endPoint,
+  payload?: any,
+  config?: {
+    params?: any;
+    headers?: any;
+  }
+) => {
+  const finalConfig: any = {
+    ...config,
+    headers: {
+      ...(config?.headers || {}),
+    },
   };
+
   // Check if payload is an instance of FormData
   if (payload instanceof FormData) {
-    config["headers"] = {
-      Accept: "multipart/form-data",
-    };
+    finalConfig.headers["Accept"] = "multipart/form-data";
   }
 
-  return axiosInstance.post(endPoint, payload, config);
+  return axiosInstance.post(endPoint, payload, finalConfig);
 };
 
-const Delete = (endPoint, payload?) => {
-  return axiosInstance.delete(endPoint);
+
+const Delete = (endPoint, payload?, config?) => {
+  return axiosInstance.delete(endPoint, config);
 };
 
 const Patch = (endPoint, payload?) => {

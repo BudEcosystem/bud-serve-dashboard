@@ -3,12 +3,13 @@ import { BudWraperBox } from "@/components/ui/bud/card/wraperBox";
 
 import { BudDrawerLayout } from "@/components/ui/bud/dataEntry/BudDrawerLayout";
 import { BudForm } from "@/components/ui/bud/dataEntry/BudForm";
-import React, {  } from "react";
+import React, { } from "react";
 import { useDrawer } from "src/hooks/useDrawer";
 import BudStepAlert from "src/flows/components/BudStepAlert";
 import { useDeployModel } from "src/stores/useDeployModel";
 import CommonStatus from "src/flows/components/CommonStatus";
 import { useWorkers } from "src/hooks/useWorkers";
+import { useRouter } from "next/router";
 
 export default function AddWorkerDeployStatus() {
   const [isFailed, setIsFailed] = React.useState(false);
@@ -16,7 +17,9 @@ export default function AddWorkerDeployStatus() {
   const { currentWorkflow } = useDeployModel();
   const { openDrawerWithStep, closeDrawer } = useDrawer();
   const { getWorkers } = useWorkers();
-
+  const router = useRouter();
+  const projectId = router.query.projectId as string
+  
   if (!currentWorkflow?.workflow_id) {
     return null;
   }
@@ -45,7 +48,7 @@ export default function AddWorkerDeployStatus() {
             confirmAction={() => {
               // TODO: Add cancel action
               closeDrawer()
-              getWorkers(currentWorkflow?.workflow_steps?.endpoint?.id)
+              getWorkers(currentWorkflow?.workflow_steps?.endpoint?.id, projectId)
             }}
             cancelAction={() => {
               setShowAlert(false)

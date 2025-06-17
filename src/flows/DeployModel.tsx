@@ -10,6 +10,7 @@ import { useProjects } from "src/hooks/useProjects";
 import { useDeployModel } from "src/stores/useDeployModel";
 import { StepComponentsType } from ".";
 import ModelFilter from "@/components/ui/bud/deploymentDrawer/ModelFilter";
+import { useRouter } from "next/router";
 
 export default function DeployModel() {
   const [page, setPage] = React.useState(1);
@@ -24,7 +25,8 @@ export default function DeployModel() {
   const { selectedProjectId } = useProjects();
   const { selectedModel, currentWorkflow, createWorkflow, updateModel, setSelectedModel, cancelModelDeployment } = useDeployModel();
   const { openDrawerWithStep, openDrawer, setPreviousStep, currentFlow, step } = useDrawer();
-
+  const router = useRouter();
+  const projectId = router.query.projectId as string;
   useEffect(() => {
     fetchModels({
       page, limit,
@@ -80,7 +82,7 @@ export default function DeployModel() {
               setSearch={setSearch}
               buttonLabel="+&nbsp;New&nbsp;Model"
               onButtonClick={() => {
-                cancelModelDeployment(currentWorkflow?.workflow_id);
+                cancelModelDeployment(currentWorkflow?.workflow_id, projectId);
                 setSelectedModel(null);
                 setPreviousStep(step.id as StepComponentsType);
                 openDrawer("add-model")

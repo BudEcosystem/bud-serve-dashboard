@@ -12,6 +12,7 @@ import { useDeployModel } from "src/stores/useDeployModel"
 import { useDrawer } from "src/hooks/useDrawer"
 import { BudFormContext } from "@/components/ui/bud/context/BudFormContext"
 import { Text_12_300_EEEEEE } from "@/components/ui/text"
+import { useRouter } from "next/router"
 
 
 export const SelectAdapterModel = () => {
@@ -27,6 +28,9 @@ export const SelectAdapterModel = () => {
     const [models, setModels] = React.useState([]);
     const [search, setSearch] = React.useState("");
     const [selectedModel, setSelectedModel] = React.useState(null);
+    
+    const router = useRouter();
+    const projectId = router.query.projectId as string;
 
     useEffect(() => {
         fetchModels({
@@ -53,7 +57,7 @@ export const SelectAdapterModel = () => {
     const handleNext = async () => {
         form.submit();
 
-        const result = await createAddAdapterWorkflow(clusterDetails?.id, selectedModel.id);
+        const result = await createAddAdapterWorkflow(clusterDetails?.id, selectedModel.id, projectId);
         if (!result) {
             return;
         }

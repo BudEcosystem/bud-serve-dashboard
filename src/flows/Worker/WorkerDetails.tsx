@@ -117,6 +117,7 @@ export default function WorkerDetails() {
   const [workerLogs, setWorkerLogs] = useState<any>(null);
 
   const deploymentId = router.query.deploymentId as string
+  const projectId = router.query.projectId as string
 
   const { closeDrawer } = useDrawer();
   const { submittable } = useContext(BudFormContext);
@@ -134,10 +135,10 @@ export default function WorkerDetails() {
 
   useEffect(() => {
     if (selectedWorker) {
-      getWorkerMetrics(deploymentId, selectedWorker.id).then((metrics) => {
+      getWorkerMetrics(deploymentId, selectedWorker.id, projectId).then((metrics) => {
         setWrokerMetrics(metrics);
       });
-      getWorkerLogs(deploymentId, selectedWorker.id).then((logs) => {
+      getWorkerLogs(deploymentId, selectedWorker.id, projectId).then((logs) => {
         setWorkerLogs(logs);
       });
     }
@@ -251,7 +252,7 @@ export default function WorkerDetails() {
             confirmText={'Delete Worker'}
             cancelText={'Cancel'}
             confirmAction={async () => {
-              const result = await deleteWorker(deploymentId, selectedWorker)
+              const result = await deleteWorker(deploymentId, selectedWorker, projectId)
               console.log(result);
               if (result) {
                 closeDrawer()
@@ -285,7 +286,7 @@ export default function WorkerDetails() {
                 <PrimaryButton
                   type="submit"
                   onClick={async () => {
-                    await getWorker(deploymentId, selectedWorker.id, true)
+                    await getWorker(deploymentId, selectedWorker.id, true, projectId)
                     setShowSuccess(true)
                   }}
                   disabled={loading}

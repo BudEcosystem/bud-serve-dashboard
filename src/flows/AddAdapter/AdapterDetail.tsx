@@ -9,6 +9,7 @@ import DrawerTitleCard from "@/components/ui/bud/card/DrawerTitleCard";
 import DrawerCard from "@/components/ui/bud/card/DrawerCard";
 import { BudDrawerLayout } from "@/components/ui/bud/dataEntry/BudDrawerLayout";
 import TextInput from "../components/TextInput";
+import { useRouter } from "next/router";
 
 
 export const AdapterDetail = () => {
@@ -16,9 +17,11 @@ export const AdapterDetail = () => {
     const { openDrawerWithStep, closeDrawer } = useDrawer();
     const { values, form } = useContext(BudFormContext);
     const { updateAdapterDetailWorkflow, adapterWorkflow, setAdapterWorkflow, currentWorkflow } = useDeployModel();
-
-    useEffect(()=> {
-        if(!currentWorkflow){
+    const router = useRouter();
+    const projectId = router.query.projectId as string;
+    
+    useEffect(() => {
+        if (!currentWorkflow) {
             return
         }
         setAdapterWorkflow({
@@ -28,17 +31,17 @@ export const AdapterDetail = () => {
             adapterId: currentWorkflow.workflow_steps.adapter_config?.adapter_id
         })
     }, [currentWorkflow])
-    
+
     const handleNext = async () => {
         form.submit();
-        const result = await updateAdapterDetailWorkflow(adapterWorkflow?.adapterName);
+        const result = await updateAdapterDetailWorkflow(adapterWorkflow?.adapterName, projectId);
         if (!result) {
             return;
         }
         // setQuantizationWorkflow(values);
         openDrawerWithStep("add-adapter-status")
     }
-    
+
     return (
         <BudForm
             data={adapterWorkflow}
@@ -46,7 +49,7 @@ export const AdapterDetail = () => {
             onNext={handleNext}
             // disableNext={!selectedModel}
             backText="Back"
-            onBack={() => {openDrawerWithStep("add-adapter-select-model")}}
+            onBack={() => { openDrawerWithStep("add-adapter-select-model") }}
         >
             <BudWraperBox>
                 <AdapterInfoCard />
@@ -65,7 +68,7 @@ export const AdapterDetail = () => {
                             defaultValue={adapterWorkflow?.adapterName}
                             ClassNames="mt-[.4rem]"
                             infoText="Enter a name for the deployment of the adapter"
-                            onChange={(e) => setAdapterWorkflow({...adapterWorkflow, "adapterName": e})}
+                            onChange={(e) => setAdapterWorkflow({ ...adapterWorkflow, "adapterName": e })}
                         />
                     </DrawerCard>
                 </BudDrawerLayout>

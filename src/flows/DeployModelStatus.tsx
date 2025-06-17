@@ -8,12 +8,14 @@ import { useDeployModel } from "src/stores/useDeployModel";
 import BudStepAlert from "./components/BudStepAlert";
 import CommonStatus from "./components/CommonStatus";
 import { errorToast, successToast } from "@/components/toast";
+import { useRouter } from "next/router";
 
 export default function DeployModeStatus() {
   const { currentWorkflow, cancelModelDeployment } = useDeployModel();
   const { openDrawerWithStep, closeDrawer, isFailed, setFailed } = useDrawer();
   const [showAlert, setShowAlert] = React.useState(false);
-
+  const router = useRouter();
+  const projectId = router.query.projectId as string;
   return (
     <BudForm
       data={{}}
@@ -48,7 +50,7 @@ export default function DeployModeStatus() {
             confirmText="Cancel Anyways"
             confirmAction={async () => {
               if (currentWorkflow?.workflow_id) {
-                const response = await cancelModelDeployment(currentWorkflow?.workflow_id);
+                const response = await cancelModelDeployment(currentWorkflow?.workflow_id, projectId);
                 if (response) {
                   successToast("Deployment cancelled successfully");
                   closeDrawer();

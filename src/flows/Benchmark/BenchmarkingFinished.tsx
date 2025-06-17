@@ -26,7 +26,7 @@ export default function BenchmarkingFinished() {
   } = useModels();
   const [search, setSearch] = React.useState("");
   const { selectedProjectId } = useProjects();
-  const { selectedModel, currentWorkflow, createWorkflow, updateModel, setSelectedModel, cancelModelDeployment } = useDeployModel();
+  const { selectedModel, currentWorkflow, createWorkflow, updateModel, setSelectedModel } = useDeployModel();
   const { openDrawerWithStep, openDrawer, setPreviousStep, currentFlow, step, closeDrawer } = useDrawer();
 
   useEffect(() => {

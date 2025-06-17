@@ -9,6 +9,7 @@ import AddWorkerInfoCard from "../components/AddWorkerInfoCard";
 import ClusterList from "../components/ClusterList";
 import DrawerTitleCard from "@/components/ui/bud/card/DrawerTitleCard";
 import { BudDrawerLayout } from "@/components/ui/bud/dataEntry/BudDrawerLayout";
+import { useRouter } from "next/router";
 
 
 export default function AddWorkerClusterConfiguration() {
@@ -21,6 +22,8 @@ export default function AddWorkerClusterConfiguration() {
   const { getWorkflow, workerDetails, completeCreateWorkerFlow } = useDeployModel();
   const { currentWorkflow } = useDeployModel();
   const { getRecommendedClusterById, recommendedCluster } = useCluster();
+  const router = useRouter();
+  const projectId = router.query.projectId as string;
 
   useEffect(() => {
     if (currentWorkflow?.workflow_id) {
@@ -37,7 +40,7 @@ export default function AddWorkerClusterConfiguration() {
       }}
       disableNext={recommendedCluster?.clusters?.length === 0}
       onNext={async (values) => {
-        const result = await completeCreateWorkerFlow(currentWorkflow?.workflow_id);
+        const result = await completeCreateWorkerFlow(currentWorkflow?.workflow_id, projectId);
         if (result) {
           openDrawerWithStep("add-worker-deploy-status");
         }
@@ -54,14 +57,14 @@ export default function AddWorkerClusterConfiguration() {
     >
       <BudWraperBox classNames="mt-[1.6rem]">
         <AddWorkerInfoCard />
-      <BudDrawerLayout>
-      <DrawerTitleCard title="Cluster Configuration" description="Best configuration is generated based on the required concurrency" />
-        <div className="clusterCardWrap w-full ">
-          <div className="clusterCard w-full">
-            <ClusterList clusters={recommendedCluster?.clusters} handleClusterSelection={(cluster) => { }} selectedCluster={selectedCluster} hideRank hideSelection />
+        <BudDrawerLayout>
+          <DrawerTitleCard title="Cluster Configuration" description="Best configuration is generated based on the required concurrency" />
+          <div className="clusterCardWrap w-full ">
+            <div className="clusterCard w-full">
+              <ClusterList clusters={recommendedCluster?.clusters} handleClusterSelection={(cluster) => { }} selectedCluster={selectedCluster} hideRank hideSelection />
+            </div>
           </div>
-        </div>
-      </BudDrawerLayout>
+        </BudDrawerLayout>
       </BudWraperBox>
     </BudForm>
   );
