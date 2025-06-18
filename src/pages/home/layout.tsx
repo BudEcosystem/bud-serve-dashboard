@@ -147,7 +147,7 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
       iconWhite: '/images/icons/keyWhite.png',
       cmd: "7",
     },
-  ]?.filter((tab) => !tab.hide);
+  ]
 
   const tabsTwo = [
     {
@@ -156,7 +156,7 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
     },
     { label: "Settings", route: "/settings", icon: GearIcon },
     // { label: "Help", route: "/help", icon: QuestionMarkIcon },
-  ]?.filter((tab) => !tab.hide);
+  ];
   useEffect(() => {
     setIsHydrated(true);
   }, []);
@@ -210,46 +210,44 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
             className="flex justify-start items-start flex-col gap-1 menuWrap pt-[0.25em]"
           >
             {tabsTwo.map((tab) => {
-              let Icon = tab.icon;
+              const Icon = tab.icon;
+
+              const isActive = pathname?.includes(tab.route);
+              const isVisible = !tab.hide;
 
               return (
                 <Link
                   className="linkLink mb-[.6rem] w-full"
+                  onClick={(e) => !isVisible && e.preventDefault()}
                   key={tab.route}
                   href={tab.route}
                   passHref
                 >
                   <div
                     className={classNames(
-                      "flex items-center gap-2 group flex gap-x-[0.85em] rounded-md py-[0.25em] px-[1.3rem] font-light text-[#B3B3B3] hover:font-semibold hover:text-[#EEEEEE]",
+                      "flex items-center gap-2 group gap-x-[0.85em] rounded-md py-[0.25em] px-[1.3rem] font-light text-[#B3B3B3]",
                       "LinkDiv",
-                      pathname?.includes(tab.route)
-                        ? "!text-[#EEEEEE]"
-                        : ""
+                      isVisible && "hover:font-semibold hover:text-[#EEEEEE]",
+                      isActive && "!text-[#EEEEEE]"
                     )}
                   >
                     <div className="LinkIcn">
                       <Icon
                         width="1.05em"
                         height="1.05em"
-                        // color="#C6C6C6"
-                        className={`w-[1.05em] h-[1.05em] 1920px:w-[1.2em] 1920px:h-[1.2em] group-hover:text-[#EEEEEE] ${isHovered !== tab.route &&
-                          !pathname?.includes(tab.route)
-                          ? ""
-                          : "text-[#EEEEEE]"
-                          }`}
+                        className={classNames(
+                          "w-[1.05em] h-[1.05em] 1920px:w-[1.2em] 1920px:h-[1.2em]",
+                          isVisible && "group-hover:text-[#EEEEEE]",
+                          (isHovered === tab.route || isActive) && "text-[#EEEEEE]"
+                        )}
                       />
                     </div>
-                    {/* <Text className="text-sm">{tab.label}</Text> */}
-                    {/* <Text_14_400_FFFFFF className="block text-[0.875em]">
-                                {tab.label}
-                              </Text_14_400_FFFFFF> */}
                     <Text_15_400_B3B3B3
-                      className={`pl-[0.25em] !text-[.875rem] group-hover:text-[#EEEEEE] ${isHovered !== tab.route &&
-                        !pathname?.includes(tab.route)
-                        ? ""
-                        : "text-[#EEEEEE]"
-                        }`}
+                      className={classNames(
+                        "pl-[0.25em] !text-[.875rem]",
+                        isVisible && "group-hover:text-[#EEEEEE]",
+                        (isHovered === tab.route || isActive) && "text-[#EEEEEE]"
+                      )}
                     >
                       {tab.label}
                     </Text_15_400_B3B3B3>
@@ -257,6 +255,7 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
                 </Link>
               );
             })}
+
           </div>
         </>
       )}
@@ -307,76 +306,81 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
               <div
                 className="flex justify-start items-center flex-col menuWrap pt-[0.235rem] px-[.6rem]"
               >
-                {tabs.map((tab) => (
-                  <Link
-                    className="linkLink mb-[.62rem]"
-                    key={tab.route}
-                    href={tab.route}
-                    passHref
-                    onMouseEnter={() => setIsHovered(tab.route)}
-                    onMouseLeave={() => setIsHovered(false)}
-                  >
-                    <div
-                      className={classNames(
-                        "flex justify-between items-center gap-2 group flex gap-x-[0.75em] rounded-md py-[0.3em] px-[.7em] font-light text-[#B3B3B3] hover:font-semibold hover:text-[#EEEEEE]",
-                        "LinkDiv",
-                        pathname?.includes(tab.route)
-                          ? "!text-[#EEEEEE] bg-[#1F1F1F]"
-                          : ""
-                      )}
+                {tabs.map((tab) => {
+                  const isActive = pathname?.includes(tab.route);
+                  const isVisible = !tab.hide;
+
+                  return (
+                    <Link
+                      className="linkLink mb-[.62rem]"
+                      key={tab.route}
+                      href={tab.route}
+                      passHref
+                      onMouseEnter={() => isVisible && setIsHovered(tab.route)}
+                      onMouseLeave={() => isVisible && setIsHovered(false)}
+                      onClick={(e) => !isVisible && e.preventDefault()}
                     >
-                      <div className="flex items-center gap-2">
-                        <div className="LinkIcn">
-                          <div
-                            className={`icon ${isHovered === tab.route ||
-                              pathname?.includes(tab.route)
-                              ? "visible"
-                              : "hidden"
-                              }`}
-                          >
-                            <Image
-                              preview={false}
-                              src={tab.iconWhite}
-                              style={{ width: '1em', height: '1em' }}
-                              alt="Hovered Logo"
-                              className="1920px:w-[1.2em] 1920px:h-[1.2em]"
-                            />
+                      <div
+                        className={classNames(
+                          "flex justify-between items-center gap-2 group gap-x-[0.75em] rounded-md py-[0.3em] px-[.7em] font-light text-[#B3B3B3]",
+                          "LinkDiv",
+                          isVisible && "hover:font-semibold hover:text-[#EEEEEE]",
+                          isActive && "!text-[#EEEEEE] bg-[#1F1F1F]"
+                        )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="LinkIcn">
+                            {/* Hovered Icon (White) */}
+                            <div
+                              className={classNames(
+                                "icon",
+                                (isHovered === tab.route || isActive) ? "visible" : "hidden"
+                              )}
+                            >
+                              <Image
+                                preview={false}
+                                src={tab.iconWhite}
+                                style={{ width: "1em", height: "1em" }}
+                                alt="Hovered Logo"
+                                className="1920px:w-[1.2em] 1920px:h-[1.2em]"
+                              />
+                            </div>
+                            {/* Default Icon */}
+                            <div
+                              className={classNames(
+                                "icon",
+                                (isHovered !== tab.route && !isActive) ? "visible" : "hidden"
+                              )}
+                            >
+                              <Image
+                                preview={false}
+                                src={tab.icon}
+                                style={{ width: "1em", height: "1em" }}
+                                alt="Default Logo"
+                                className="1920px:w-[1.2em] 1920px:h-[1.2em]"
+                              />
+                            </div>
                           </div>
-                          <div
-                            className={`icon ${isHovered !== tab.route &&
-                              !pathname?.includes(tab.route)
-                              ? "visible"
-                              : "hidden"
-                              }`}
+                          <Text_14_400_B3B3B3
+                            className={classNames(
+                              "pl-[0.65em] tracking-[.03rem]",
+                              (isHovered === tab.route || isActive) && "!text-[#EEE]"
+                            )}
                           >
-                            <Image
-                              preview={false}
-                              src={tab.icon}
-                              style={{ width: '1em', height: '1em' }}
-                              alt="Default Logo"
-                              className="1920px:w-[1.2em] 1920px:h-[1.2em]"
-                            />
-                          </div>
+                            {tab.label}
+                          </Text_14_400_B3B3B3>
                         </div>
-                        <Text_14_400_B3B3B3
-                          className={`pl-[0.65em] tracking-[.03rem] ${isHovered === tab.route ||
-                            pathname?.includes(tab.route)
-                            ? "!text-[#EEE]"
-                            : ""
-                            }`}
-                        >
-                          {tab.label}
-                        </Text_14_400_B3B3B3>
+
+                        {/* Keyboard shortcut component */}
+                        <ShortCutComponent
+                          cmd={tab.cmd}
+                          action={() => isVisible && router.push(tab.route)}
+                        />
                       </div>
-                      <ShortCutComponent
-                        cmd={tab.cmd}
-                        action={() => {
-                          router.push(tab.route);
-                        }}
-                      />
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
+
               </div>
             </div>
             <div className="block w-full">

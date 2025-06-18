@@ -848,7 +848,6 @@ export default function DeploymentAnalysis({
   useEffect(() => {
     console.log('projectId', projectId)
     console.log('projectId', projectId)
-    console.log('clustersId', clustersId)
   }, [router.isReady]);
   const navigateToHarmfulness = (key, title) => {
     if (deploymentId) {

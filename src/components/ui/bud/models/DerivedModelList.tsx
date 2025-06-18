@@ -12,6 +12,7 @@ import { Model, useModels } from "src/hooks/useModels";
 import { useDeployModel } from "src/stores/useDeployModel";
 import { BranchType } from "src/flows/ViewModel/Advanced/Advanced";
 import { Text_12_300_EEEEEE } from "../../text";
+import { PermissionEnum, useUser } from "src/stores/useUser";
 
 type ExpandedItemProps = {
   selectedBranch: BranchType;
@@ -35,6 +36,7 @@ export default function DerivedModelList() {
 
   const [search, setSearch] = React.useState("");
   const [showAllTags, setShowAllTags] = React.useState(false);
+  const { hasPermission } = useUser()
   const {
     selectedModel,
     setSelectedModel,
@@ -111,6 +113,7 @@ export default function DerivedModelList() {
               search={search}
               setSearch={setSearch}
               filterClick={() => { }}
+              buttonPermission={hasPermission(PermissionEnum.ModelManage)}
               buttonLabel={props.selectedBranch.name == 'Quantizations' ? `Add ${props.selectedBranch.name}` : ''}
               onButtonClick={() => {
                 if (props.selectedBranch.name == 'Quantizations') {

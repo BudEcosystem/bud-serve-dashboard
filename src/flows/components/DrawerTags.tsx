@@ -365,7 +365,7 @@ function Tags(props: BudInputProps) {
           onClose={props.onClose}
         >
           {props.showTooltip ? (
-            <CustomPopover title={copyText} contentClassNames="flex justify-center items-center w-full h-full" classNames="flex justify-center items-center w-full h-full">
+            <CustomPopover title={copyText} contentClassNames="flex justify-center items-center w-full h-full" customClassName="flex justify-center items-center w-full h-full">
               <div className="flex justify-center items-center w-full h-full">
                 {props.image && (
                   <div>

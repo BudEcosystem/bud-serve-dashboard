@@ -27,6 +27,7 @@ import SearchHeaderInput from "src/flows/components/SearchHeaderInput";
 import NoDataFount from "@/components/ui/noDataFount";
 import TagsList from "src/flows/components/TagsList";
 import { PermissionEnum, useUser } from "src/stores/useUser";
+import { PlusOutlined } from "@ant-design/icons";
 
 const Projects = () => {
   const { hasPermission, loadingUser, hasProjectPermission } = useUser();
@@ -81,8 +82,9 @@ const Projects = () => {
         <Box className="boardPageTop">
           <PageHeader
             headding="Projects"
-            ButtonIcon={PlusIcon}
-            buttonLabel={hasPermission(PermissionEnum.ProjectManage) ? "Project" : ""}
+            ButtonIcon={PlusOutlined}
+            buttonLabel="Project"
+            buttonPermission={hasPermission(PermissionEnum.ProjectManage)}
             // buttonAction={() => openFlow("project-success")}
             buttonAction={() => {
               openDrawer("new-project")

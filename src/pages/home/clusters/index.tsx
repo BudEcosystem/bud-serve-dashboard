@@ -27,6 +27,7 @@ import { PermissionEnum, useUser } from "src/stores/useUser";
 import router from "next/router";
 import IconRender from "src/flows/components/BudIconRender";
 import { useConfirmAction } from "src/hooks/useConfirmAction";
+import { PlusOutlined } from "@ant-design/icons";
 
 export default function Clusters() {
   const { setOverlayVisible } = useOverlay();
@@ -118,9 +119,9 @@ export default function Clusters() {
         <div className="boardPageTop">
           <PageHeader
             headding="Clusters"
-            buttonLabel={
-              hasPermission(PermissionEnum.ClusterManage) ? "+ Cluster" : ""
-            }
+            buttonLabel="Cluster"
+            ButtonIcon={PlusOutlined}
+            buttonPermission={hasPermission(PermissionEnum.ClusterManage)}
             buttonAction={() => {
               setClusterValues({});
               openDrawer("add-cluster-select-source");

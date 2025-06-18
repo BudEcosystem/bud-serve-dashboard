@@ -104,7 +104,7 @@ export const useEndPoints = create<{
   updateEndPoint: (endpointId: string, data: any) => void;
   getReusedPrompts: (deploymentId: string,) => void;
   getInferenceQualityAnalytics: (deploymentId: string,) => void;
-  getEndpointClusterDetails: (endpointId: string, source?: string, projectId?: string) => void;
+  getEndpointClusterDetails: (endpointId: string, projectId?: string) => void;
   getInferenceQualityPrompts: (params: any, id: string) => void;
   clusterDetails?: EndpointClusterData;
   getAdapters: (
@@ -136,14 +136,14 @@ export const useEndPoints = create<{
     set({ scoreType: scoreType });
     set({ pageTitle: title });
   },
-  getEndpointClusterDetails: async (endpointId: string, source?: string, projectId?) => {
+  getEndpointClusterDetails: async (endpointId: string, projectId?) => {
+    console.log("projectId projectId", projectId)
     set({ loading: true });
-    console.log("model-cluster-detail-source", source);
     const url = `${tempApiBaseUrl}/endpoints/${endpointId}/model-cluster-detail`;
 
     try {
       const response: any = await AppRequest.Get(url, {
-        params: source ? { source } : undefined,
+       
         headers: {
           "x-resource-type": "project",
           "x-entity-id": projectId,
