@@ -168,6 +168,11 @@ export default function EditUser() {
       view: userPermissions?.global_scopes?.find(scope => scope.name === 'user:view')?.has_permission,
       manage: userPermissions?.global_scopes?.find(scope => scope.name === 'user:manage')?.has_permission,
     },
+    {
+      name: 'Benchmarks',
+      view: userPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:view')?.has_permission,
+      manage: userPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:manage')?.has_permission,
+    }
   ]
 
   const expandData = [

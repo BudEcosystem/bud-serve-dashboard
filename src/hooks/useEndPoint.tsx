@@ -137,6 +137,7 @@ export const useEndPoints = create<{
     set({ pageTitle: title });
   },
   getEndpointClusterDetails: async (endpointId: string, source?: string, projectId?) => {
+    console.log("projectId projectId", projectId)
     set({ loading: true });
     console.log("model-cluster-detail-source", source);
     const url = `${tempApiBaseUrl}/endpoints/${endpointId}/model-cluster-detail`;

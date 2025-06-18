@@ -45,6 +45,14 @@ const Permissions = [
     has_permission: false,
   },
   {
+    name: "benchmark:view",
+    has_permission: true,
+  },
+  {
+    name: "benchmark:manage",
+    has_permission: false,
+  },
+  {
     name: "user:manage",
     has_permission: false,
   },
@@ -93,6 +101,12 @@ export default function AddUser() {
       view: Permissions?.find(scope => scope.name === 'project:view')?.has_permission,
       manage: Permissions?.find(scope => scope.name === 'project:manage')?.has_permission,
       key: 'project'
+    },
+    {
+      name: 'Benchmarks',
+      view: Permissions?.find(scope => scope.name === 'benchmark:view')?.has_permission,
+      manage: Permissions?.find(scope => scope.name === 'benchmark:manage')?.has_permission,
+      key: 'benchmark'
     }
   ]
 

@@ -147,7 +147,7 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
       iconWhite: '/images/icons/keyWhite.png',
       cmd: "7",
     },
-  ]?.filter((tab) => !tab.hide);
+  ]
 
   const tabsTwo = [
     {
@@ -209,51 +209,53 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
           <div
             className="flex justify-start items-start flex-col gap-1 menuWrap pt-[0.25em]"
           >
-            {tabsTwo.map(tab => {
+            {tabsTwo.map((tab) => {
               const Icon = tab.icon;
-              const disabled = tab.hide;                 // 👈 treat hide as disabled
+
+              const isActive = pathname?.includes(tab.route);
+              const isVisible = !tab.hide;
 
               return (
-                <div                         // use <div> instead of <Link> when disabled
+                <Link
+                  className="linkLink mb-[.6rem] w-full"
+                  onClick={(e) => !isVisible && e.preventDefault()}
                   key={tab.route}
-                  {...(!disabled && {        // only add link props when enabled
-                    as: Link,
-                    href: tab.route,
-                    passHref: true,
-                  })}
-                  className={classNames(
-                    "linkLink mb-[.6rem] w-full",
-                    "flex items-center gap-2 gap-x-[0.85em] rounded-md py-[0.25em] px-[1.3rem]",
-                    disabled
-                      ? "text-[#555555] cursor-not-allowed pointer-events-none"
-                      : "font-light text-[#B3B3B3] hover:font-semibold hover:text-[#EEEEEE]"
-                  )}
+                  href={tab.route}
+                  passHref
                 >
-                  <Icon
-                    width="1.05em"
-                    height="1.05em"
+                  <div
                     className={classNames(
-                      "w-[1.05em] h-[1.05em] 1920px:w-[1.2em] 1920px:h-[1.2em]",
-                      disabled
-                        ? "text-[#555555]"
-                        : isHovered !== tab.route && !pathname?.includes(tab.route)
-                          ? ""
-                          : "text-[#EEEEEE] group-hover:text-[#EEEEEE]"
-                    )}
-                  />
-                  <Text_15_400_B3B3B3
-                    className={classNames(
-                      "pl-[0.25em] !text-[.875rem]",
-                      disabled
-                        ? "text-[#555555]"
-                        : "group-hover:text-[#EEEEEE]"
+                      "flex items-center gap-2 group gap-x-[0.85em] rounded-md py-[0.25em] px-[1.3rem] font-light text-[#B3B3B3]",
+                      "LinkDiv",
+                      isVisible && "hover:font-semibold hover:text-[#EEEEEE]",
+                      isActive && "!text-[#EEEEEE]"
                     )}
                   >
-                    {tab.label}
-                  </Text_15_400_B3B3B3>
-                </div>
+                    <div className="LinkIcn">
+                      <Icon
+                        width="1.05em"
+                        height="1.05em"
+                        className={classNames(
+                          "w-[1.05em] h-[1.05em] 1920px:w-[1.2em] 1920px:h-[1.2em]",
+                          isVisible && "group-hover:text-[#EEEEEE]",
+                          (isHovered === tab.route || isActive) && "text-[#EEEEEE]"
+                        )}
+                      />
+                    </div>
+                    <Text_15_400_B3B3B3
+                      className={classNames(
+                        "pl-[0.25em] !text-[.875rem]",
+                        isVisible && "group-hover:text-[#EEEEEE]",
+                        (isHovered === tab.route || isActive) && "text-[#EEEEEE]"
+                      )}
+                    >
+                      {tab.label}
+                    </Text_15_400_B3B3B3>
+                  </div>
+                </Link>
               );
             })}
+
           </div>
         </>
       )}
@@ -306,37 +308,35 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
               >
                 {tabs.map((tab) => {
                   const isActive = pathname?.includes(tab.route);
-                  const isHoveredNow = isHovered === tab.route;
-                  const isVisibleIcon = isHoveredNow || isActive;
-                  const isDefaultIcon = !isHoveredNow && !isActive;
-                  const disabled = tab.hide;
-
-                  const Wrapper = disabled ? "div" : Link;
+                  const isVisible = !tab.hide;
 
                   return (
-                    <Wrapper
+                    <Link
+                      className="linkLink mb-[.62rem]"
                       key={tab.route}
-                      href={!disabled ? tab.route : undefined}
-                      passHref={!disabled}
-                      onMouseEnter={!disabled ? () => setIsHovered(tab.route) : undefined}
-                      onMouseLeave={!disabled ? () => setIsHovered(false) : undefined}
-                      className={classNames(
-                        "linkLink mb-[.62rem]",
-                        disabled && "cursor-not-allowed pointer-events-none"
-                      )}
+                      href={tab.route}
+                      passHref
+                      onMouseEnter={() => isVisible && setIsHovered(tab.route)}
+                      onMouseLeave={() => isVisible && setIsHovered(false)}
+                      onClick={(e) => !isVisible && e.preventDefault()}
                     >
                       <div
                         className={classNames(
                           "flex justify-between items-center gap-2 group gap-x-[0.75em] rounded-md py-[0.3em] px-[.7em] font-light text-[#B3B3B3]",
                           "LinkDiv",
-                          !disabled && "hover:font-semibold hover:text-[#EEEEEE]",
-                          isActive ? "!text-[#EEEEEE] bg-[#1F1F1F]" : "",
-                          disabled && "opacity-50"
+                          isVisible && "hover:font-semibold hover:text-[#EEEEEE]",
+                          isActive && "!text-[#EEEEEE] bg-[#1F1F1F]"
                         )}
                       >
                         <div className="flex items-center gap-2">
                           <div className="LinkIcn">
-                            <div className={`icon ${isVisibleIcon ? "visible" : "hidden"}`}>
+                            {/* Hovered Icon (White) */}
+                            <div
+                              className={classNames(
+                                "icon",
+                                (isHovered === tab.route || isActive) ? "visible" : "hidden"
+                              )}
+                            >
                               <Image
                                 preview={false}
                                 src={tab.iconWhite}
@@ -345,7 +345,13 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
                                 className="1920px:w-[1.2em] 1920px:h-[1.2em]"
                               />
                             </div>
-                            <div className={`icon ${isDefaultIcon ? "visible" : "hidden"}`}>
+                            {/* Default Icon */}
+                            <div
+                              className={classNames(
+                                "icon",
+                                (isHovered !== tab.route && !isActive) ? "visible" : "hidden"
+                              )}
+                            >
                               <Image
                                 preview={false}
                                 src={tab.icon}
@@ -358,23 +364,23 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
                           <Text_14_400_B3B3B3
                             className={classNames(
                               "pl-[0.65em] tracking-[.03rem]",
-                              isVisibleIcon && "!text-[#EEE]"
+                              (isHovered === tab.route || isActive) && "!text-[#EEE]"
                             )}
                           >
                             {tab.label}
                           </Text_14_400_B3B3B3>
                         </div>
 
-                        {!disabled && (
-                          <ShortCutComponent
-                            cmd={tab.cmd}
-                            action={() => router.push(tab.route)}
-                          />
-                        )}
+                        {/* Keyboard shortcut component */}
+                        <ShortCutComponent
+                          cmd={tab.cmd}
+                          action={() => isVisible && router.push(tab.route)}
+                        />
                       </div>
-                    </Wrapper>
+                    </Link>
                   );
                 })}
+
               </div>
             </div>
             <div className="block w-full">

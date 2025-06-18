@@ -12,7 +12,9 @@ export enum PermissionEnum {
     ClusterManage = "cluster:manage",
     UserManage = "user:manage",
     EndpointView = "endpoint:view",
-    EndpointManage = "endpoint:manage"
+    EndpointManage = "endpoint:manage",
+    BenchmarkView = "benchmark:view",
+    BenchmarkManage = "benchmark:manage"
 }
 
 
