@@ -97,7 +97,7 @@ export default function AdaptersTable() {
             <PrimaryButton
               onClick={async (event) => {
                 event.stopPropagation();
-                // await getEndpointClusterDetails(record.id)
+                // await getEndpointClusterDetails(record.id, projectId);
                 openDrawer('use-model', record);
               }}
             >

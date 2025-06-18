@@ -69,8 +69,7 @@ function DeploymentListTable() {
         })
     }
     const setEndpointDetails = (id, projectId) => {
-        console.log("setEndpointDetails", id, projectId);
-        // getEndpointClusterDetails(id, projectId);
+        getEndpointClusterDetails(id, projectId);
     }
 
     useHandleRouteChange(() => {
