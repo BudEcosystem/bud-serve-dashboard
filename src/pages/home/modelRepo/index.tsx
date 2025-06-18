@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { MixerHorizontalIcon, PlusIcon } from "@radix-ui/react-icons";
+import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import { ConfigProvider, Image, Popover, Select, Slider, Tag } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import React from "react";
@@ -37,6 +37,7 @@ import ModelTags from "src/flows/components/ModelTags";
 import { PermissionEnum, useUser } from "src/stores/useUser";
 import IconRender from "src/flows/components/BudIconRender";
 import router from "next/router";
+import { PlusOutlined } from "@ant-design/icons";
 
 function ModelCard(item: Model, index) {
   const { getModel } = useModels();
@@ -405,14 +406,13 @@ export default function ModelRepo() {
         <div className="boardPageTop">
           <PageHeader
             headding="Models"
-            buttonLabel={
-              hasPermission(PermissionEnum.ModelManage) ? "Model" : ""
-            }
+            buttonLabel="Model"
+            buttonPermission={hasPermission(PermissionEnum.ModelManage)}
             buttonAction={() => {
               openDrawer("add-model");
               reset();
             }}
-            ButtonIcon={hasPermission(PermissionEnum.ModelManage) && PlusIcon}
+            ButtonIcon={PlusOutlined}
             rightComponent={
               hasPermission(PermissionEnum.ModelView) && (
                 <div className="flex gap-x-[.2rem]">
