@@ -327,17 +327,16 @@ export default function PerformanceDetailed({ data }: { data: Model }) {
         <Text_12_400_757575 className="leading-[1.125rem]">
           Recommended clusters
         </Text_12_400_757575>
-        {hasPermission(PermissionEnum.ModelManage) && (
-          <PrimaryButton
+        <PrimaryButton
             type="submit"
             onClick={() => {
               openDrawer("model_benchmark");
             }}
             className="min-w-[7.7rem]"
+            permission={hasPermission(PermissionEnum.ModelManage)}
           >
             Run Performance Benchmark
           </PrimaryButton>
-        )}
       </div>
       <div className="clusterCard w-full">
         {recommendedCluster?.clusters?.length > 0 ? (
@@ -395,17 +394,16 @@ export default function PerformanceDetailed({ data }: { data: Model }) {
               expanded
             />
           </div>
-          {hasPermission(PermissionEnum.ModelManage) && (
-            <PrimaryButton
+          <PrimaryButton
               type="submit"
               onClick={() => {
                 openDrawer("model_benchmark");
               }}
               className="min-w-[7.7rem]"
+              permission={hasPermission(PermissionEnum.ModelManage)}
             >
               Run Another Benchmark
             </PrimaryButton>
-          )}
           <div className="ml-[.2rem]">
             <ClusterFilter />
           </div>
