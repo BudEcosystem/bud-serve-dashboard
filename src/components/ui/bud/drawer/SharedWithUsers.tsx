@@ -58,7 +58,7 @@ export function SharedWithProjectUsers({
         <span key={user.email}>
             <CustomPopover
                 title={user.name}
-                classNames='inline'
+                customClassName='inline'
             >
                 <Avatar
                     key={index}
