@@ -133,19 +133,19 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
       iconWhite: '/images/icons/playWhite.png',
       cmd: "5",
     },
-    {
-      label: "Simulation",
-      route: "/simulation",
-      icon: '/icons/simulations.png',
-      iconWhite: '/icons/simulationsWhite.svg',
-      cmd: "6",
-    },
+    // {
+    //   label: "Simulation",
+    //   route: "/simulation",
+    //   icon: '/icons/simulations.png',
+    //   iconWhite: '/icons/simulationsWhite.svg',
+    //   cmd: "6",
+    // },
     {
       label: "API Keys",
       route: "/apiKeys",
       icon: '/images/icons/key.png',
       iconWhite: '/images/icons/keyWhite.png',
-      cmd: "7",
+      cmd: "6",
     },
   ]
 

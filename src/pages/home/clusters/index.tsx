@@ -2,7 +2,7 @@
 "use client";
 import { Box, Button, Flex } from "@radix-ui/themes";
 import { ReloadIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import DashBoardLayout from "../layout";
 // import { Marker } from "../../components/marker";
@@ -30,6 +30,7 @@ import { useConfirmAction } from "src/hooks/useConfirmAction";
 import { PlusOutlined } from "@ant-design/icons";
 
 export default function Clusters() {
+  const [isMounted, setIsMounted] = useState(false);
   const { setOverlayVisible } = useOverlay();
   const { openDrawer } = useDrawer();
   const { hasPermission, loadingUser } = useUser();
@@ -46,10 +47,15 @@ export default function Clusters() {
   const { contextHolder, openConfirm } = useConfirmAction();
 
   useEffect(() => {
-    if (hasPermission(PermissionEnum.ClusterView)) {
-      getClusters({ page: 1, limit: 100 });
+    // if (hasPermission(PermissionEnum.ClusterView)) {
+    //   getClusters({ page: 1, limit: 1000 });
+    // }
+    if (isMounted) {
+      setTimeout(() => {
+        getClusters({ page: 1, limit: 1000 });
+      }, 1000);
     }
-  }, [loadingUser]);
+  }, [loadingUser, isMounted]);
 
   useHandleRouteChange(() => {
     notification.destroy();
@@ -111,6 +117,10 @@ export default function Clusters() {
   const goToDetails = (item) => {
     router.push(`/clusters/${item.id}`);
   };
+
+  useEffect(() => {
+      setIsMounted(true)
+    }, []);
 
   return (
     <DashBoardLayout>
