@@ -30,6 +30,7 @@ import { PermissionEnum, useUser } from "src/stores/useUser";
 import { PlusOutlined } from "@ant-design/icons";
 
 const Projects = () => {
+  const [isMounted, setIsMounted] = useState(false);
   const { hasPermission, loadingUser, hasProjectPermission } = useUser();
   const { globalProjects, getGlobalProjects, getProject, totalProjects, totalPages } = useProjects();
   const { openDrawer } = useDrawer();
@@ -54,9 +55,17 @@ const Projects = () => {
     }
   }
 
+  // useEffect(() => {
+  //   load(currentPage, pageSize);
+  // }, [currentPage, pageSize]);
+
   useEffect(() => {
-    load(currentPage, pageSize);
-  }, [currentPage, pageSize]);
+    if (isMounted) {
+      setTimeout(() => {
+        load(currentPage, pageSize);
+      }, 1000);
+    }
+  }, [currentPage, pageSize, isMounted]);
 
   useEffect(() => {
     // debounce
@@ -75,6 +84,9 @@ const Projects = () => {
     }
   }
 
+  useEffect(() => {
+    setIsMounted(true)
+  }, []);
 
   return (
     <DashBoardLayout>
