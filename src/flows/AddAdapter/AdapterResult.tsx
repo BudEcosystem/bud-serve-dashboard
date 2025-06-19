@@ -36,7 +36,12 @@ export const AdapterResult = () => {
     nextText="View Deployment"
     onNext={() => {
       // getData();
-      getAdapters(adapterWorkflow?.endpointId, 1, 20, projectId);
+      const payload = {
+        endpointId: adapterWorkflow?.endpointId,
+        page: 1,
+        limit: 20,
+      }
+      getAdapters(payload, projectId);
       router.push(`/projects/${selectedProject?.id}/deployments/${adapterWorkflow?.endpointId}`);
       closeDrawer();
     }}
