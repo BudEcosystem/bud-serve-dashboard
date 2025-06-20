@@ -240,7 +240,7 @@ export default function ViewModel() {
                 },
               }}
             >
-              <Tabs  defaultActiveKey="1" items={filteredItems} onChange={onChange} className="generalTabs"/>
+              <Tabs  defaultActiveKey="1" items={filteredItems} onChange={onChange} className="generalTabs" destroyOnHidden/>
             </ConfigProvider>
           </div>
         </BudDrawerLayout>
