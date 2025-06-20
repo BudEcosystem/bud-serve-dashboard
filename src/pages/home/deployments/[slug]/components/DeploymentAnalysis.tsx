@@ -88,13 +88,6 @@ const numberOfDays = {
   monthly: 30  // Last 30 days
 };
 
-// For delta calculations, we need double the time period
-const numberOfDaysForDelta = {
-  daily: 2,    // Last 48 hours (to get delta for last 24 hours)
-  weekly: 14,   // Last 14 days (to get delta for last 7 days)
-  monthly: 60  // Last 60 days (to get delta for last 30 days)
-};
-
 const calculateFromDate = (daysToReduce: number) => {
   const now = new Date(); // Get current date and time
   const pastDate = new Date(now); // Create a copy
@@ -903,7 +896,7 @@ function APICallsCard(endpoint) {
         frequency: frequency,
         filter_by: "endpoint",
         filter_conditions: [endpoint.deploymentId],
-        from_date: calculateFromDate(numberOfDaysForDelta[apiRequestInterval]),
+        from_date: calculateFromDate(numberOfDays[apiRequestInterval]),
         top_k: 5,
         metrics: "overall",
         to_date: to_date,
@@ -1132,7 +1125,7 @@ function TTFTCard(endpoint) {
         frequency: frequency,
         filter_by: "endpoint",
         filter_conditions: [endpoint.deploymentId],
-        from_date: calculateFromDate(numberOfDaysForDelta[ttftInterval]),
+        from_date: calculateFromDate(numberOfDays[ttftInterval]),
         metrics: "ttft",
         to_date: to_date,
       };
@@ -1359,7 +1352,7 @@ function LatencyCard(endpoint) {
         frequency: frequency,
         filter_by: "endpoint",
         filter_conditions: [endpoint.deploymentId],
-        from_date: calculateFromDate(numberOfDaysForDelta[latencyInterval]),
+        from_date: calculateFromDate(numberOfDays[latencyInterval]),
         metrics: "latency",
         to_date: to_date,
       };
@@ -1575,7 +1568,7 @@ function ThroughputCard(endpoint) {
         frequency: frequency,
         filter_by: "endpoint",
         filter_conditions: [endpoint.deploymentId],
-        from_date: calculateFromDate(numberOfDaysForDelta[throughputInterval]),
+        from_date: calculateFromDate(numberOfDays[throughputInterval]),
         metrics: "throughput",
         to_date: to_date,
       };
@@ -1792,7 +1785,7 @@ function TokenMetricsCard(endpoint) {
         frequency: frequency,
         filter_by: "endpoint",
         filter_conditions: [endpoint.deploymentId],
-        from_date: calculateFromDate(numberOfDaysForDelta[tokenInterval]),
+        from_date: calculateFromDate(numberOfDays[tokenInterval]),
         metrics: "input_output_tokens",
         to_date: to_date,
       };

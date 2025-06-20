@@ -258,13 +258,8 @@ export const convertObservabilityResponse = (
   let deltaPercentage = 0;
   const itemsMap = new Map<string, number>();
 
-  // When we have multiple periods (for delta calculation), only use the first half for display
-  // The API returns data sorted with latest at index 0
-  const periodsToDisplay = response.items.length >= 2 ? Math.ceil(response.items.length / 2) : response.items.length;
-  
-  // Process only the display periods (latest half of the data)
-  for (let i = 0; i < periodsToDisplay; i++) {
-    const timePeriod = response.items[i];
+  // Process all time periods
+  response.items.forEach((timePeriod) => {
     // Check if items exists and is an array
     if (timePeriod.items && Array.isArray(timePeriod.items)) {
       timePeriod.items.forEach((item) => {
@@ -285,19 +280,40 @@ export const convertObservabilityResponse = (
         itemsMap.set(entityName, (itemsMap.get(entityName) || 0) + value);
       });
     }
-  }
+  });
 
-  // Get delta from the API response directly
-  // The latest period (index 0) should have the delta calculated by the API
-  if (response.items.length > 0 && response.items[0].items && response.items[0].items.length > 0) {
-    // Try to get delta from the first item's metric data
-    const firstItem = response.items[0].items[0];
-    const metricData = firstItem.data[primaryMetric];
-    if (metricData?.delta_percent !== undefined) {
-      deltaPercentage = metricData.delta_percent;
-    } else if (metricData?.delta !== undefined && totalValue > 0) {
-      // Calculate percentage from delta value if percentage not provided
-      deltaPercentage = (metricData.delta / (totalValue - metricData.delta)) * 100;
+  // Calculate period-over-period delta for weekly/monthly views
+  if (response.items.length >= 2) {
+    const periods = response.items.length;
+    const midPoint = Math.floor(periods / 2);
+    
+    // Sum first half (older period)
+    let firstHalfTotal = 0;
+    for (let i = 0; i < midPoint; i++) {
+      if (response.items[i].items && Array.isArray(response.items[i].items)) {
+        response.items[i].items.forEach((item) => {
+          const metricData = item.data[primaryMetric];
+          firstHalfTotal += metricData?.count || metricData?.value || 0;
+        });
+      }
+    }
+    
+    // Sum second half (recent period)
+    let secondHalfTotal = 0;
+    for (let i = midPoint; i < periods; i++) {
+      if (response.items[i].items && Array.isArray(response.items[i].items)) {
+        response.items[i].items.forEach((item) => {
+          const metricData = item.data[primaryMetric];
+          secondHalfTotal += metricData?.count || metricData?.value || 0;
+        });
+      }
+    }
+    
+    // Calculate percentage change
+    if (firstHalfTotal > 0) {
+      deltaPercentage = ((secondHalfTotal - firstHalfTotal) / firstHalfTotal) * 100;
+    } else if (secondHalfTotal > 0) {
+      deltaPercentage = 100;
     }
   }
 
@@ -328,7 +344,7 @@ export const convertObservabilityResponse = (
         delta_percentage: deltaPercentage,
         items: summaryItems,
       },
-      items: response.items.slice(0, periodsToDisplay).map((timePeriod) => ({
+      items: response.items.map((timePeriod) => ({
         time_period: timePeriod.time_period,
         items: (timePeriod.items && Array.isArray(timePeriod.items)) 
           ? timePeriod.items.map((item) => {
@@ -352,32 +368,56 @@ const convertTokenMetricsResponse = (response: ObservabilityMetricsResponse): an
   let inputDeltaPercentage = 0;
   let outputDeltaPercentage = 0;
 
-  // When we have multiple periods (for delta calculation), only use the first half for display
-  const periodsToDisplay = response.items.length >= 2 ? Math.ceil(response.items.length / 2) : response.items.length;
-
-  // Calculate totals only from display periods
-  for (let i = 0; i < periodsToDisplay; i++) {
-    const timePeriod = response.items[i];
+  // Calculate totals
+  response.items.forEach((timePeriod) => {
     if (timePeriod.items && Array.isArray(timePeriod.items)) {
       timePeriod.items.forEach((item) => {
         totalInputTokens += item.data.input_token?.count || 0;
         totalOutputTokens += item.data.output_token?.count || 0;
       });
     }
-  }
+  });
 
-  // Get delta from the API response directly
-  if (response.items.length > 0 && response.items[0].items && response.items[0].items.length > 0) {
-    const firstItem = response.items[0].items[0];
-    const inputMetricData = firstItem.data.input_token;
-    const outputMetricData = firstItem.data.output_token;
+  // Calculate period-over-period delta for token metrics
+  if (response.items.length >= 2) {
+    const periods = response.items.length;
+    const midPoint = Math.floor(periods / 2);
     
-    if (inputMetricData?.delta_percent !== undefined) {
-      inputDeltaPercentage = inputMetricData.delta_percent;
+    // Sum first half (older period)
+    let firstHalfInputTokens = 0;
+    let firstHalfOutputTokens = 0;
+    for (let i = 0; i < midPoint; i++) {
+      if (response.items[i].items && Array.isArray(response.items[i].items)) {
+        response.items[i].items.forEach((item) => {
+          firstHalfInputTokens += item.data.input_token?.count || 0;
+          firstHalfOutputTokens += item.data.output_token?.count || 0;
+        });
+      }
     }
     
-    if (outputMetricData?.delta_percent !== undefined) {
-      outputDeltaPercentage = outputMetricData.delta_percent;
+    // Sum second half (recent period)
+    let secondHalfInputTokens = 0;
+    let secondHalfOutputTokens = 0;
+    for (let i = midPoint; i < periods; i++) {
+      if (response.items[i].items && Array.isArray(response.items[i].items)) {
+        response.items[i].items.forEach((item) => {
+          secondHalfInputTokens += item.data.input_token?.count || 0;
+          secondHalfOutputTokens += item.data.output_token?.count || 0;
+        });
+      }
+    }
+    
+    // Calculate percentage changes
+    if (firstHalfInputTokens > 0) {
+      inputDeltaPercentage = ((secondHalfInputTokens - firstHalfInputTokens) / firstHalfInputTokens) * 100;
+    } else if (secondHalfInputTokens > 0) {
+      inputDeltaPercentage = 100;
+    }
+    
+    if (firstHalfOutputTokens > 0) {
+      outputDeltaPercentage = ((secondHalfOutputTokens - firstHalfOutputTokens) / firstHalfOutputTokens) * 100;
+    } else if (secondHalfOutputTokens > 0) {
+      outputDeltaPercentage = 100;
     }
   }
 
@@ -389,7 +429,7 @@ const convertTokenMetricsResponse = (response: ObservabilityMetricsResponse): an
         input_tokens_delta_percentage: inputDeltaPercentage,
         output_tokens_delta_percentage: outputDeltaPercentage,
       },
-      items: response.items.slice(0, periodsToDisplay).map((timePeriod) => ({
+      items: response.items.map((timePeriod) => ({
         time_period: timePeriod.time_period,
         items: (timePeriod.items && Array.isArray(timePeriod.items))
           ? timePeriod.items.map((item) => ({
@@ -414,11 +454,7 @@ const convertPerformanceMetricsResponse = (
   let overallCount = 0;
   let overallDelta = 0;
 
-  // When we have multiple periods (for delta calculation), only use the first half for display
-  const periodsToDisplay = response.items.length >= 2 ? Math.ceil(response.items.length / 2) : response.items.length;
-
-  for (let i = 0; i < periodsToDisplay; i++) {
-    const timePeriod = response.items[i];
+  response.items.forEach((timePeriod) => {
     if (timePeriod.items && Array.isArray(timePeriod.items)) {
       timePeriod.items.forEach((item) => {
         const entityName = item.project_name || item.model_name || item.endpoint_name || item.model_id || item.project_id || item.endpoint_id || 'Unknown';
@@ -448,15 +484,63 @@ const convertPerformanceMetricsResponse = (
         overallCount += 1;
       });
     }
-  }
+  });
 
-  // Get delta from the API response directly
-  if (response.items.length > 0 && response.items[0].items && response.items[0].items.length > 0) {
-    // Try to get delta from the first item's metric data
-    const firstItem = response.items[0].items[0];
-    const metricData = firstItem.data[metricType];
-    if (metricData?.delta_percent !== undefined) {
-      overallDelta = metricData.delta_percent;
+  // Calculate period-over-period delta for overall average
+  if (response.items.length >= 2) {
+    const periods = response.items.length;
+    const midPoint = Math.floor(periods / 2);
+    
+    // Calculate average for first half (older period)
+    let firstHalfTotal = 0;
+    let firstHalfCount = 0;
+    for (let i = 0; i < midPoint; i++) {
+      if (response.items[i].items && Array.isArray(response.items[i].items)) {
+        response.items[i].items.forEach((item) => {
+          const metricData = item.data[metricType];
+          let value = 0;
+          if (metricType === 'throughput') {
+            value = metricData?.avg || metricData?.avg_throughput || metricData?.value || 0;
+          } else if (metricType === 'latency') {
+            value = metricData?.avg || metricData?.avg_latency_ms || metricData?.value || 0;
+          } else if (metricType === 'ttft') {
+            value = metricData?.avg || metricData?.avg_ttft_ms || metricData?.value || 0;
+          }
+          firstHalfTotal += value;
+          firstHalfCount += 1;
+        });
+      }
+    }
+    
+    // Calculate average for second half (recent period)
+    let secondHalfTotal = 0;
+    let secondHalfCount = 0;
+    for (let i = midPoint; i < periods; i++) {
+      if (response.items[i].items && Array.isArray(response.items[i].items)) {
+        response.items[i].items.forEach((item) => {
+          const metricData = item.data[metricType];
+          let value = 0;
+          if (metricType === 'throughput') {
+            value = metricData?.avg || metricData?.avg_throughput || metricData?.value || 0;
+          } else if (metricType === 'latency') {
+            value = metricData?.avg || metricData?.avg_latency_ms || metricData?.value || 0;
+          } else if (metricType === 'ttft') {
+            value = metricData?.avg || metricData?.avg_ttft_ms || metricData?.value || 0;
+          }
+          secondHalfTotal += value;
+          secondHalfCount += 1;
+        });
+      }
+    }
+    
+    // Calculate averages and percentage change
+    const firstHalfAvg = firstHalfCount > 0 ? firstHalfTotal / firstHalfCount : 0;
+    const secondHalfAvg = secondHalfCount > 0 ? secondHalfTotal / secondHalfCount : 0;
+    
+    if (firstHalfAvg > 0) {
+      overallDelta = ((secondHalfAvg - firstHalfAvg) / firstHalfAvg) * 100;
+    } else if (secondHalfAvg > 0) {
+      overallDelta = 100;
     }
   }
 
@@ -478,7 +562,7 @@ const convertPerformanceMetricsResponse = (
           delta_percentage: overallDelta,
           items: summaryItems,
         },
-        items: response.items.slice(0, periodsToDisplay).map((timePeriod) => ({
+        items: response.items.map((timePeriod) => ({
           time_period: timePeriod.time_period,
           items: (timePeriod.items && Array.isArray(timePeriod.items))
             ? timePeriod.items.map((item) => ({
@@ -500,7 +584,7 @@ const convertPerformanceMetricsResponse = (
           delta_percentage: overallDelta,
           items: summaryItems,
         },
-        items: response.items.slice(0, periodsToDisplay).map((timePeriod) => ({
+        items: response.items.map((timePeriod) => ({
           time_period: timePeriod.time_period,
           items: (timePeriod.items && Array.isArray(timePeriod.items))
             ? timePeriod.items.map((item) => ({
@@ -546,61 +630,58 @@ const convertGlobalMetricsResponse = (response: ObservabilityMetricsResponse): a
   let totalValue = 0;
   let deltaPercentage = 0;
   
-  // When we have multiple periods (for delta calculation), only use the first half for display
-  const periodsToDisplay = response.items.length >= 2 ? Math.ceil(response.items.length / 2) : response.items.length;
-  
   // For weekly view with daily data, calculate week-over-week change
-  if (response.items.length >= 14) {
-    // Items are sorted with newest first (index 0)
-    // This week: first 7 items (indices 0-6)
+  if (response.items.length >= 7) {
+    // Sum up the last 7 days (this week)
     let thisWeekTotal = 0;
-    for (let i = 0; i < 7; i++) {
-      const timePeriod = response.items[i];
+    let lastWeekTotal = 0;
+    
+    // Items are sorted chronologically (oldest first), so the last 7 items are the most recent week
+    const itemsLength = response.items.length;
+    
+    // This week: last 7 items
+    response.items.slice(itemsLength - 7).forEach((timePeriod) => {
       if (timePeriod.items && Array.isArray(timePeriod.items)) {
         timePeriod.items.forEach((item) => {
           thisWeekTotal += item.data.request_count?.count || 0;
         });
       }
-    }
+    });
     
-    // Last week: items from index 7 to 13
-    let lastWeekTotal = 0;
-    for (let i = 7; i < 14; i++) {
-      const timePeriod = response.items[i];
-      if (timePeriod.items && Array.isArray(timePeriod.items)) {
-        timePeriod.items.forEach((item) => {
-          lastWeekTotal += item.data.request_count?.count || 0;
-        });
+    // If we have data for the previous week, calculate it
+    if (response.items.length >= 14) {
+      // Last week: items from index (length-14) to (length-7)
+      response.items.slice(itemsLength - 14, itemsLength - 7).forEach((timePeriod) => {
+        if (timePeriod.items && Array.isArray(timePeriod.items)) {
+          timePeriod.items.forEach((item) => {
+            lastWeekTotal += item.data.request_count?.count || 0;
+          });
+        }
+      });
+      
+      // Calculate week-over-week percentage change
+      if (lastWeekTotal > 0) {
+        deltaPercentage = ((thisWeekTotal - lastWeekTotal) / lastWeekTotal) * 100;
+      } else if (thisWeekTotal > 0) {
+        // If last week was 0 but this week has data, show 100% increase
+        deltaPercentage = 100;
       }
-    }
-    
-    // Calculate week-over-week percentage change
-    if (lastWeekTotal > 0) {
-      deltaPercentage = ((thisWeekTotal - lastWeekTotal) / lastWeekTotal) * 100;
-    } else if (thisWeekTotal > 0) {
-      // If last week was 0 but this week has data, show 100% increase
-      deltaPercentage = 100;
     }
     
     totalValue = thisWeekTotal;
   } else {
-    // For other cases, get delta from API response if available
-    if (response.items.length > 0 && response.items[0].items && response.items[0].items.length > 0) {
-      const firstItem = response.items[0].items[0];
-      const metricData = firstItem.data.request_count;
-      if (metricData?.delta_percent !== undefined) {
-        deltaPercentage = metricData.delta_percent;
-      }
-    }
-    
-    // Sum only the display periods
-    for (let i = 0; i < periodsToDisplay; i++) {
-      const timePeriod = response.items[i];
+    // Fallback: sum all available data
+    response.items.forEach((timePeriod) => {
       if (timePeriod.items && Array.isArray(timePeriod.items)) {
         timePeriod.items.forEach((item) => {
           totalValue += item.data.request_count?.count || 0;
         });
       }
+    });
+    
+    // Use the delta from the first item as fallback
+    if (response.items.length > 0 && response.items[0].items && Array.isArray(response.items[0].items) && response.items[0].items.length > 0) {
+      deltaPercentage = response.items[0].items[0].data.request_count?.delta_percent || 0;
     }
   }
   
