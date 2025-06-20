@@ -837,7 +837,7 @@ const Dashboard = () => {
               {latencyChartData.data.length ? (
                 <>
                   <Flex vertical className="items-start	mt-[1.3rem]">
-                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.latency.total_value).toFixed(2)}</p>
+                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.latency.total_value).toFixed(2)} ms</p>
                     <Flex className={`${Number(extraChartDetails.latency.avg) >= 0 ? 'text-[#479D5F] bg-[#122F1140]' : 'bg-[#861A1A33] text-[#EC7575]'} rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.82rem]`}>
                       <span className="font-[400] text-[0.8125rem] leading-[100%]">Avg. {Number(extraChartDetails.latency.avg).toFixed(2)}% </span>
                       {Number(extraChartDetails.latency.avg) >= 0 ?
@@ -884,7 +884,7 @@ const Dashboard = () => {
               {throughputChartData.data.length ? (
                 <>
                   <Flex vertical className="items-start	mt-[1.3rem]">
-                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.throughPut.total_value).toFixed(2)}</p>
+                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.throughPut.total_value).toFixed(2)} tokens/s</p>
                     <Flex className={`${Number(extraChartDetails.throughPut.avg) >= 0 ? 'text-[#479D5F] bg-[#122F1140]' : 'bg-[#861A1A33] text-[#EC7575]'} rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.82rem]`}>
                       <span className="font-[400] text-[0.8125rem] leading-[100%]">Avg. {Number(extraChartDetails.throughPut.avg).toFixed(2)}% </span>
                       {Number(extraChartDetails.throughPut.avg) >= 0 ?

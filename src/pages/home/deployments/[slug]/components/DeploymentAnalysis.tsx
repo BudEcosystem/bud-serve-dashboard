@@ -35,28 +35,19 @@ import { formatDate } from "src/utils/formatDate";
 // Format date based on the scale
 const formatDateByScale = (dateStr: string, scale: string): string => {
   // The API returns time without timezone indicator, so we need to treat it as UTC
-  // Append 'Z' to indicate UTC if not already present
-  const hasTimezone = dateStr.includes('Z') || dateStr.includes('+') || dateStr.includes('-');
-  const utcDateStr = hasTimezone ? dateStr : `${dateStr}Z`;
+  // Check if it has a timezone indicator at the end (Z, +XX:XX, -XX:XX)
+  const hasTimezone = /[Z]$|[+-]\d{2}:\d{2}$/.test(dateStr);
+  const utcDateStr = hasTimezone ? dateStr : dateStr + 'Z';
   
   const date = new Date(utcDateStr);
   
-  // Debug logging
-  console.log('Original dateStr:', dateStr);
-  console.log('UTC dateStr:', utcDateStr);
-  console.log('Parsed date:', date.toString());
-  console.log('UTC time:', date.toUTCString());
-  console.log('Local timezone offset (minutes):', date.getTimezoneOffset());
-  
   if (scale === "hourly") {
     // For hourly data (24hrs view), show only time without date
-    const formattedTime = date.toLocaleTimeString('en-US', { 
+    return date.toLocaleTimeString('en-US', { 
       hour: '2-digit',
       minute: '2-digit',
       hour12: true
     });
-    console.log('Formatted time:', formattedTime);
-    return formattedTime;
   } else if (scale === "daily") {
     // For daily data, show date
     return date.toLocaleDateString('en-US', { 
@@ -935,7 +926,6 @@ function APICallsCard(endpoint) {
   }, [requestCounts, apiRequestInterval]);
 
   const createApiChartData = (data) => {
-    console.log("API Chart Data received:", data);
     
     if (data?.overall_metrics?.items?.length) {
       // Create time series data
@@ -971,7 +961,6 @@ function APICallsCard(endpoint) {
         totalCount += periodTotal;
       });
       
-      console.log("Time series data:", { categories, counts, totalCount, scale });
       
       setExtraChartDetails((prev) => ({
         ...prev,
@@ -1635,7 +1624,8 @@ function ThroughputCard(endpoint) {
         }
         
         const periodValue = periodCount > 0 ? periodSum / periodCount : 0;
-        values.push(periodValue);
+        // Round to 2 decimal places
+        values.push(parseFloat(periodValue.toFixed(2)));
         totalValue += periodValue;
         count++;
       });
@@ -1937,13 +1927,19 @@ function TokenMetricsCard(endpoint) {
             <div className="flex items-center justify-between flex-col w-full mt-[1.95rem]">
               <div className="flex justify-between w-full">
                 <div>
-                  <Text_14_400_EEEEEE className="text-[#B3B3B3]">Input</Text_14_400_EEEEEE>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#4077E6]"></div>
+                    <Text_14_400_EEEEEE className="text-[#B3B3B3]">Input</Text_14_400_EEEEEE>
+                  </div>
                   <Text_20_400_EEEEEE className="text-[#EEEEEE] font-medium">
                     {Number(extraChartDetails.tokens.input_total).toLocaleString()} tokens
                   </Text_20_400_EEEEEE>
                 </div>
                 <div>
-                  <Text_14_400_EEEEEE className="text-[#B3B3B3]">Output</Text_14_400_EEEEEE>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#E36E4F]"></div>
+                    <Text_14_400_EEEEEE className="text-[#B3B3B3]">Output</Text_14_400_EEEEEE>
+                  </div>
                   <Text_20_400_EEEEEE className="text-[#EEEEEE] font-medium">
                     {Number(extraChartDetails.tokens.output_total).toLocaleString()} tokens
                   </Text_20_400_EEEEEE>
@@ -2143,15 +2139,11 @@ function TokenTimeSeriesChart({
       grid: {
         top: "10%",
         left: "12%",
-        bottom: "15%",
+        bottom: "10%",
         right: "5%",
       },
       legend: {
-        data: ['Input Tokens', 'Output Tokens'],
-        textStyle: {
-          color: '#B3B3B3',
-        },
-        bottom: 0,
+        show: false
       },
       xAxis: {
         type: "category",
@@ -2381,7 +2373,7 @@ export default function DeploymentAnalysis({
   ]);
 
   const load = async () => {
-    getInferenceQualityAnalytics(deploymentId as string);
+    // getInferenceQualityAnalytics(deploymentId as string);
   };
 
   useEffect(() => {
@@ -2413,7 +2405,7 @@ export default function DeploymentAnalysis({
       </div>
       <div className="flex gap-[.75rem] mt-[.5rem] justify-between items-stretch	">
         {/* {inferenceQualityAnalytics?.harmfulness_score != undefined && ( */}
-        <>
+        {/* <>
           {data.map((item, index) => (
             <CircleProgress
               key={index}
@@ -2424,11 +2416,11 @@ export default function DeploymentAnalysis({
               }}
             />
           ))}
-        </>
+        </> */}
         {/* )} */}
-        {clusterDetails && (
+        {/* {clusterDetails && (
           <WorkersCard switchTab={switchTab} clusterdata={clusterDetails} />
-        )}
+        )} */}
       </div>
       <div className="flex  gap-[.8rem]">
         {deploymentId && <APICallsCard deploymentId={deploymentId} />}
