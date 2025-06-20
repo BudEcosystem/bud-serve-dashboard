@@ -150,10 +150,10 @@ function GeneralDeploymentInfo({ switchTab }: { switchTab: (key: string) => void
       <div className='mt-[1rem]'>
         <DeploymentAnalysis switchTab={switchTab} />
       </div>
-      <div className='hR mt-[1.45rem]'></div>
+      {/* <div className='hR mt-[1.45rem]'></div>
       <div className='mt-[1rem]'>
         <CacheAnalysis />
-      </div>
+      </div> */}
       <div className='h-[4rem]' />
     </div>
   )
