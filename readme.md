@@ -1,4 +1,4 @@
-```markdown
+
 # 🚀 Bud Dashboard
 
  Dashboard  for managing inference. It provides comprehensive features including model registry management, cluster administration, deployment orchestration, and granular permission controls.

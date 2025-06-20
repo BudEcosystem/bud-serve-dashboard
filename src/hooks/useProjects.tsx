@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { Tag } from "@/components/ui/bud/dataEntry/TagsInput";
 import { Cluster } from "./useCluster";
 import { tempApiBaseUrl } from "@/components/environment";
+import { convertToObservabilityRequest, convertObservabilityResponse, ObservabilityMetricsResponse } from "@/utils/metricsAdapter";
 
 export type Project = {
   id: string;
@@ -72,6 +73,9 @@ export const useProjects = create<
     projectMetricsData: any;
     averageMetricsData: any;
     concurrentMetricsData: any;
+    ttftMetricsData: any;
+    latencyMetricsData: any;
+    throughputMetricsData: any;
     selectedProject: Project | null;
     getProjects: (page: any, limit: any, search?: string) => Promise<any>;
     createProject: (data: any) => Promise<any>;
@@ -100,6 +104,9 @@ export const useProjects = create<
     getProjectMetrics: (params: any) => Promise<any>;
     getQueingMetrics: (params: any) => Promise<any>;
     getConcurrentMetrics: (params: any) => Promise<any>;
+    getTtftMetrics: (params: any) => Promise<any>;
+    getLatencyMetrics: (params: any) => Promise<any>;
+    getThroughputMetrics: (params: any) => Promise<any>;
   }
 >((set, get) => ({
   globalProjects: [],
@@ -114,6 +121,9 @@ export const useProjects = create<
   projectMetricsData: null,
   averageMetricsData: null,
   concurrentMetricsData: null,
+  ttftMetricsData: null,
+  latencyMetricsData: null,
+  throughputMetricsData: null,
   projectMembers: [],
 
   setSelectedProject: (project: Project) => {
@@ -297,29 +307,116 @@ export const useProjects = create<
 
   getProjectMetrics: async (params: any) => {
     try {
-      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics/request-counts`, params);
-      set({ projectMetricsData: response.data });
-      return response.data;
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics`, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set({ projectMetricsData: convertedData });
+      return convertedData;
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching project metrics:", error);
     }
   },
   getQueingMetrics: async (params: any) => {
     try {
-      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics/request-counts`, params);
-      set({ averageMetricsData: response.data });
-      return response.data;
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics`, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set({ averageMetricsData: convertedData });
+      return convertedData;
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching queuing metrics:", error);
     }
   },
     getConcurrentMetrics: async (params: any) => {
     try {
-      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics/request-counts`, params);
-      set({ concurrentMetricsData: response.data });
-      return response.data;
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics`, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set({ concurrentMetricsData: convertedData });
+      return convertedData;
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching concurrent metrics:", error);
+    }
+  },
+  getTtftMetrics: async (params: any) => {
+    try {
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics`, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set({ ttftMetricsData: convertedData });
+      return convertedData;
+    } catch (error) {
+      console.error("Error fetching TTFT metrics:", error);
+    }
+  },
+  getLatencyMetrics: async (params: any) => {
+    try {
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics`, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set({ latencyMetricsData: convertedData });
+      return convertedData;
+    } catch (error) {
+      console.error("Error fetching latency metrics:", error);
+    }
+  },
+  getThroughputMetrics: async (params: any) => {
+    try {
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const response: any = await AppRequest.Post(`${tempApiBaseUrl}/metrics/analytics`, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set({ throughputMetricsData: convertedData });
+      return convertedData;
+    } catch (error) {
+      console.error("Error fetching throughput metrics:", error);
     }
   },
 

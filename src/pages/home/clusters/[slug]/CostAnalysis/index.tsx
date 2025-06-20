@@ -71,17 +71,17 @@ const CostAnalysis: React.FC<GeneralProps> = ({ data }) => {
   // useLoaderOnLoding(loading);
 
   const requestOptions = [
-    { label: "Today", value: 'daily' },
-    { label: "This week", value: 'weekly' },
-    { label: "This month", value: 'monthly' },
+    { label: "Last 24 hrs", value: 'daily' },
+    { label: "Last 7 days", value: 'weekly' },
+    { label: "Last 30 days", value: 'monthly' },
   ];
   const numberOfDays = {
-    "daily": 1,
-    "weekly": 7,
-    "monthly": 30
+    "daily": 1,    // Last 24 hours
+    "weekly": 7,   // Last 7 days
+    "monthly": 30  // Last 30 days
   }
 
-  const segmentOptions = ['Today', '7 Days', 'This Month']
+  const segmentOptions = ['LAST 24 HRS', 'LAST 7 DAYS', 'LAST 30 DAYS']
 
   const getDateSubtracted = (days) => {
     const date = new Date();
@@ -91,11 +91,10 @@ const CostAnalysis: React.FC<GeneralProps> = ({ data }) => {
 
 
   const calculateFromDate = (daysToReduce: number) => {
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-    const pastDate = new Date(today);
-    pastDate.setUTCDate(today.getUTCDate() - daysToReduce);
-    return pastDate.toISOString();
+    const now = new Date(); // Get current date and time
+    const pastDate = new Date(now); // Create a copy
+    pastDate.setUTCDate(now.getUTCDate() - daysToReduce); // Subtract days
+    return pastDate.toISOString(); // Return full ISO string with time
   }
   // model usage code block ----------------------------------
   const getModelUsageData = async (freq?: any, endDate?: any) => {

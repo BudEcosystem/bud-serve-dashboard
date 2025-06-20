@@ -5,6 +5,7 @@ import { AppRequest } from "../pages/api/requests";
 import { useLoader } from "../context/appContext";
 import { create } from 'zustand';
 import { tempApiBaseUrl } from "@/components/environment";
+import { convertToObservabilityRequest, convertObservabilityResponse, ObservabilityMetricsResponse } from "@/utils/metricsAdapter";
 
 
 interface RequestCountsResponse {
@@ -52,30 +53,48 @@ export const useCharts = create<
   modelCounts: null,
   getRequestCounts: async (params: any) => {
     const to_date = params.to_date ?? new Date().toISOString();
-    const url = `${tempApiBaseUrl}/metrics/analytics/request-counts`;
+    const url = `${tempApiBaseUrl}/metrics/analytics`;
     set({ loading: true });
     try {
-      const response: any = await AppRequest.Post(url, { ...params, to_date });
-      const listData = response.data;
-      set(params.filter_by === 'project' ? { requestCounts: listData } : params.metrics == 'input_output_tokens' ? {tokenMetrics : listData}: { modelCounts: listData });
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest({ ...params, to_date });
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set(params.filter_by === 'project' ? { requestCounts: convertedData } : params.metrics == 'input_output_tokens' ? {tokenMetrics : convertedData}: { modelCounts: convertedData });
       successToast(response.message);
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching metrics:", error);
     } finally {
       set({ loading: false });
     }
   },
   getThroughputAndLatencyData: async (params: any) => {
     const to_date = params.to_date ?? new Date().toISOString();
-    const url = `${tempApiBaseUrl}/metrics/analytics/request-performance`;
+    const url = `${tempApiBaseUrl}/metrics/analytics`;
     set({ loading: true });
     try {
-      const response: any = await AppRequest.Post(url, { ...params, to_date });
-      const listData = response.data;
-      set(params.metrics === 'throughput' ? { throughputCount: listData } : { latencyCount: listData });
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest({ ...params, to_date });
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set(params.metrics === 'throughput' ? { throughputCount: convertedData } : { latencyCount: convertedData });
       successToast(response.message);
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching performance metrics:", error);
     } finally {
       set({ loading: false });
     }
@@ -96,16 +115,24 @@ export const useCharts = create<
   },
   getTotalRequests: async (params) => {
     const to_date = params.to_date ?? new Date().toISOString();
-    const url = `${tempApiBaseUrl}/metrics/analytics/request-counts`;
+    const url = `${tempApiBaseUrl}/metrics/analytics`;
     set({ loading: true });
     try {
-      const response: any = await AppRequest.Post(url, { ...params, to_date });
-      const listData = response.data;
-      set({ totalRequests: listData });
-      // set({ totalRequests: listData.global_metrics });
+      // Convert old params to new observability format
+      const observabilityRequest = convertToObservabilityRequest({ ...params, to_date });
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      // Convert response to old format for backward compatibility
+      const convertedData = convertObservabilityResponse(
+        response.data as ObservabilityMetricsResponse,
+        params.metrics,
+        params.filter_by
+      );
+      
+      set({ totalRequests: convertedData });
       successToast(response.message);
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching total requests:", error);
     } finally {
       set({ loading: false });
     }
