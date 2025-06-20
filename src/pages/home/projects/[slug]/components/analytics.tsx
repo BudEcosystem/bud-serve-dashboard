@@ -139,10 +139,11 @@ const AnalyticsComponent: React.FC<AnalyticsProps> = ({ data }) => {
     { label: "Last 7 days", value: "weekly" },
     { label: "Last 30 days", value: "monthly" },
   ];
-  const numberOfDays = {
-    daily: 1,    // Last 24 hours
-    weekly: 7,   // Last 7 days
-    monthly: 30  // Last 30 days
+  // For delta calculations, we need double the time period
+  const numberOfDaysForDelta = {
+    daily: 2,    // Last 48 hours (to get delta for last 24 hours)
+    weekly: 14,   // Last 14 days (to get delta for last 7 days)
+    monthly: 60  // Last 60 days (to get delta for last 30 days)
   };
 
   const handleChartFilter = (val: any) => {
@@ -171,7 +172,7 @@ const AnalyticsComponent: React.FC<AnalyticsProps> = ({ data }) => {
       frequency: modelRequestInterval,
       filter_by: "endpoint",
       filter_conditions: [],
-      from_date: calculateFromDate(numberOfDays[modelRequestInterval]),
+      from_date: calculateFromDate(numberOfDaysForDelta[modelRequestInterval]),
       top_k: 5,
       metrics: "overall",
       project_id: projectId,
@@ -292,7 +293,7 @@ const AnalyticsComponent: React.FC<AnalyticsProps> = ({ data }) => {
       frequency: averageInterval,
       filter_by: "endpoint",
       filter_conditions: [],
-      from_date: calculateFromDate(numberOfDays[averageInterval]),
+      from_date: calculateFromDate(numberOfDaysForDelta[averageInterval]),
       top_k: 5,
       metrics: "input_output_tokens",
       project_id: projectId,
@@ -381,7 +382,7 @@ const AnalyticsComponent: React.FC<AnalyticsProps> = ({ data }) => {
       frequency: ttftInterval,
       filter_by: "endpoint",
       filter_conditions: [],
-      from_date: calculateFromDate(numberOfDays[ttftInterval]),
+      from_date: calculateFromDate(numberOfDaysForDelta[ttftInterval]),
       top_k: 5,
       metrics: "ttft",
       project_id: projectId,
@@ -542,7 +543,7 @@ const AnalyticsComponent: React.FC<AnalyticsProps> = ({ data }) => {
       frequency: latencyInterval,
       filter_by: "endpoint",
       filter_conditions: [],
-      from_date: calculateFromDate(numberOfDays[latencyInterval]),
+      from_date: calculateFromDate(numberOfDaysForDelta[latencyInterval]),
       top_k: 5,
       metrics: "latency",
       project_id: projectId,
@@ -615,7 +616,7 @@ const AnalyticsComponent: React.FC<AnalyticsProps> = ({ data }) => {
       frequency: throughputInterval,
       filter_by: "endpoint",
       filter_conditions: [],
-      from_date: calculateFromDate(numberOfDays[throughputInterval]),
+      from_date: calculateFromDate(numberOfDaysForDelta[throughputInterval]),
       top_k: 5,
       metrics: "throughput",
       project_id: projectId,

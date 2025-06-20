@@ -190,10 +190,11 @@ const Dashboard = () => {
       output_avg: ''
     }
   })
-  const numberOfDays: Record<string, number> = {
-    "daily": 1,    // Last 24 hours
-    "weekly": 7,   // Last 7 days
-    "monthly": 30  // Last 30 days
+  // For delta calculations, we need double the time period
+  const numberOfDaysForDelta: Record<string, number> = {
+    "daily": 2,    // Last 48 hours (to get delta for last 24 hours)
+    "weekly": 14,   // Last 14 days (to get delta for last 7 days)
+    "monthly": 60  // Last 60 days (to get delta for last 30 days)
   }
   const [totalRequestChartData, setTotalRequestChartData] = useState(totalRequData);
 
@@ -201,7 +202,7 @@ const Dashboard = () => {
     type: string = 'project',
     metrics: string = 'overall',
     frequency: string = (type === 'project' ? apiRequestInterval : modelInterval) || "weekly",
-    fromdate: string = calculateFromDate(numberOfDays[type === 'project' ? apiRequestInterval : modelInterval] || 7)
+    fromdate: string = calculateFromDate(numberOfDaysForDelta[type === 'project' ? apiRequestInterval : modelInterval] || 14)
   ) => {
     try {
       showLoader();
@@ -256,7 +257,7 @@ const Dashboard = () => {
         frequency: (type === 'throughput' ? throughputInterval : latencyInterval) || "daily",
         filter_by: "project",
         filter_conditions: [],
-        from_date: calculateFromDate(numberOfDays[type === 'throughput' ? throughputInterval : latencyInterval] || 7),
+        from_date: calculateFromDate(numberOfDaysForDelta[type === 'throughput' ? throughputInterval : latencyInterval] || 14),
         top_k: 5,
         metrics: type,
       });
@@ -458,7 +459,7 @@ const Dashboard = () => {
   }, [modelInterval])
 
   useEffect(() => {
-    load('model', 'input_output_tokens', tokenMetricsInterval, calculateFromDate(numberOfDays[tokenMetricsInterval] || 7));
+    load('model', 'input_output_tokens', tokenMetricsInterval, calculateFromDate(numberOfDaysForDelta[tokenMetricsInterval] || 14));
   }, [tokenMetricsInterval])
 
   useEffect(() => {
