@@ -10,7 +10,6 @@ import React, { use, useEffect, useRef, useState } from "react";
 import NoChartData from "@/components/ui/noChartData";
 import * as echarts from "echarts";
 import Tags from "src/flows/components/DrawerTags";
-import { getChromeColor } from "@/components/ui/bud/dataEntry/TagsInputData";
 import {
   Text_12_300_B3B3B3,
   Text_12_400_B3B3B3,
@@ -32,9 +31,45 @@ import { useCharts } from "src/hooks/useCharts";
 import { tempApiBaseUrl } from "@/components/environment";
 import { AppRequest } from "src/pages/api/requests";
 import { formatDate } from "src/utils/formatDate";
+
+// Format date based on the scale
+const formatDateByScale = (dateStr: string, scale: string): string => {
+  // The API returns time without timezone indicator, so we need to treat it as UTC
+  // Check if it has a timezone indicator at the end (Z, +XX:XX, -XX:XX)
+  const hasTimezone = /[Z]$|[+-]\d{2}:\d{2}$/.test(dateStr);
+  const utcDateStr = hasTimezone ? dateStr : dateStr + 'Z';
+  
+  const date = new Date(utcDateStr);
+  
+  if (scale === "hourly") {
+    // For hourly data (24hrs view), show only time without date
+    return date.toLocaleTimeString('en-US', { 
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } else if (scale === "daily") {
+    // For daily data, show date
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric'
+    });
+  } else if (scale === "weekly") {
+    // For weekly data, show week range
+    const weekStart = new Date(date);
+    weekStart.setDate(date.getDate() - date.getDay());
+    return weekStart.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric'
+    });
+  }
+  
+  return formatDate(dateStr);
+};
 import ComingSoon from "@/components/ui/comingSoon";
 import { useEndPoints } from "src/hooks/useEndPoint";
 import { useLoader } from "src/context/appContext";
+import { convertToObservabilityRequest, convertObservabilityResponse } from "@/utils/metricsAdapter";
 
 const computeHoursData = {
   categories: ["2000", "2005", "2010", "2015", "2020", "2025"],
@@ -48,17 +83,23 @@ const computeHoursData = {
 };
 
 const numberOfDays = {
-  daily: 1,
-  weekly: 7,
-  monthly: 30,
+  daily: 1,    // Last 24 hours
+  weekly: 7,   // Last 7 days
+  monthly: 30  // Last 30 days
+};
+
+// For delta calculations, we need double the time period
+const numberOfDaysForDelta = {
+  daily: 2,    // Last 48 hours (to get delta for last 24 hours)
+  weekly: 14,   // Last 14 days (to get delta for last 7 days)
+  monthly: 60  // Last 60 days (to get delta for last 30 days)
 };
 
 const calculateFromDate = (daysToReduce: number) => {
-  const today = new Date(); // Get today's date
-  today.setUTCHours(0, 0, 0, 0);
-  const pastDate = new Date(today); // Create a copy of today's date
-  pastDate.setUTCDate(today.getUTCDate() - daysToReduce); // Subtract 30 days
-  return pastDate.toISOString(); // Format as YYYY-MM-DD
+  const now = new Date(); // Get current date and time
+  const pastDate = new Date(now); // Create a copy
+  pastDate.setUTCDate(now.getUTCDate() - daysToReduce); // Subtract days
+  return pastDate.toISOString(); // Return full ISO string with time
 };
 
 function TokenUsageChart({
@@ -70,7 +111,8 @@ function TokenUsageChart({
   };
 }) {
   useEffect(() => {
-    const highVal = Math.max(...data?.series[0]?.data) || 80;
+    const dataValues = data?.series?.[0]?.data || [];
+    const highVal = dataValues.length > 0 ? Math.max(...dataValues) : 80;
     const chartRef = document.getElementById("token-usage-chart");
     const myChart = echarts.init(chartRef, null, {
       renderer: "canvas",
@@ -78,6 +120,7 @@ function TokenUsageChart({
     });
 
     const option = {
+      animation: false,
       backgroundColor: "transparent",
       grid: {
         top: "10%",
@@ -156,7 +199,7 @@ function TokenUsageChart({
       window.removeEventListener("resize", handleResize);
       myChart.dispose();
     };
-  }, []);
+  }, [data]);
 
   return (
     <div
@@ -363,6 +406,148 @@ function APICallsChart({
   );
 }
 
+function APICallsTimeSeriesChart({
+  data,
+}: {
+  data: {
+    categories: string[];
+    data: number[];
+  };
+}) {
+  useEffect(() => {
+    if (!data || !data.categories || !data.data) return;
+    
+    const chartRef = document.getElementById("api-calls-time-series-chart");
+    const myChart = echarts.init(chartRef, null, {
+      renderer: "canvas",
+      useDirtyRect: false,
+    });
+
+    const maxValue = Math.max(...data.data) || 100;
+    const yAxisMax = Math.ceil(maxValue * 1.2); // Add 20% padding
+
+    const option = {
+      animation: false,
+      backgroundColor: "transparent",
+      grid: {
+        top: "10%",
+        left: "12%",
+        bottom: "15%",
+        right: "5%",
+      },
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: data.categories,
+        axisLabel: {
+          color: "#B3B3B3",
+          fontSize: 12,
+          fontWeight: 300,
+          interval: function (index, value) {
+            const categories = data.categories;
+            // Show first and last labels, and evenly spaced labels in between
+            return (
+              index === 0 ||
+              index === categories.length - 1 ||
+              index % Math.ceil(categories.length / 5) === 0
+            );
+          },
+        },
+        axisTick: {
+          alignWithLabel: true,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+      yAxis: {
+        type: "value",
+        min: 0,
+        max: yAxisMax,
+        axisLabel: {
+          formatter: (value: number) => `${value}`,
+          color: "#EEEEEE",
+          fontSize: 12,
+          fontWeight: 300,
+        },
+        splitLine: {
+          lineStyle: {
+            type: "solid",
+            color: "#171717",
+          },
+        },
+      },
+      series: [
+        {
+          name: "API Calls",
+          data: data.data,
+          type: "line",
+          smooth: true,
+          areaStyle: {
+            opacity: 0.3,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: "#9462D5",
+              },
+              {
+                offset: 1,
+                color: "rgba(148, 98, 213, 0)",
+              },
+            ]),
+          },
+          lineStyle: {
+            color: "#9462D5",
+            width: 2,
+          },
+          itemStyle: {
+            color: "#9462D5",
+          },
+          symbol: "circle",
+          symbolSize: 6,
+        },
+      ],
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        borderColor: "#333",
+        borderWidth: 1,
+        textStyle: {
+          color: "#fff",
+        },
+        formatter: function (params) {
+          if (!params || !Array.isArray(params) || params.length === 0) {
+            return '';
+          }
+          const param = params[0];
+          if (!param) return '';
+          return `${param.name || ''}<br/>API Calls: ${param.value || 0}`;
+        },
+      },
+    };
+
+    myChart.setOption(option);
+
+    const handleResize = () => {
+      myChart.resize();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      myChart.dispose();
+    };
+  }, [data]);
+
+  return (
+    <div
+      id="api-calls-time-series-chart"
+      className="w-full h-full"
+    />
+  );
+}
+
 export function CircleProgress({
   percent,
   strokeWidth,
@@ -490,7 +675,7 @@ function TokenUsageCard(deployment) {
   const [tokenUsageRequestData, setTokenUsageRequestData] = useState<any>();
   const [tokenUsageRequestInterval, setTokenUsageRequestInterval] =
     useState<any>("daily");
-  const [tokenUsageChartData, setTokenUsageChartData] = useState<any>();
+  const [tokenUsageChartData, setTokenUsageChartData] = useState<any>(null);
   const [extraChartDetails, setExtraChartDetails] = useState({
     apiCalls: {
       total_value: "",
@@ -520,14 +705,15 @@ function TokenUsageCard(deployment) {
             name: "Task 1",
             data: data?.concurrency_metrics?.items
               .map((period) =>
-                period.items ? period.items[0].total_requests : 0
+                period.items && period.items.length > 0 ? 
+                  period.items[0].total_value || 0 : 0
               )
               .reverse(),
             lineColor: "#479D5F",
             color: [
               {
-                offset: 0, // Corresponds to 42.97%
-                color: getChromeColor("#479D5F"),
+                offset: 0,
+                color: "#479D5F",
               },
             ],
           },
@@ -543,19 +729,32 @@ function TokenUsageCard(deployment) {
   const getTokenUsageData = async (freq?: any, endDate?: any) => {
     const to_date = new Date().toISOString();
     try {
-      const url = `${tempApiBaseUrl}/metrics/analytics/request-counts`;
-      const response: any = await AppRequest.Post(url, {
+      // For concurrent requests, we want more granular data over a longer period
+      const params = {
         frequency: "daily",
         filter_by: "endpoint",
         filter_conditions: [deployment.deploymentId],
-        from_date: calculateFromDate(100),
+        from_date: calculateFromDate(30), // Last 30 days of daily data
         metrics: "concurrency",
         to_date: to_date,
-      });
-      setTokenUsageRequestData(response.data);
-      // successToast(response.message);
+      };
+      
+      // Convert to new format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      
+      const url = `${tempApiBaseUrl}/metrics/analytics`;
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      // Convert response back to old format
+      const convertedData = convertObservabilityResponse(
+        response.data,
+        params.metrics,
+        params.filter_by
+      );
+      
+      setTokenUsageRequestData(convertedData);
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching concurrent requests:", error);
     }
   };
 
@@ -617,7 +816,9 @@ function TokenUsageCard(deployment) {
         </div>
       </div>
       <div className="w-full flex flex-col justify-end">
-        {tokenUsageChartData && <TokenUsageChart data={tokenUsageChartData} />}
+        {tokenUsageChartData?.series?.length > 0 && tokenUsageChartData?.categories?.length > 0 && (
+          <TokenUsageChart data={tokenUsageChartData} />
+        )}
       </div>
     </div>
   );
@@ -676,7 +877,7 @@ function APICallsCard(endpoint) {
   const [apiChartData, setApiChartData] = useState<any>();
   const [requestCounts, setRequestCounts] = useState();
   const [apiRequestInterval, setApiRequestInterval] = useState<any>("weekly");
-  const segmentOptions = ["TODAY", "THIS WEEK", "THIS MONTH"];
+  const segmentOptions = ["LAST 24 HRS", "LAST 7 DAYS", "LAST 30 DAYS"];
   const [extraChartDetails, setExtraChartDetails] = useState({
     apiCalls: {
       total_value: "",
@@ -686,45 +887,115 @@ function APICallsCard(endpoint) {
 
   const load = async () => {
     try {
-      const url = `${tempApiBaseUrl}/metrics/analytics/request-counts`;
-      const response: any = await AppRequest.Post(url, {
-        frequency: apiRequestInterval,
+      const to_date = new Date().toISOString();
+      
+      // Map interval to appropriate frequency
+      let frequency = apiRequestInterval;
+      if (apiRequestInterval === "daily") {
+        frequency = "hourly"; // Last 24 hrs -> hourly data
+      } else if (apiRequestInterval === "weekly") {
+        frequency = "daily"; // Last 7 days -> daily data
+      } else if (apiRequestInterval === "monthly") {
+        frequency = "weekly"; // Last 30 days -> weekly data
+      }
+      
+      const params = {
+        frequency: frequency,
         filter_by: "endpoint",
         filter_conditions: [endpoint.deploymentId],
-        from_date: calculateFromDate(numberOfDays[apiRequestInterval]),
+        from_date: calculateFromDate(numberOfDaysForDelta[apiRequestInterval]),
         top_k: 5,
         metrics: "overall",
-      });
-      setRequestCounts(response.data);
+        to_date: to_date,
+      };
+      
+      // Convert to new format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      
+      const url = `${tempApiBaseUrl}/metrics/analytics`;
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      // Convert response back to old format
+      const convertedData = convertObservabilityResponse(
+        response.data,
+        params.metrics,
+        params.filter_by
+      );
+      
+      setRequestCounts(convertedData);
     } catch (error) {
-      console.error("Error creating model:", error);
+      console.error("Error fetching request counts:", error);
     }
   };
 
   useEffect(() => {
     if (requestCounts) createApiChartData(requestCounts);
-  }, [requestCounts]);
+  }, [requestCounts, apiRequestInterval]);
 
   const createApiChartData = (data) => {
-    if (data) {
+    
+    if (data?.overall_metrics?.items?.length) {
+      // Create time series data
+      const categories = [];
+      const counts = [];
+      let totalCount = 0;
+      
+      // Determine the scale based on the interval
+      let scale = "daily";
+      if (apiRequestInterval === "daily") {
+        scale = "hourly";
+      } else if (apiRequestInterval === "weekly") {
+        scale = "daily";
+      } else if (apiRequestInterval === "monthly") {
+        scale = "weekly";
+      }
+      
+      // Process each time period
+      data.overall_metrics.items.forEach((timePeriod) => {
+        // Format the date based on scale
+        const dateLabel = formatDateByScale(timePeriod.time_period, scale);
+        categories.push(dateLabel);
+        
+        // Sum all requests for this time period
+        let periodTotal = 0;
+        timePeriod.items.forEach((item) => {
+          // Check different possible fields for the count value
+          const count = item.total_requests || item.total_value || item.request_count || item.count || 0;
+          periodTotal += count;
+        });
+        
+        counts.push(periodTotal);
+        totalCount += periodTotal;
+      });
+      
+      
       setExtraChartDetails((prev) => ({
         ...prev,
         apiCalls: {
-          total_value: data?.overall_metrics?.summary_metrics?.total_value,
-          avg: data?.overall_metrics?.summary_metrics?.delta_percentage,
+          total_value: totalCount.toString(),
+          avg: data?.overall_metrics?.summary_metrics?.delta_percentage || 0,
         },
       }));
-      setApiChartData((prevState) => ({
-        ...prevState,
-        categories:
-          data?.overall_metrics?.summary_metrics?.items.map(
-            (item) => item.name
-          ) || [],
-        data:
-          data?.overall_metrics?.summary_metrics?.items.map(
-            (item) => item.total_value
-          ) || [],
+      
+      // Reverse arrays to show oldest to newest
+      setApiChartData({
+        categories: categories.reverse(),
+        data: counts.reverse(),
+        label1: "Requests",
+        label2: "Date",
+        barColor: "#9462D5"
+      });
+    } else {
+      // No data available
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        apiCalls: {
+          total_value: "0",
+          avg: "0",
+        },
       }));
+      
+      setApiChartData(null);
     }
   };
 
@@ -733,9 +1004,9 @@ function APICallsCard(endpoint) {
   }, [apiRequestInterval]);
 
   const handleChartFilter = (val: any) => {
-    if (val === "TODAY") return "daily";
-    if (val === "THIS WEEK") return "weekly";
-    if (val === "THIS MONTH") return "monthly";
+    if (val === "LAST 24 HRS") return "daily";
+    if (val === "LAST 7 DAYS") return "weekly";
+    if (val === "LAST 30 DAYS") return "monthly";
     return "weekly"; // Default fallback
   };
 
@@ -752,7 +1023,7 @@ function APICallsCard(endpoint) {
               Number of API Calls
             </Text_19_600_EEEEEE>
             <Text_13_400_757575 className="w-full">
-              For the top 5 models
+              Over time
             </Text_13_400_757575>
           </div>
           <div className="flex items-start justify-end w-full mt-[0.1rem]">
@@ -809,7 +1080,7 @@ function APICallsCard(endpoint) {
               </div>
             </div>
             <div className="w-full relative h-[180px] 1680px:h-[210px] 1920px:h-[230px] relative">
-              <BarChart data={apiChartData} />
+              <APICallsTimeSeriesChart data={apiChartData} />
             </div>
             {/* {apiCallsData && <APICallsChart data={apiCallsData} />} */}
           </>
@@ -827,6 +1098,1199 @@ function APICallsCard(endpoint) {
 function PlaceholderCard() {
   return (
     <div className="p-[1.067rem] w-[50%] flex items-center justify-center flex-col"></div>
+  );
+}
+
+// TTFT Card Component
+function TTFTCard(endpoint) {
+  const [ttftData, setTtftData] = useState<any>();
+  const [requestData, setRequestData] = useState();
+  const [ttftInterval, setTtftInterval] = useState<any>("weekly");
+  const segmentOptions = ["LAST 24 HRS", "LAST 7 DAYS", "LAST 30 DAYS"];
+  const [extraChartDetails, setExtraChartDetails] = useState({
+    ttft: {
+      total_value: "",
+      avg: "",
+    },
+  });
+
+  const load = async () => {
+    try {
+      const to_date = new Date().toISOString();
+      
+      // Map interval to appropriate frequency
+      let frequency = ttftInterval;
+      if (ttftInterval === "daily") {
+        frequency = "hourly"; // Last 24 hrs -> hourly data
+      } else if (ttftInterval === "weekly") {
+        frequency = "daily"; // Last 7 days -> daily data
+      } else if (ttftInterval === "monthly") {
+        frequency = "weekly"; // Last 30 days -> weekly data
+      }
+      
+      const params = {
+        frequency: frequency,
+        filter_by: "endpoint",
+        filter_conditions: [endpoint.deploymentId],
+        from_date: calculateFromDate(numberOfDaysForDelta[ttftInterval]),
+        metrics: "ttft",
+        to_date: to_date,
+      };
+      
+      // Convert to new format
+      const observabilityRequest = convertToObservabilityRequest(params);
+      
+      const url = `${tempApiBaseUrl}/metrics/analytics`;
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      // Convert response back to old format
+      const convertedData = convertObservabilityResponse(
+        response.data,
+        params.metrics,
+        params.filter_by
+      );
+      
+      setRequestData(convertedData);
+    } catch (error) {
+      console.error("Error fetching TTFT data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (requestData) createTtftChartData(requestData);
+  }, [requestData, ttftInterval]);
+
+  const createTtftChartData = (data) => {
+    console.log("TTFT Chart Data received:", data);
+    
+    if (data?.ttft_metrics?.items?.length) {
+      // Create time series data
+      const categories = [];
+      const values = [];
+      let totalValue = 0;
+      let count = 0;
+      
+      // Determine the scale based on the interval
+      let scale = "daily";
+      if (ttftInterval === "daily") {
+        scale = "hourly";
+      } else if (ttftInterval === "weekly") {
+        scale = "daily";
+      } else if (ttftInterval === "monthly") {
+        scale = "weekly";
+      }
+      
+      // Process each time period
+      data.ttft_metrics.items.forEach((timePeriod) => {
+        // Format the date based on scale
+        const dateLabel = formatDateByScale(timePeriod.time_period, scale);
+        categories.push(dateLabel);
+        
+        // Get average TTFT for this time period
+        let periodSum = 0;
+        let periodCount = 0;
+        if (timePeriod.items && timePeriod.items.length > 0) {
+          timePeriod.items.forEach((item) => {
+            const ttftValue = item.avg_ttft_ms || item.total_value || 0;
+            periodSum += ttftValue;
+            periodCount++;
+          });
+        }
+        
+        const periodValue = periodCount > 0 ? periodSum / periodCount : 0;
+        values.push(periodValue);
+        totalValue += periodValue;
+        count++;
+      });
+      
+      const overallAvg = count > 0 ? totalValue / count : 0;
+      
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        ttft: {
+          total_value: overallAvg.toFixed(2),
+          avg: data?.ttft_metrics?.summary_metrics?.delta_percentage || 0,
+        },
+      }));
+      
+      // Reverse arrays to show oldest to newest
+      setTtftData({
+        categories: categories.reverse(),
+        data: values.reverse(),
+      });
+    } else {
+      // No data available
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        ttft: {
+          total_value: "0",
+          avg: "0",
+        },
+      }));
+      
+      setTtftData(null);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, [ttftInterval]);
+
+  const handleChartFilter = (val: any) => {
+    if (val === "LAST 24 HRS") return "daily";
+    if (val === "LAST 7 DAYS") return "weekly";
+    if (val === "LAST 30 DAYS") return "monthly";
+    return "weekly"; // Default fallback
+  };
+
+  const handleIntervalChange = (data) => {
+    setTtftInterval(handleChartFilter(data));
+  };
+
+  return (
+    <div className="bg-[#101010] p-[1.55rem] py-[2rem] rounded-[6.403px] border-[1.067px] border-[#1F1F1F] w-[50%] h-[23.664375rem] flex items-center justify-between flex-col">
+      <div className="w-full">
+        <div className="flex items-start justify-start flex-row w-full">
+          <div className="flex items-center justify-start w-full flex-col">
+            <Text_19_600_EEEEEE className="mb-[1.3rem] w-full">
+              TTFT
+            </Text_19_600_EEEEEE>
+            <Text_13_400_757575 className="w-full">
+              Average response time
+            </Text_13_400_757575>
+          </div>
+          <div className="flex items-start justify-end w-full mt-[0.1rem]">
+            <Segmented
+              options={segmentOptions}
+              value={segmentOptions.find(
+                (opt) => handleChartFilter(opt) === ttftInterval
+              )}
+              onChange={(value) => {
+                handleIntervalChange(value);
+              }}
+              className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
+            />
+          </div>
+        </div>
+
+        {ttftData?.data?.length ? (
+          <>
+            <div className="flex items-center justify-between flex-col w-full mt-[1.95rem]">
+              <Text_26_400_EEEEEE className="text-[#EEEEEE] font-medium w-full leading-[26px]">
+                {Number(extraChartDetails.ttft.total_value).toFixed(2)} ms
+              </Text_26_400_EEEEEE>
+              <div className="flex items-center justify-between w-full mt-[.95rem]">
+                <Flex
+                  className={`${Number(extraChartDetails.ttft.avg) >= 0
+                      ? "text-[#479D5F] bg-[#122F1140]"
+                      : "bg-[#861A1A33] text-[#EC7575]"
+                    } rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem]`}
+                >
+                  <span className="font-[400] text-[0.8125rem] leading-[100%]">
+                    Avg. {Number(extraChartDetails.ttft.avg).toFixed(2)}%{" "}
+                  </span>
+                  {Number(extraChartDetails.ttft.avg) >= 0 ? (
+                    <Image
+                      preview={false}
+                      width={12}
+                      src="/images/dashboard/greenArrow.png"
+                      className="ml-[.2rem]"
+                      alt=""
+                    />
+                  ) : (
+                    <Image
+                      preview={false}
+                      width={12}
+                      src="/images/dashboard/redArrow.png"
+                      className="ml-[.2rem]"
+                      alt=""
+                    />
+                  )}
+                </Flex>
+              </div>
+            </div>
+            <div className="w-full relative h-[180px] 1680px:h-[210px] 1920px:h-[230px] relative">
+              <MetricTimeSeriesChart 
+                data={ttftData} 
+                color="#32D583"
+                unit="ms"
+                metricName="TTFT"
+              />
+            </div>
+          </>
+        ) : (
+          <NoChartData
+            image="/images/dashboard/noData.png"
+          ></NoChartData>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Latency Card Component
+function LatencyCard(endpoint) {
+  const [latencyData, setLatencyData] = useState<any>();
+  const [requestData, setRequestData] = useState();
+  const [latencyInterval, setLatencyInterval] = useState<any>("weekly");
+  const segmentOptions = ["LAST 24 HRS", "LAST 7 DAYS", "LAST 30 DAYS"];
+  const [extraChartDetails, setExtraChartDetails] = useState({
+    latency: {
+      total_value: "",
+      avg: "",
+    },
+  });
+
+  const load = async () => {
+    try {
+      const to_date = new Date().toISOString();
+      
+      // Map interval to appropriate frequency
+      let frequency = latencyInterval;
+      if (latencyInterval === "daily") {
+        frequency = "hourly";
+      } else if (latencyInterval === "weekly") {
+        frequency = "daily";
+      } else if (latencyInterval === "monthly") {
+        frequency = "weekly";
+      }
+      
+      const params = {
+        frequency: frequency,
+        filter_by: "endpoint",
+        filter_conditions: [endpoint.deploymentId],
+        from_date: calculateFromDate(numberOfDaysForDelta[latencyInterval]),
+        metrics: "latency",
+        to_date: to_date,
+      };
+      
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const url = `${tempApiBaseUrl}/metrics/analytics`;
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      const convertedData = convertObservabilityResponse(
+        response.data,
+        params.metrics,
+        params.filter_by
+      );
+      
+      setRequestData(convertedData);
+    } catch (error) {
+      console.error("Error fetching latency data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (requestData) createLatencyChartData(requestData);
+  }, [requestData, latencyInterval]);
+
+  const createLatencyChartData = (data) => {
+    if (data?.latency_metrics?.items?.length) {
+      const categories = [];
+      const values = [];
+      let totalValue = 0;
+      let count = 0;
+      
+      let scale = "daily";
+      if (latencyInterval === "daily") {
+        scale = "hourly";
+      } else if (latencyInterval === "weekly") {
+        scale = "daily";
+      } else if (latencyInterval === "monthly") {
+        scale = "weekly";
+      }
+      
+      data.latency_metrics.items.forEach((timePeriod) => {
+        const dateLabel = formatDateByScale(timePeriod.time_period, scale);
+        categories.push(dateLabel);
+        
+        // If there are multiple items (endpoints), we take the first one or sum them
+        // For now, we'll take the average of all endpoints for that time period
+        let periodSum = 0;
+        let periodCount = 0;
+        if (timePeriod.items && timePeriod.items.length > 0) {
+          timePeriod.items.forEach((item) => {
+            const latencyValue = item.avg_latency_ms || item.total_value || 0;
+            periodSum += latencyValue;
+            periodCount++;
+          });
+        }
+        
+        const periodValue = periodCount > 0 ? periodSum / periodCount : 0;
+        values.push(periodValue);
+        totalValue += periodValue;
+        count++;
+      });
+      
+      const overallAvg = count > 0 ? totalValue / count : 0;
+      
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        latency: {
+          total_value: overallAvg.toFixed(2),
+          avg: data?.latency_metrics?.summary_metrics?.delta_percentage || 0,
+        },
+      }));
+      
+      setLatencyData({
+        categories: categories.reverse(),
+        data: values.reverse(),
+      });
+    } else {
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        latency: {
+          total_value: "0",
+          avg: "0",
+        },
+      }));
+      
+      setLatencyData(null);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, [latencyInterval]);
+
+  const handleChartFilter = (val: any) => {
+    if (val === "LAST 24 HRS") return "daily";
+    if (val === "LAST 7 DAYS") return "weekly";
+    if (val === "LAST 30 DAYS") return "monthly";
+    return "weekly";
+  };
+
+  const handleIntervalChange = (data) => {
+    setLatencyInterval(handleChartFilter(data));
+  };
+
+  return (
+    <div className="bg-[#101010] p-[1.55rem] py-[2rem] rounded-[6.403px] border-[1.067px] border-[#1F1F1F] w-[50%] h-[23.664375rem] flex items-center justify-between flex-col">
+      <div className="w-full">
+        <div className="flex items-start justify-start flex-row w-full">
+          <div className="flex items-center justify-start w-full flex-col">
+            <Text_19_600_EEEEEE className="mb-[1.3rem] w-full">
+              Latency
+            </Text_19_600_EEEEEE>
+            <Text_13_400_757575 className="w-full">
+              End-to-end response time
+            </Text_13_400_757575>
+          </div>
+          <div className="flex items-start justify-end w-full mt-[0.1rem]">
+            <Segmented
+              options={segmentOptions}
+              value={segmentOptions.find(
+                (opt) => handleChartFilter(opt) === latencyInterval
+              )}
+              onChange={(value) => {
+                handleIntervalChange(value);
+              }}
+              className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
+            />
+          </div>
+        </div>
+
+        {latencyData?.data?.length ? (
+          <>
+            <div className="flex items-center justify-between flex-col w-full mt-[1.95rem]">
+              <Text_26_400_EEEEEE className="text-[#EEEEEE] font-medium w-full leading-[26px]">
+                {Number(extraChartDetails.latency.total_value).toFixed(2)} ms
+              </Text_26_400_EEEEEE>
+              <div className="flex items-center justify-between w-full mt-[.95rem]">
+                <Flex
+                  className={`${Number(extraChartDetails.latency.avg) >= 0
+                      ? "text-[#479D5F] bg-[#122F1140]"
+                      : "bg-[#861A1A33] text-[#EC7575]"
+                    } rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem]`}
+                >
+                  <span className="font-[400] text-[0.8125rem] leading-[100%]">
+                    Avg. {Number(extraChartDetails.latency.avg).toFixed(2)}%{" "}
+                  </span>
+                  {Number(extraChartDetails.latency.avg) >= 0 ? (
+                    <Image
+                      preview={false}
+                      width={12}
+                      src="/images/dashboard/greenArrow.png"
+                      className="ml-[.2rem]"
+                      alt=""
+                    />
+                  ) : (
+                    <Image
+                      preview={false}
+                      width={12}
+                      src="/images/dashboard/redArrow.png"
+                      className="ml-[.2rem]"
+                      alt=""
+                    />
+                  )}
+                </Flex>
+              </div>
+            </div>
+            <div className="w-full relative h-[180px] 1680px:h-[210px] 1920px:h-[230px] relative">
+              <MetricTimeSeriesChart 
+                data={latencyData} 
+                color="#4A90E2"
+                unit="ms"
+                metricName="Latency"
+              />
+            </div>
+          </>
+        ) : (
+          <NoChartData
+            image="/images/dashboard/noData.png"
+          ></NoChartData>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Throughput Card Component
+function ThroughputCard(endpoint) {
+  const [throughputData, setThroughputData] = useState<any>();
+  const [requestData, setRequestData] = useState();
+  const [throughputInterval, setThroughputInterval] = useState<any>("weekly");
+  const segmentOptions = ["LAST 24 HRS", "LAST 7 DAYS", "LAST 30 DAYS"];
+  const [extraChartDetails, setExtraChartDetails] = useState({
+    throughput: {
+      total_value: "",
+      avg: "",
+    },
+  });
+
+  const load = async () => {
+    try {
+      const to_date = new Date().toISOString();
+      
+      let frequency = throughputInterval;
+      if (throughputInterval === "daily") {
+        frequency = "hourly";
+      } else if (throughputInterval === "weekly") {
+        frequency = "daily";
+      } else if (throughputInterval === "monthly") {
+        frequency = "weekly";
+      }
+      
+      const params = {
+        frequency: frequency,
+        filter_by: "endpoint",
+        filter_conditions: [endpoint.deploymentId],
+        from_date: calculateFromDate(numberOfDaysForDelta[throughputInterval]),
+        metrics: "throughput",
+        to_date: to_date,
+      };
+      
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const url = `${tempApiBaseUrl}/metrics/analytics`;
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      const convertedData = convertObservabilityResponse(
+        response.data,
+        params.metrics,
+        params.filter_by
+      );
+      
+      setRequestData(convertedData);
+    } catch (error) {
+      console.error("Error fetching throughput data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (requestData) createThroughputChartData(requestData);
+  }, [requestData, throughputInterval]);
+
+  const createThroughputChartData = (data) => {
+    if (data?.throughput_metrics?.items?.length) {
+      const categories = [];
+      const values = [];
+      let totalValue = 0;
+      let count = 0;
+      
+      let scale = "daily";
+      if (throughputInterval === "daily") {
+        scale = "hourly";
+      } else if (throughputInterval === "weekly") {
+        scale = "daily";
+      } else if (throughputInterval === "monthly") {
+        scale = "weekly";
+      }
+      
+      data.throughput_metrics.items.forEach((timePeriod) => {
+        const dateLabel = formatDateByScale(timePeriod.time_period, scale);
+        categories.push(dateLabel);
+        
+        let periodSum = 0;
+        let periodCount = 0;
+        if (timePeriod.items && timePeriod.items.length > 0) {
+          timePeriod.items.forEach((item) => {
+            const throughputValue = item.avg_throughput || item.total_value || 0;
+            periodSum += throughputValue;
+            periodCount++;
+          });
+        }
+        
+        const periodValue = periodCount > 0 ? periodSum / periodCount : 0;
+        // Round to 2 decimal places
+        values.push(parseFloat(periodValue.toFixed(2)));
+        totalValue += periodValue;
+        count++;
+      });
+      
+      const overallAvg = count > 0 ? totalValue / count : 0;
+      
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        throughput: {
+          total_value: overallAvg.toFixed(2),
+          avg: data?.throughput_metrics?.summary_metrics?.delta_percentage || 0,
+        },
+      }));
+      
+      setThroughputData({
+        categories: categories.reverse(),
+        data: values.reverse(),
+      });
+    } else {
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        throughput: {
+          total_value: "0",
+          avg: "0",
+        },
+      }));
+      
+      setThroughputData(null);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, [throughputInterval]);
+
+  const handleChartFilter = (val: any) => {
+    if (val === "LAST 24 HRS") return "daily";
+    if (val === "LAST 7 DAYS") return "weekly";
+    if (val === "LAST 30 DAYS") return "monthly";
+    return "weekly";
+  };
+
+  const handleIntervalChange = (data) => {
+    setThroughputInterval(handleChartFilter(data));
+  };
+
+  return (
+    <div className="bg-[#101010] p-[1.55rem] py-[2rem] rounded-[6.403px] border-[1.067px] border-[#1F1F1F] w-[50%] h-[23.664375rem] flex items-center justify-between flex-col">
+      <div className="w-full">
+        <div className="flex items-start justify-start flex-row w-full">
+          <div className="flex items-center justify-start w-full flex-col">
+            <Text_19_600_EEEEEE className="mb-[1.3rem] w-full">
+              Throughput
+            </Text_19_600_EEEEEE>
+            <Text_13_400_757575 className="w-full">
+              Tokens per second
+            </Text_13_400_757575>
+          </div>
+          <div className="flex items-start justify-end w-full mt-[0.1rem]">
+            <Segmented
+              options={segmentOptions}
+              value={segmentOptions.find(
+                (opt) => handleChartFilter(opt) === throughputInterval
+              )}
+              onChange={(value) => {
+                handleIntervalChange(value);
+              }}
+              className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
+            />
+          </div>
+        </div>
+
+        {throughputData?.data?.length ? (
+          <>
+            <div className="flex items-center justify-between flex-col w-full mt-[1.95rem]">
+              <Text_26_400_EEEEEE className="text-[#EEEEEE] font-medium w-full leading-[26px]">
+                {Number(extraChartDetails.throughput.total_value).toFixed(2)} tokens/s
+              </Text_26_400_EEEEEE>
+              <div className="flex items-center justify-between w-full mt-[.95rem]">
+                <Flex
+                  className={`${Number(extraChartDetails.throughput.avg) >= 0
+                      ? "text-[#479D5F] bg-[#122F1140]"
+                      : "bg-[#861A1A33] text-[#EC7575]"
+                    } rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem]`}
+                >
+                  <span className="font-[400] text-[0.8125rem] leading-[100%]">
+                    Avg. {Number(extraChartDetails.throughput.avg).toFixed(2)}%{" "}
+                  </span>
+                  {Number(extraChartDetails.throughput.avg) >= 0 ? (
+                    <Image
+                      preview={false}
+                      width={12}
+                      src="/images/dashboard/greenArrow.png"
+                      className="ml-[.2rem]"
+                      alt=""
+                    />
+                  ) : (
+                    <Image
+                      preview={false}
+                      width={12}
+                      src="/images/dashboard/redArrow.png"
+                      className="ml-[.2rem]"
+                      alt=""
+                    />
+                  )}
+                </Flex>
+              </div>
+            </div>
+            <div className="w-full relative h-[180px] 1680px:h-[210px] 1920px:h-[230px] relative">
+              <MetricTimeSeriesChart 
+                data={throughputData} 
+                color="#F39C12"
+                unit="tokens/s"
+                metricName="Throughput"
+              />
+            </div>
+          </>
+        ) : (
+          <NoChartData
+            image="/images/dashboard/noData.png"
+          ></NoChartData>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Token Metrics Card Component
+function TokenMetricsCard(endpoint) {
+  const [tokenData, setTokenData] = useState<any>();
+  const [requestData, setRequestData] = useState();
+  const [tokenInterval, setTokenInterval] = useState<any>("weekly");
+  const segmentOptions = ["LAST 24 HRS", "LAST 7 DAYS", "LAST 30 DAYS"];
+  const [extraChartDetails, setExtraChartDetails] = useState({
+    tokens: {
+      input_total: "",
+      output_total: "",
+      input_avg: "",
+      output_avg: "",
+    },
+  });
+
+  const load = async () => {
+    try {
+      const to_date = new Date().toISOString();
+      
+      let frequency = tokenInterval;
+      if (tokenInterval === "daily") {
+        frequency = "hourly";
+      } else if (tokenInterval === "weekly") {
+        frequency = "daily";
+      } else if (tokenInterval === "monthly") {
+        frequency = "weekly";
+      }
+      
+      const params = {
+        frequency: frequency,
+        filter_by: "endpoint",
+        filter_conditions: [endpoint.deploymentId],
+        from_date: calculateFromDate(numberOfDaysForDelta[tokenInterval]),
+        metrics: "input_output_tokens",
+        to_date: to_date,
+      };
+      
+      const observabilityRequest = convertToObservabilityRequest(params);
+      const url = `${tempApiBaseUrl}/metrics/analytics`;
+      const response: any = await AppRequest.Post(url, observabilityRequest);
+      
+      const convertedData = convertObservabilityResponse(
+        response.data,
+        params.metrics,
+        params.filter_by
+      );
+      
+      setRequestData(convertedData);
+    } catch (error) {
+      console.error("Error fetching token data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (requestData) createTokenChartData(requestData);
+  }, [requestData, tokenInterval]);
+
+  const createTokenChartData = (data) => {
+    if (data?.input_output_tokens_metrics?.items?.length) {
+      const categories = [];
+      const inputValues = [];
+      const outputValues = [];
+      let totalInput = 0;
+      let totalOutput = 0;
+      let count = 0;
+      
+      let scale = "daily";
+      if (tokenInterval === "daily") {
+        scale = "hourly";
+      } else if (tokenInterval === "weekly") {
+        scale = "daily";
+      } else if (tokenInterval === "monthly") {
+        scale = "weekly";
+      }
+      
+      data.input_output_tokens_metrics.items.forEach((timePeriod) => {
+        const dateLabel = formatDateByScale(timePeriod.time_period, scale);
+        categories.push(dateLabel);
+        
+        let periodInput = 0;
+        let periodOutput = 0;
+        if (timePeriod.items && timePeriod.items.length > 0) {
+          timePeriod.items.forEach((item) => {
+            periodInput += item.input_tokens || 0;
+            periodOutput += item.output_tokens || 0;
+          });
+        }
+        
+        inputValues.push(periodInput);
+        outputValues.push(periodOutput);
+        totalInput += periodInput;
+        totalOutput += periodOutput;
+        count++;
+      });
+      
+      const avgInput = count > 0 ? totalInput / count : 0;
+      const avgOutput = count > 0 ? totalOutput / count : 0;
+      
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        tokens: {
+          input_total: totalInput.toString(),
+          output_total: totalOutput.toString(),
+          input_avg: data?.input_output_tokens_metrics?.summary_metrics?.input_tokens_delta_percentage || 0,
+          output_avg: data?.input_output_tokens_metrics?.summary_metrics?.output_tokens_delta_percentage || 0,
+        },
+      }));
+      
+      setTokenData({
+        categories: categories.reverse(),
+        inputData: inputValues.reverse(),
+        outputData: outputValues.reverse(),
+      });
+    } else {
+      setExtraChartDetails((prev) => ({
+        ...prev,
+        tokens: {
+          input_total: "0",
+          output_total: "0",
+          input_avg: "0",
+          output_avg: "0",
+        },
+      }));
+      
+      setTokenData(null);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, [tokenInterval]);
+
+  const handleChartFilter = (val: any) => {
+    if (val === "LAST 24 HRS") return "daily";
+    if (val === "LAST 7 DAYS") return "weekly";
+    if (val === "LAST 30 DAYS") return "monthly";
+    return "weekly";
+  };
+
+  const handleIntervalChange = (data) => {
+    setTokenInterval(handleChartFilter(data));
+  };
+
+  return (
+    <div className="bg-[#101010] p-[1.55rem] py-[2rem] rounded-[6.403px] border-[1.067px] border-[#1F1F1F] w-[50%] h-[23.664375rem] flex items-center justify-between flex-col">
+      <div className="w-full">
+        <div className="flex items-start justify-start flex-row w-full">
+          <div className="flex items-center justify-start w-full flex-col">
+            <Text_19_600_EEEEEE className="mb-[1.3rem] w-full">
+              Token Metrics
+            </Text_19_600_EEEEEE>
+            <Text_13_400_757575 className="w-full">
+              Input and output tokens
+            </Text_13_400_757575>
+          </div>
+          <div className="flex items-start justify-end w-full mt-[0.1rem]">
+            <Segmented
+              options={segmentOptions}
+              value={segmentOptions.find(
+                (opt) => handleChartFilter(opt) === tokenInterval
+              )}
+              onChange={(value) => {
+                handleIntervalChange(value);
+              }}
+              className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
+            />
+          </div>
+        </div>
+
+        {tokenData?.categories?.length ? (
+          <>
+            <div className="flex items-center justify-between flex-col w-full mt-[1.95rem]">
+              <div className="flex justify-between w-full">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#4077E6]"></div>
+                    <Text_14_400_EEEEEE className="text-[#B3B3B3]">Input</Text_14_400_EEEEEE>
+                  </div>
+                  <Text_20_400_EEEEEE className="text-[#EEEEEE] font-medium">
+                    {Number(extraChartDetails.tokens.input_total).toLocaleString()} tokens
+                  </Text_20_400_EEEEEE>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#E36E4F]"></div>
+                    <Text_14_400_EEEEEE className="text-[#B3B3B3]">Output</Text_14_400_EEEEEE>
+                  </div>
+                  <Text_20_400_EEEEEE className="text-[#EEEEEE] font-medium">
+                    {Number(extraChartDetails.tokens.output_total).toLocaleString()} tokens
+                  </Text_20_400_EEEEEE>
+                </div>
+              </div>
+            </div>
+            <div className="w-full relative h-[180px] 1680px:h-[210px] 1920px:h-[230px] relative">
+              <TokenTimeSeriesChart 
+                data={tokenData}
+              />
+            </div>
+          </>
+        ) : (
+          <NoChartData
+            image="/images/dashboard/noData.png"
+          ></NoChartData>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Generic Metric Time Series Chart Component
+function MetricTimeSeriesChart({
+  data,
+  color,
+  unit,
+  metricName
+}: {
+  data: {
+    categories: string[];
+    data: number[];
+  };
+  color: string;
+  unit: string;
+  metricName: string;
+}) {
+  useEffect(() => {
+    if (!data || !data.categories || !data.data) return;
+    
+    const chartRef = document.getElementById(`${metricName}-time-series-chart`);
+    const myChart = echarts.init(chartRef, null, {
+      renderer: "canvas",
+      useDirtyRect: false,
+    });
+
+    const maxValue = Math.max(...data.data) || 100;
+    const yAxisMax = Math.ceil(maxValue * 1.2); // Add 20% padding
+
+    const option = {
+      animation: false,
+      backgroundColor: "transparent",
+      grid: {
+        top: "10%",
+        left: "12%",
+        bottom: "15%",
+        right: "5%",
+      },
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: data.categories,
+        axisLabel: {
+          color: "#B3B3B3",
+          fontSize: 12,
+          fontWeight: 300,
+          interval: function (index, value) {
+            const categories = data.categories;
+            return (
+              index === 0 ||
+              index === categories.length - 1 ||
+              index % Math.ceil(categories.length / 5) === 0
+            );
+          },
+        },
+        axisTick: {
+          alignWithLabel: true,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+      yAxis: {
+        type: "value",
+        min: 0,
+        max: yAxisMax,
+        axisLabel: {
+          formatter: (value: number) => `${value}${unit ? ' ' + unit : ''}`,
+          color: "#EEEEEE",
+          fontSize: 12,
+          fontWeight: 300,
+        },
+        splitLine: {
+          lineStyle: {
+            type: "solid",
+            color: "#171717",
+          },
+        },
+      },
+      series: [
+        {
+          name: metricName,
+          data: data.data,
+          type: "line",
+          smooth: true,
+          areaStyle: {
+            opacity: 0.3,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: color,
+              },
+              {
+                offset: 1,
+                color: `${color}00`,
+              },
+            ]),
+          },
+          lineStyle: {
+            color: color,
+            width: 2,
+          },
+          itemStyle: {
+            color: color,
+          },
+          symbol: "circle",
+          symbolSize: 6,
+        },
+      ],
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        borderColor: "#333",
+        borderWidth: 1,
+        textStyle: {
+          color: "#fff",
+        },
+        formatter: function (params) {
+          if (!params || !Array.isArray(params) || params.length === 0) {
+            return '';
+          }
+          const param = params[0];
+          if (!param) return '';
+          return `${param.name || ''}<br/>${metricName}: ${param.value || 0} ${unit}`;
+        },
+      },
+    };
+
+    myChart.setOption(option);
+
+    const handleResize = () => {
+      myChart.resize();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      myChart.dispose();
+    };
+  }, [data, color, unit, metricName]);
+
+  return (
+    <div
+      id={`${metricName}-time-series-chart`}
+      className="w-full h-full"
+    />
+  );
+}
+
+// Token Time Series Chart Component
+function TokenTimeSeriesChart({
+  data
+}: {
+  data: {
+    categories: string[];
+    inputData: number[];
+    outputData: number[];
+  };
+}) {
+  useEffect(() => {
+    if (!data || !data.categories) return;
+    
+    const chartRef = document.getElementById("token-time-series-chart");
+    const myChart = echarts.init(chartRef, null, {
+      renderer: "canvas",
+      useDirtyRect: false,
+    });
+
+    const allValues = [...data.inputData, ...data.outputData];
+    const maxValue = Math.max(...allValues) || 100;
+    const yAxisMax = Math.ceil(maxValue * 1.2);
+
+    const option = {
+      animation: false,
+      backgroundColor: "transparent",
+      grid: {
+        top: "10%",
+        left: "12%",
+        bottom: "10%",
+        right: "5%",
+      },
+      legend: {
+        show: false
+      },
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: data.categories,
+        axisLabel: {
+          color: "#B3B3B3",
+          fontSize: 12,
+          fontWeight: 300,
+          interval: function (index, value) {
+            const categories = data.categories;
+            return (
+              index === 0 ||
+              index === categories.length - 1 ||
+              index % Math.ceil(categories.length / 5) === 0
+            );
+          },
+        },
+        axisTick: {
+          alignWithLabel: true,
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+      yAxis: {
+        type: "value",
+        min: 0,
+        max: yAxisMax,
+        axisLabel: {
+          formatter: (value: number) => value.toLocaleString(),
+          color: "#EEEEEE",
+          fontSize: 12,
+          fontWeight: 300,
+        },
+        splitLine: {
+          lineStyle: {
+            type: "solid",
+            color: "#171717",
+          },
+        },
+      },
+      series: [
+        {
+          name: "Input Tokens",
+          data: data.inputData,
+          type: "line",
+          smooth: true,
+          areaStyle: {
+            opacity: 0.3,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: "#4077E6",
+              },
+              {
+                offset: 1,
+                color: "rgba(64, 119, 230, 0)",
+              },
+            ]),
+          },
+          lineStyle: {
+            color: "#4077E6",
+            width: 2,
+          },
+          itemStyle: {
+            color: "#4077E6",
+          },
+          symbol: "circle",
+          symbolSize: 6,
+        },
+        {
+          name: "Output Tokens",
+          data: data.outputData,
+          type: "line",
+          smooth: true,
+          areaStyle: {
+            opacity: 0.3,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: "#E36E4F",
+              },
+              {
+                offset: 1,
+                color: "rgba(227, 110, 79, 0)",
+              },
+            ]),
+          },
+          lineStyle: {
+            color: "#E36E4F",
+            width: 2,
+          },
+          itemStyle: {
+            color: "#E36E4F",
+          },
+          symbol: "circle",
+          symbolSize: 6,
+        },
+      ],
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        borderColor: "#333",
+        borderWidth: 1,
+        textStyle: {
+          color: "#fff",
+        },
+        formatter: function (params) {
+          if (!params || !Array.isArray(params) || params.length === 0) {
+            return '';
+          }
+          let result = params[0].name + '<br/>';
+          params.forEach(param => {
+            result += `${param.seriesName}: ${param.value?.toLocaleString() || 0} tokens<br/>`;
+          });
+          return result;
+        },
+      },
+    };
+
+    myChart.setOption(option);
+
+    const handleResize = () => {
+      myChart.resize();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      myChart.dispose();
+    };
+  }, [data]);
+
+  return (
+    <div
+      id="token-time-series-chart"
+      className="w-full h-full"
+    />
   );
 }
 
@@ -916,7 +2380,7 @@ export default function DeploymentAnalysis({
   ]);
 
   const load = async () => {
-    getInferenceQualityAnalytics(deploymentId as string);
+    // getInferenceQualityAnalytics(deploymentId as string);
   };
 
   useEffect(() => {
@@ -948,7 +2412,7 @@ export default function DeploymentAnalysis({
       </div>
       <div className="flex gap-[.75rem] mt-[.5rem] justify-between items-stretch	">
         {/* {inferenceQualityAnalytics?.harmfulness_score != undefined && ( */}
-        <>
+        {/* <>
           {data.map((item, index) => (
             <CircleProgress
               key={index}
@@ -959,21 +2423,24 @@ export default function DeploymentAnalysis({
               }}
             />
           ))}
-        </>
+        </> */}
         {/* )} */}
-        {clusterDetails && (
+        {/* {clusterDetails && (
           <WorkersCard switchTab={switchTab} clusterdata={clusterDetails} />
-        )}
+        )} */}
       </div>
       <div className="flex  gap-[.8rem]">
-        {deploymentId && <TokenUsageCard deploymentId={deploymentId} />}
-        {/* <ComputeHoursCard /> */}
         {deploymentId && <APICallsCard deploymentId={deploymentId} />}
+        {deploymentId && <TTFTCard deploymentId={deploymentId} />}
       </div>
-      {/* <div className="flex  gap-[.8rem]">
-        {deploymentId && <APICallsCard deploymentId={deploymentId} />}
+      <div className="flex  gap-[.8rem]">
+        {deploymentId && <LatencyCard deploymentId={deploymentId} />}
+        {deploymentId && <ThroughputCard deploymentId={deploymentId} />}
+      </div>
+      <div className="flex  gap-[.8rem]">
+        {deploymentId && <TokenMetricsCard deploymentId={deploymentId} />}
         <PlaceholderCard />
-      </div> */}
+      </div>
     </div>
   );
 }

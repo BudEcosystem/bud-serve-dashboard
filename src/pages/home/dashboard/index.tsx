@@ -1,30 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React, { use, useCallback, useEffect, useState } from "react";
-// import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { Box } from "@radix-ui/themes";
 import DashBoardLayout from "../layout";
 
 import AccuracyChart from "../../../components/charts/accuracyChart";
 import ApiCallsChart from "../../../components/charts/regularBarChart";
-import LatencyChart from "../../../components/charts/latencyChart";
-import OverallVsUtillizedChart from "../../../components/charts/overallVsUtillizedChart";
-import { AppRequest } from "src/pages/api/requests";
-import { Text_12_500_FFFFFF, Text_13_400_tag, Text_15_600_EEEEEE, Text_19_600_EEEEEE, Text_26_400_EEEEEE, Text_38_400_EEEEEE } from "@/components/ui/text";
+import { Text_12_500_FFFFFF, Text_13_400_tag, Text_15_600_EEEEEE, Text_19_600_EEEEEE, Text_38_400_EEEEEE } from "@/components/ui/text";
 import { SelectInput } from "@/components/ui/input";
-import { Flex, Image, Typography, Segmented, Carousel } from 'antd';
+import { Flex, Image, Segmented, Carousel } from 'antd';
 import BarChart from "@/components/charts/barChart";
 import NoChartData from "@/components/ui/noChartData";
 import { useCharts } from "src/hooks/useCharts";
 import { useLoader } from "src/context/appContext";
-import ComingSoon from "@/components/ui/comingSoon";
 import DirectionArrowChart from "@/components/charts/directionArrowChart";
-import CustomBarChart from "@/components/charts/barChart/customBarChart";
 import TokenMetricsChart from "@/components/charts/barChart/customBarChart";
-import { getChromeColor, getChromeColorHex } from "@/components/ui/bud/dataEntry/TagsInputData";
-const { Title, Paragraph, Text, Link } = Typography;
 
-const onChange = (currentSlide: number) => {
+const onChange = () => {
 };
 
 const requestOptions = [
@@ -33,14 +25,14 @@ const requestOptions = [
   { label: "MONTHLY", value: "monthly" },
 ];
 
-const modelRequestOptions = [
-  { label: "DAILY", value: "1" },
-  { label: "WEEKLY", value: "7" },
-  { label: "MONTHLY", value: "30" },
-];
-const segmentOptions = ['TODAY', 'THIS WEEK', 'THIS MONTH']
+const segmentOptions = ['LAST 24 HRS', 'LAST 7 DAYS', 'LAST 30 DAYS']
 
-const accuracySampleData = {
+type AccuracyChartData = {
+  dimensions: string[];
+  source: Record<string, string | number>[];
+};
+
+const accuracySampleData: AccuracyChartData = {
   dimensions: [
     "product",
     "MMLU",
@@ -113,104 +105,12 @@ const apiChartDataSample = {
   categories: [],
   label1: "Api Calls",
   label2: "Projects",
-  barColor: "#4077E6",
-  showLegend: false,
+  barColor: "#4077E6"
 };
 
-// const latencyDistribuitionData = {
-//   categories: ["1", "2", "3", "4", "5"],
-//   series: [
-//     [0, 650, 400, 250, 50, 0],
-//     [0, 250, 450, 250, 50, 0],
-//     [0, 25, 240, 400, 300, 0],
-//   ],
-// };
-const latencyDistribuitionData = {
-  categories: ["1", "2", "3", "4", "5"],
-  series: [
-    {
-      name: "Task 1",
-      data: [0, 650, 400, 250, 50, 0],
-      lineColor: '#D1B854',
-      color: [
-        {
-          offset: 0.4297, // Corresponds to 42.97%
-          color: 'rgba(209, 184, 84, 0.28)',
-        },
-        {
-          offset: 0.58, // Corresponds to 58%
-          color: 'rgba(209, 184, 84, 0.1)',
-        },
-        {
-          offset: 0.6597, // Corresponds to 65.97%
-          color: 'rgba(209, 184, 84, 0.03)',
-        },
-        {
-          offset: 0.7684, // Corresponds to 76.84%
-          color: 'rgba(209, 184, 84, 0)',
-        },
-      ]
-    },
-    {
-      name: "Task 2",
-      data: [0, 250, 450, 250, 50, 0],
-      lineColor: '#4077E6',
-      color: [
-        {
-          offset: 0.4297, // Corresponds to 42.97%
-          color: 'rgba(64, 119, 230, 0.28)', // Color at 42.97%
-        },
-        {
-          offset: 0.58, // Corresponds to 58%
-          color: 'rgba(64, 119, 230, 0.1)', // Color at 58%
-        },
-        {
-          offset: 0.6597, // Corresponds to 65.97%
-          color: 'rgba(64, 119, 230, 0.03)', // Color at 65.97%
-        },
-        {
-          offset: 0.7684, // Corresponds to 76.84%
-          color: 'rgba(64, 119, 230, 0)', // Color at 76.84%
-        },
-      ]
-    },
-    {
-      name: "Task 3",
-      data: [0, 25, 240, 400, 300, 0],
-      lineColor: '#479D5F',
-      color: [
-        {
-          offset: 0.4297, // Corresponds to 42.97%
-          color: 'rgba(71, 157, 95, 0.28)', // Color at 42.97%
-        },
-        {
-          offset: 0.58, // Corresponds to 58%
-          color: 'rgba(71, 157, 95, 0.1)', // Color at 58%
-        },
-        {
-          offset: 0.6597, // Corresponds to 65.97%
-          color: 'rgba(71, 157, 95, 0.03)', // Color at 65.97%
-        },
-        {
-          offset: 0.7684, // Corresponds to 76.84%
-          color: 'rgba(71, 157, 95, 0)', // Color at 76.84%
-        },
-      ]
-    },
-  ],
-};
 
-const OverallVsUtillizedChartData = {
-  categories: ["2000", "2005", "2010", "2015", "2020"],
-  series: [
-    [
-      60, 80, 20, 88, 12, 60, 80, 20, 88, 12, 60, 80, 20, 88, 12, 60, 80, 20,
-      88, 12, 60, 80, 20, 88, 12,
-    ],
-  ],
-};
 
-const totalRequData: any = {
+const totalRequData = {
   categories: ["27-12-2024", "28-12-2024", "29-12-2024", "30-12-2024", "31-12-2024", "01-01-2025", "02-01-2025"],
   data: [0, 38, 16, 88, 0, 70, 30],
 };
@@ -247,33 +147,23 @@ const Dashboard = () => {
   } = useCharts();
   const { showLoader, hideLoader } = useLoader();
   const [accuracyChartData, setAccuracyChartData] =
-    useState<any>(accuracySampleData);
-  const [accuracyRequestEntity, setAccuracyRequestEntity] =
-    useState<any>("project");
+    useState<AccuracyChartData>(accuracySampleData);
 
-  const [apiChartData, setApiChartData] = useState<any>(apiChartDataSample);
-  const [tokenMetricsData, setTokenMetricsData] = useState<any>(tokenMetricsSampleData);
-  const [apiRequestData, setApiRequestData] = useState<any>();
-  const [apiRequestEntity, setApiRequestEntity] = useState<any>("project");
-  const [apiRequestInterval, setApiRequestInterval] = useState<any>("weekly");
+  const [apiChartData, setApiChartData] = useState(apiChartDataSample);
+  const [tokenMetricsData, setTokenMetricsData] = useState(tokenMetricsSampleData);
+  const [apiRequestInterval, setApiRequestInterval] = useState("weekly");
 
-  const [modelChartData, setModelChartData] = useState<any>(modelDataSample);
-  const [modelData, setModelData] = useState<any>();
-  const [modelEntity, setModelEntity] = useState<any>("model");
-  const [modelInterval, setModelInterval] = useState<any>("weekly");
-  const [tokenMetricsInterval, setTokenMetricsInterval] = useState<any>("weekly");
+  const [modelChartData, setModelChartData] = useState(modelDataSample);
+  const [modelInterval, setModelInterval] = useState("weekly");
+  const [tokenMetricsInterval, setTokenMetricsInterval] = useState("weekly");
 
   const [throughputChartData, setThroughputChartData] =
-    useState<any>(throughputDataSample);
-  const [throughputData, setThroughputData] = useState<any>();
-  const [throughputEntity, setThroughputEntity] = useState<any>("model");
-  const [throughputInterval, setThroughputInterval] = useState<any>("weekly");
+    useState(throughputDataSample);
+  const [throughputInterval, setThroughputInterval] = useState("weekly");
 
   const [latencyChartData, setLatencyChartData] =
-    useState<any>(latencyDataSample);
-  const [latencyData, setLatencyData] = useState<any>();
-  const [latencyEntity, setLatencyEntity] = useState<any>("model");
-  const [latencyInterval, setLatencyInterval] = useState<any>("weekly");
+    useState(latencyDataSample);
+  const [latencyInterval, setLatencyInterval] = useState("weekly");
   const [isMounted, setIsMounted] = useState(false);
 
   const [extraChartDetails, setExtraChartDetails] = useState({
@@ -300,10 +190,11 @@ const Dashboard = () => {
       output_avg: ''
     }
   })
-  const numberOfDays = {
-    "daily": 0,
-    "weekly": 7,
-    "monthly": 30
+  // For delta calculations, we need double the time period
+  const numberOfDaysForDelta: Record<string, number> = {
+    "daily": 2,    // Last 48 hours (to get delta for last 24 hours)
+    "weekly": 14,   // Last 14 days (to get delta for last 7 days)
+    "monthly": 60  // Last 60 days (to get delta for last 30 days)
   }
   const [totalRequestChartData, setTotalRequestChartData] = useState(totalRequData);
 
@@ -311,7 +202,7 @@ const Dashboard = () => {
     type: string = 'project',
     metrics: string = 'overall',
     frequency: string = (type === 'project' ? apiRequestInterval : modelInterval) || "weekly",
-    fromdate: string = calculateFromDate(numberOfDays[type === 'project' ? apiRequestInterval : modelInterval])
+    fromdate: string = calculateFromDate(numberOfDaysForDelta[type === 'project' ? apiRequestInterval : modelInterval] || 14)
   ) => {
     try {
       showLoader();
@@ -348,7 +239,7 @@ const Dashboard = () => {
       showLoader();
       await getTotalRequests({
         frequency: "daily",
-        from_date: calculateFromDate(numberOfDays["weekly"]),
+        from_date: calculateFromDate(14), // Get 14 days to calculate week-over-week
         metrics: "global",
         filter_by: "project",
       });
@@ -366,7 +257,7 @@ const Dashboard = () => {
         frequency: (type === 'throughput' ? throughputInterval : latencyInterval) || "daily",
         filter_by: "project",
         filter_conditions: [],
-        from_date: calculateFromDate(numberOfDays[type === 'throughput' ? throughputInterval : latencyInterval]),
+        from_date: calculateFromDate(numberOfDaysForDelta[type === 'throughput' ? throughputInterval : latencyInterval] || 14),
         top_k: 5,
         metrics: type,
       });
@@ -389,11 +280,10 @@ const Dashboard = () => {
   }
 
   const calculateFromDate = (daysToReduce: number) => {
-    const today = new Date(); // Get today's date
-    today.setUTCHours(0, 0, 0, 0);
-    const pastDate = new Date(today); // Create a copy of today's date
-    pastDate.setUTCDate(today.getUTCDate() - daysToReduce); // Subtract 30 days
-    return pastDate.toISOString(); // Format as YYYY-MM-DD
+    const now = new Date(); // Get current date and time
+    const pastDate = new Date(now); // Create a copy
+    pastDate.setUTCDate(now.getUTCDate() - daysToReduce); // Subtract days
+    return pastDate.toISOString(); // Return full ISO string with time
   }
   useEffect(() => {
     throughPutReq('throughput');
@@ -442,12 +332,8 @@ const Dashboard = () => {
     provider_type: string;
   };
 
-  type AccuracyData = {
-    dimensions: string[];
-    source: Record<string, number | string>[];
-  };
 
-  const processLeaderboardData = (accuracyData: Leaderboard[]): AccuracyData => {
+  const processLeaderboardData = (accuracyData: Leaderboard[]): AccuracyChartData => {
     // Extract unique benchmark labels as dimensions, with "product" as the first dimension
     const dimensions = ["product", ...Array.from(new Set(accuracyData?.flatMap(l => l.benchmarks.map(b => b.label))))];
     // Transform leaderboard data into the required source format
@@ -482,7 +368,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (totalRequests?.global_metrics) {
       const dates = getLastWeekDates();
-      const lookup = totalRequests?.global_metrics?.items ? Object.fromEntries(totalRequests?.global_metrics?.items?.map(obj => [obj?.time_period?.split('T')[0], obj?.items?.length ? obj.items[0].total_requests : 0])) : []
+      const lookup = totalRequests?.global_metrics?.items ? Object.fromEntries(totalRequests?.global_metrics?.items?.map((obj: any) => [obj?.time_period?.split('T')[0], obj?.items?.length ? obj.items[0].total_requests : 0])) : []
       const result = dates.map(key => ({
         key: key,
         value: lookup[key] || 0
@@ -494,16 +380,16 @@ const Dashboard = () => {
     }
   }, [totalRequests])
 
-  const handleChartFilter = (val: any) => {
-    if (val === "TODAY") return "daily";
-    if (val === "THIS WEEK") return "weekly";
-    if (val === "THIS MONTH") return "monthly";
+  const handleChartFilter = (val: string) => {
+    if (val === "LAST 24 HRS") return "daily";
+    if (val === "LAST 7 DAYS") return "weekly";
+    if (val === "LAST 30 DAYS") return "monthly";
     return "weekly"; // Default fallback
   };
 
 
   // ApiRequestData code block ----------------------------------
-  const createApiChartData = (data) => {
+  const createApiChartData = (data: any) => {
     if (data) {
       setExtraChartDetails((prev) => ({
         ...prev,
@@ -514,13 +400,13 @@ const Dashboard = () => {
       }))
       setApiChartData((prevState) => ({
         ...prevState,
-        categories: data?.overall_metrics?.summary_metrics?.items.map(item => item.name) || [],
-        data: data?.overall_metrics?.summary_metrics?.items.map(item => item.total_value) || [],
+        categories: data?.overall_metrics?.summary_metrics?.items.map((item: any) => item.name) || [],
+        data: data?.overall_metrics?.summary_metrics?.items.map((item: any) => item.total_value) || [],
       }));
     }
   };
 
-  const createTokenMatricstData = (data) => {
+  const createTokenMatricstData = (data: any) => {
     if (data) {
       // Update extra chart details (if needed)
       setExtraChartDetails((prev) => ({
@@ -535,7 +421,7 @@ const Dashboard = () => {
 
       // Create chart data using the summary_metrics.items array
       const dimensions = ["product", "Input Tokens", "Output Tokens"];
-      const source = data.input_output_tokens_metrics.items[0]?.items.map(item => ({
+      const source = data.input_output_tokens_metrics.items[0]?.items.map((item: any) => ({
         product: item.name,
         "Input Tokens": item.input_tokens,
         "Output Tokens": item.output_tokens,
@@ -550,21 +436,21 @@ const Dashboard = () => {
   };
 
 
-  const handleApiRequestChange = (data) => {
+  const handleApiRequestChange = (data: string) => {
     setApiRequestInterval(handleChartFilter(data));
   };
 
   useEffect(() => {
     load();
-  }, [apiRequestEntity, apiRequestInterval]);
+  }, [apiRequestInterval]);
   // getApiRequestData code block ----------------------------------
 
   // Model code block ----------------------------------
-  const handleModelChange = (data) => {
+  const handleModelChange = (data: string) => {
     setModelInterval(handleChartFilter(data));
   };
 
-  const handleMetricsChange = (data) => {
+  const handleMetricsChange = (data: string) => {
     setTokenMetricsInterval(handleChartFilter(data));
   };
 
@@ -573,7 +459,7 @@ const Dashboard = () => {
   }, [modelInterval])
 
   useEffect(() => {
-    load('model', 'input_output_tokens', tokenMetricsInterval, calculateFromDate(numberOfDays[tokenMetricsInterval]));
+    load('model', 'input_output_tokens', tokenMetricsInterval, calculateFromDate(numberOfDaysForDelta[tokenMetricsInterval] || 14));
   }, [tokenMetricsInterval])
 
   useEffect(() => {
@@ -587,8 +473,8 @@ const Dashboard = () => {
       }))
       setModelChartData((prevState) => ({
         ...prevState,
-        categories: modelCounts?.overall_metrics?.summary_metrics?.items.map(item => item.name) || [],
-        data: modelCounts?.overall_metrics?.summary_metrics?.items.map(item => item.total_value) || [],
+        categories: modelCounts?.overall_metrics?.summary_metrics?.items.map((item: any) => item.name) || [],
+        data: modelCounts?.overall_metrics?.summary_metrics?.items.map((item: any) => item.total_value) || [],
       }));
     }
   }, [modelCounts])
@@ -596,7 +482,7 @@ const Dashboard = () => {
 
   // throughputData code block ----------------------------------
 
-  const createThroughputData = (data) => {
+  const createThroughputData = (data: any) => {
     if (data) {
       setExtraChartDetails((prev) => ({
         ...prev,
@@ -607,23 +493,23 @@ const Dashboard = () => {
       }))
       setThroughputChartData((prevState) => ({
         ...prevState,
-        categories: data?.throughput_metrics?.summary_metrics?.items.map(item => item.name) || [],
-        data: data?.throughput_metrics?.summary_metrics?.items.map(item => item.total_value) || [],
+        categories: data?.throughput_metrics?.summary_metrics?.items.map((item: any) => item.name) || [],
+        data: data?.throughput_metrics?.summary_metrics?.items.map((item: any) => item.total_value) || [],
       }));
     }
   };
-  const handleThroughputChange = (data) => {
+  const handleThroughputChange = (data: string) => {
     setThroughputInterval(handleChartFilter(data));
   };
 
   useEffect(() => {
-    createThroughputData(throughputData);
-  }, [throughputData]);
+    createThroughputData(throughputCount);
+  }, [throughputCount]);
   // throughputData code block ----------------------------------
 
   // Latency code block ----------------------------------
 
-  const createLatencyData = (data) => {
+  const createLatencyData = (data: any) => {
     if (data) {
       setExtraChartDetails((prev) => ({
         ...prev,
@@ -634,22 +520,22 @@ const Dashboard = () => {
       }))
       setLatencyChartData((prevState) => ({
         ...prevState,
-        categories: data?.latency_metrics?.summary_metrics?.items.map(item => item.name) || [],
-        data: data?.latency_metrics?.summary_metrics?.items.map(item => item.total_value) || [],
+        categories: data?.latency_metrics?.summary_metrics?.items.map((item: any) => item.name) || [],
+        data: data?.latency_metrics?.summary_metrics?.items.map((item: any) => item.total_value) || [],
       }));
     }
   };
-  const handleLatencyChange = (data) => {
+  const handleLatencyChange = (data: string) => {
     setLatencyInterval(handleChartFilter(data));
   };
 
   useEffect(() => {
-    createLatencyData(latencyData);
-  }, [latencyData]);
+    createLatencyData(latencyCount);
+  }, [latencyCount]);
 
   // latency code block ----------------------------------
 
-  const formatNumber = (value) => {
+  const formatNumber = (value: number) => {
     if (value >= 1_000_000_000) {
       return { value: +(value / 1_000_000_000).toFixed(1), suffix: 'B' };
     } else if (value >= 1_000_000) {
@@ -684,7 +570,18 @@ const Dashboard = () => {
     }
   ]
 
-  const SmallCard = ({ data }: { data: any }) => {
+  interface SmallCardData {
+    image: string;
+    title: string;
+    value: string | number;
+    tag: {
+      value: string;
+      bg: string;
+      color: string;
+    };
+  }
+
+  const SmallCard = ({ data }: { data: SmallCardData }) => {
     return (
       <Flex className="cardBG w-[32%] h-[49.3%] border border-[#1F1F1F] rounded-md pt-[1.6rem] pb-[1.3rem] px-[1.5rem] relative">
         <div className="absolute w-full h-full top-[0] right-[0] z-1">
@@ -717,125 +614,7 @@ const Dashboard = () => {
     )
   }
 
-  const chartCardData = [
-    {
-      title: 'Accuracy',
-      description: 'For the top 5 models',
-      value: 'Avg. +21.01%',
-      percentage: '',
-      chartData: <AccuracyChart data={accuracyChartData} />, // Pass your chart data here
-      segmentOptions: '',
-      onSegmentChange: null,
-      classNames: "cardSetOne"
-    },
-    {
-      title: 'Latency Distribution Over Task',
-      description: 'Three most recent tasks that were done',
-      value: '127K',
-      percentage: 'Avg. +21.01%',
-      chartData: <LatencyChart data={latencyDistribuitionData} />, // Pass your chart data here
-      segmentOptions: '',
-      onSegmentChange: null,
-      classNames: "cardSetOne"
-    },
-    {
-      title: 'Flops Utilization',
-      description: '',
-      value: '13%',
-      percentage: 'Avg. +21.01%',
-      chartData: <OverallVsUtillizedChart data={OverallVsUtillizedChartData} />, // Pass your chart data here
-      segmentOptions: '',
-      onSegmentChange: null,
-      classNames: "cardSetTwo"
-    },
-    {
-      title: 'Model Usage',
-      description: '',
-      value: '127K',
-      percentage: '+21.01%',
-      chartData: <BarChart data={modelChartData} />, // Pass your chart data here
-      segmentOptions: segmentOptions,
-      onSegmentChange: (value: string) => {
-        handleModelChange(value)
-      },
-      classNames: "cardSetTwo"
-    },
-    {
-      title: 'Number of API Calls',
-      description: '',
-      value: '200',
-      percentage: 'Avg. +21.01%',
-      chartData: <BarChart data={apiChartData} />, // Pass your chart data here
-      segmentOptions: segmentOptions,
-      onSegmentChange: (value: string) => {
-        handleApiRequestChange(value)
-      },
-      classNames: "cardSetTwo"
-    },
-    {
-      title: 'Latency',
-      description: '127K',
-      value: '',
-      percentage: 'Avg. +21.01%',
-      chartData: <BarChart data={latencyChartData} />, // Pass your chart data here
-      segmentOptions: segmentOptions,
-      onSegmentChange: (value: string) => {
-        handleLatencyChange(value)
-      },
-      classNames: "cardSetTwo"
-    },
-    {
-      title: 'Throughput',
-      description: '',
-      value: '200',
-      percentage: 'Avg. +21.01%',
-      chartData: <BarChart data={throughputChartData} />, // Pass your chart data here
-      segmentOptions: segmentOptions,
-      onSegmentChange: (value: string) => {
-        handleThroughputChange(value)
-      },
-      classNames: "cardSetTwo"
-    }
-  ]
-  const ChartUsageCard = ({ data, showSegmented = false }: any) => {
-    return (
-      <div className={`cardBG w-[49.1%] py-[1.9rem] px-[1.65rem] border border-[#1F1F1F] rounded-md ${data.classNames}`}>
-        <Flex className="justify-between align-center">
-          <div>
-            <Text_19_600_EEEEEE>{data.title}</Text_19_600_EEEEEE>
-            {data.description && (
-              <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.95rem]">{data.description}</p>
-            )}
-          </div>
-          {showSegmented && data.segmentOptions && (
-            <Segmented
-              options={data.segmentOptions}
-              onChange={(value) => {
-                data.onSegmentChange(value); // This function comes from the data prop
-              }}
-              className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
-            />
-          )}
-        </Flex>
-        <Flex vertical className="items-start mt-[1.3rem]">
-          <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400]">{data.value}</p>
-          <Flex className="bg-[#122F1140] rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.82rem]">
-            <span className="text-[#479D5F] font-[400] text-[0.8125rem] leading-[100%]">{`Avg. ${data.percentage}`}</span>
-            <Image
-              preview={false}
-              width={12}
-              src="/images/dashboard/greenArrow.png"
-              className="ml-[.2rem]"
-              alt=""
-            />
-          </Flex>
-        </Flex>
-        <div className="h-[232px]">
-          {data.chartData}
-        </div>
-      </div>
-    );
-  };
+  // Removed unused chartCardData and ChartUsageCard components
 
 
   useEffect(() => {
@@ -855,7 +634,6 @@ const Dashboard = () => {
         <div className="boardMainContainer pt-[2.25rem]">
           <Flex className="h-[67.5%] justify-between">
             <div className="cardOne relative cardBG w-[37.4%] px-[2.7%] h-full border-[#1F1F1F] rounded-md">
-              {/* <ComingSoon shrink={true} scaleValue={.9} /> */}
               <Carousel arrows afterChange={onChange} className="h-full">
                 <div className="pt-[4.8rem]">
                   <div className="text-[3.3125rem] text-[#EEEEEE] leading-[100%] font-[400]">89 %</div>
@@ -919,7 +697,7 @@ const Dashboard = () => {
                 <Flex className="justify-between w-full items-end	">
                   <div>
                     <Flex className="mb-[.2rem] items-end">
-                      <span className="text-[2.375rem] text-[#EEEEEE] leading-[100%] font-[400]">{totalRequests?.global_metrics?.summary_metrics?.total_value ? formatNumber(totalRequests?.global_metrics?.summary_metrics?.total_value).value : 0}<span className="text-[#757575] leading-[100%]">{formatNumber(totalRequests?.overall_metrics?.summary_metrics?.total_value).suffix}</span></span>
+                      <span className="text-[2.375rem] text-[#EEEEEE] leading-[100%] font-[400]">{totalRequests?.global_metrics?.summary_metrics?.total_value ? formatNumber(totalRequests?.global_metrics?.summary_metrics?.total_value).value : 0}<span className="text-[#757575] leading-[100%]">{formatNumber(totalRequests?.global_metrics?.summary_metrics?.total_value).suffix}</span></span>
                       <Flex className="ml-[.7rem] mb-[.4rem]">
                         {totalRequests?.global_metrics?.summary_metrics?.delta_percentage >= 0 ? 
                         <Image
@@ -937,7 +715,7 @@ const Dashboard = () => {
                         <span className={`text-[0.8125rem] leading-[100%] font-[400] ml-[.2rem] ${Number(totalRequests?.global_metrics?.summary_metrics?.delta_percentage) >= 0 ? 'text-[#479D5F]' : 'text-[#EC7575]'}`}>{totalRequests?.global_metrics?.summary_metrics?.delta_percentage || 0}% </span>
                       </Flex>
                     </Flex>
-                    <span className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400]">This week</span>
+                    <span className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400]">Last 7 days</span>
                   </div>
                   <div className="w-[7rem]">
                     {/* <Image
@@ -987,7 +765,7 @@ const Dashboard = () => {
               {/* small blocks */}
               {smallCardData.length > 0 && (
                 <>
-                  {smallCardData.map((item: any, index) => (
+                  {smallCardData.map((item, index) => (
                     <SmallCard key={index} data={item} />
                   ))}
                 </>
@@ -998,23 +776,11 @@ const Dashboard = () => {
           {/* dashboard section 2 start*/}
           <Flex gap={'1.1rem'} className="mt-[1.2rem] justify-between flex-wrap pb-[45px]">
             {/* accuracy chart */}
-            {/* {chartCardData.map((item, index) => (
-              <ChartUsageCard
-                key={index}
-                data={item}
-                showSegmented={!!item.segmentOptions}
-              />
-            ))} */}
 
             {/* number of api calls chart */}
             <div className="cardBG w-[49.1%] cardSetTwo  py-[1.9rem] px-[1.65rem] border border-[#1F1F1F] rounded-md">
               <Flex className="justify-between align-center">
                 <Text_19_600_EEEEEE>Number of API Calls</Text_19_600_EEEEEE>
-                {/* <Flex className="justify-between align-center w-[10rem] border border-[#1F1F1F] rounded-md text-[0.75rem] text-[daily] font-[400] mt-[0.2rem] h-[1.7rem]">
-                  <div className="border-r border-r-[#1F1F1F] py-[.2rem] px-[.5rem]">daily</div>
-                  <div className="border-r border-r-[#1F1F1F] py-[.2rem] px-[.5rem]">weekly</div>
-                  <div className="py-[.2rem] px-[.5rem]">monthly</div>
-                </Flex> */}
                 <Segmented
                   options={segmentOptions}
                   value={segmentOptions.find((opt) => handleChartFilter(opt) === apiRequestInterval)} // Ensure correct default selection
@@ -1024,7 +790,6 @@ const Dashboard = () => {
                   className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
                 />
               </Flex>
-              {/* <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.95rem]">For the top 5 models</p> */}
               {apiChartData.data.length ? (
                 <>
                   <Flex vertical className="items-start	mt-[1.3rem]">
@@ -1070,11 +835,10 @@ const Dashboard = () => {
                   className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
                 />
               </Flex>
-              {/* <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.95rem]">For the top 5 models</p> */}
               {latencyChartData.data.length ? (
                 <>
                   <Flex vertical className="items-start	mt-[1.3rem]">
-                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.latency.total_value).toFixed(2)}</p>
+                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.latency.total_value).toFixed(2)} ms</p>
                     <Flex className={`${Number(extraChartDetails.latency.avg) >= 0 ? 'text-[#479D5F] bg-[#122F1140]' : 'bg-[#861A1A33] text-[#EC7575]'} rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.82rem]`}>
                       <span className="font-[400] text-[0.8125rem] leading-[100%]">Avg. {Number(extraChartDetails.latency.avg).toFixed(2)}% </span>
                       {Number(extraChartDetails.latency.avg) >= 0 ?
@@ -1118,11 +882,10 @@ const Dashboard = () => {
                   className="antSegmented rounded-md text-[#EEEEEE] font-[400] bg-[transparent] border border-[#4D4D4D] border-[.53px] p-[0]"
                 />
               </Flex>
-              {/* <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.95rem]">For the top 5 models</p> */}
               {throughputChartData.data.length ? (
                 <>
                   <Flex vertical className="items-start	mt-[1.3rem]">
-                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.throughPut.total_value).toFixed(2)}</p>
+                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] mb-0">{Number(extraChartDetails.throughPut.total_value).toFixed(2)} tokens/s</p>
                     <Flex className={`${Number(extraChartDetails.throughPut.avg) >= 0 ? 'text-[#479D5F] bg-[#122F1140]' : 'bg-[#861A1A33] text-[#EC7575]'} rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.82rem]`}>
                       <span className="font-[400] text-[0.8125rem] leading-[100%]">Avg. {Number(extraChartDetails.throughPut.avg).toFixed(2)}% </span>
                       {Number(extraChartDetails.throughPut.avg) >= 0 ?
@@ -1155,7 +918,6 @@ const Dashboard = () => {
 
             {/* model usage chart */}
             <div className="relative cardBG w-[49.1%] cardSetTwo  py-[1.9rem] px-[1.65rem] border border-[#1F1F1F] rounded-md">
-              {/* <ComingSoon shrink={true} scaleValue={.9} /> */}
               <Flex className="justify-between align-center">
                 <Text_19_600_EEEEEE>Model Usage</Text_19_600_EEEEEE>
                 <Segmented
@@ -1201,48 +963,10 @@ const Dashboard = () => {
               )}
 
             </div>
-            {/* flop utilization chart 2 */}
-            {/* change cardSetOne to cardSetTwo */}
-
-            {/* temp hidden */}
-
-            {/* <div className="relative cardBG w-[49.1%] cardSetOne h-[425px]  py-[1.9rem] px-[1.65rem] border border-[#1F1F1F] rounded-md">
-              <ComingSoon shrink={true} scaleValue={.9} />
-              <div>
-                <Text_19_600_EEEEEE>Flops Utilization </Text_19_600_EEEEEE>
-                <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.95rem]">For the top 5 models</p>
-              </div>
-              {OverallVsUtillizedChartData.series.length ? (
-                <>
-                  <Flex vertical className="items-start	mt-[2rem]">
-                    <p className="text-[1.625rem] text-[#EEEEEE] leading-[100%] font-[400] ">13%</p>
-                    <Flex className="bg-[#122F1140] rounded-md items-center px-[.45rem] mb-[.1rem] h-[1.35rem] mt-[0.82rem]">
-                      <span className="text-[#479D5F] font-[400] text-[0.8125rem] leading-[100%]">Avg. +21.01% </span>
-                      <Image
-                        preview={false}
-                        width={12}
-                        src="/images/dashboard/greenArrow.png"
-                        className="ml-[.2rem]"
-                        alt=""
-                      />
-                    </Flex>
-                  </Flex>
-                  <div className="h-[232px] ">
-                    <OverallVsUtillizedChart data={OverallVsUtillizedChartData} />
-                  </div>
-                </>
-              ) : (
-                <NoChartData
-                  textMessage="Once the data is available, we will populate a line chart for you representing Flops Utilization."
-                  image="/images/dashboard/noFlops.png"
-                ></NoChartData>
-              )}
-            </div> */}
 
 
             {/* Accuracy chart */}
             <div className="relative cardBG w-[49.1%] cardSetTwo py-[1.9rem] px-[1.65rem] border border-[#1F1F1F] rounded-md">
-              {/* <ComingSoon shrink={true} scaleValue={.9} /> */}
               <div>
                 <Text_19_600_EEEEEE>Accuracy</Text_19_600_EEEEEE>
               </div>
@@ -1282,11 +1006,6 @@ const Dashboard = () => {
                 <div>
                   <Text_19_600_EEEEEE>Token Metrics</Text_19_600_EEEEEE>
                 </div>
-                {/* <Flex className="justify-between align-center w-[10rem] border border-[#1F1F1F] rounded-md text-[0.75rem] text-[daily] font-[400] mt-[0.2rem] h-[1.7rem]">
-                  <div className="border-r border-r-[#1F1F1F] py-[.2rem] px-[.5rem]">daily</div>
-                  <div className="border-r border-r-[#1F1F1F] py-[.2rem] px-[.5rem]">weekly</div>
-                  <div className="py-[.2rem] px-[.5rem]">monthly</div>
-                </Flex> */}
                 <Segmented
                   options={segmentOptions}
                   value={segmentOptions.find((opt) => handleChartFilter(opt) === tokenMetricsInterval)} // Ensure correct default selection
@@ -1298,7 +1017,6 @@ const Dashboard = () => {
               </Flex>
               <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.35rem] mb-[.25rem]">For the top 5 models</p>
 
-              {/* <p className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400] mt-[0.95rem]">For the top 5 models</p> */}
               {tokenMetricsData?.source?.length ? (
                 <>
                   {/* <div className="flex justify-start items-start	mt-[1.5rem] gap-[.7rem]">
@@ -1429,7 +1147,7 @@ const Dashboard = () => {
                         (option) => option.value === apiRequestInterval
                       )?.label
                     }
-                    onValueChange={(newValue) =>
+                    onValueChange={(newValue: any) =>
                       handleApiRequestChange(newValue)
                     }
                     placeholder={`Select`}
@@ -1467,7 +1185,7 @@ const Dashboard = () => {
                       )?.label
                     }
                     showSearch={false}
-                    onValueChange={(newValue) => handleModelChange(newValue)}
+                    onValueChange={(newValue: any) => handleModelChange(newValue)}
                     placeholder={`Select`}
                     selectItems={requestOptions}
                     renderItem=""
@@ -1494,7 +1212,7 @@ const Dashboard = () => {
                       )?.label
                     }
                     showSearch={false}
-                    onValueChange={(newValue) =>
+                    onValueChange={(newValue: any) =>
                       handleThroughputChange(newValue)
                     }
                     placeholder={`Select`}
@@ -1523,7 +1241,7 @@ const Dashboard = () => {
                       )?.label
                     }
                     showSearch={false}
-                    onValueChange={(newValue) => handleLatencyChange(newValue)}
+                    onValueChange={(newValue: any) => handleLatencyChange(newValue)}
                     placeholder={`Select`}
                     selectItems={requestOptions}
                     renderItem=""
