@@ -190,7 +190,7 @@ function Scan({ item }: { item?: any }) {
 }
 
 export default function ModelVerificationStatus({ item }: { item?: any }) {
-    const [activeTab, setActiveTab] = useState("Security Scan");
+    const [activeTab, setActiveTab] = useState("");
     const { selectedModel } = useModels();
 
     const tabs = [
