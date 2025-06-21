@@ -40,7 +40,6 @@ jobs:
     name: Build and Push Docker Image
     needs: verify
     runs-on: ubuntu-latest
-    continue-on-error: false
 
     steps:
       - name: Checkout code
