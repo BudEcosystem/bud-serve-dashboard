@@ -10,6 +10,7 @@ export const axiosInstance = axios.create({
 let Token = null;
 let isRefreshing = false;
 let refreshSubscribers = [];
+let isRedirecting = false;
 
 if (typeof window !== "undefined") {
   Token = localStorage.getItem("access_token");
@@ -88,18 +89,43 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
       return refreshToken()
         .then((newToken) => {
+          console.log("Token refresh successful");
           isRefreshing = false;
           onRrefreshed(newToken);
           refreshSubscribers = [];
-          return axiosInstance(err.config);
+          return axiosInstance({
+            ...err.config,
+            headers: {
+              ...err.config.headers,
+              Authorization: `Bearer ${newToken}`,
+            },
+          });
+
         })
-        .catch((error) => {
+        .catch((err) => {
+          console.log("Token refresh failed", err);
           isRefreshing = false;
           refreshSubscribers = [];
-          return Promise.reject(error);
+
+          // ✅ Don't rethrow if redirect already happened
+          if (!isRedirecting) {
+            return Promise.reject(err);
+          }
+
+          // If redirect already in progress, halt further processing
+          return new Promise(() => { }); // Keeps the Promise pending
         });
     } else if (status === 401 && isRefreshing) {
+
       return new Promise((resolve) => {
+        if (err.config?.url == 'auth/refresh-token') {
+          if (!isRedirecting) {
+            isRedirecting = true;
+            localStorage.clear();
+            window.location.replace("/login");
+          }
+          return;
+        }
         subscribeTokenRefresh((newToken) => {
           err.config.headers.Authorization = `Bearer ${newToken}`;
           resolve(axiosInstance(err.config));
@@ -111,10 +137,26 @@ axiosInstance.interceptors.response.use(
 );
 
 const handleErrorResponse = (err) => {
-  if (err.response && err.response.status === 401) {
-    localStorage.clear();
-    router.push("/login");
+  console.log('err.config?.url', err.config?.url);
+  if (
+    err.response &&
+    err.response.status === 401 &&
+    err.config?.url !== "auth/refresh-token"
+  ) {
+    if (!isRedirecting) {
+      isRedirecting = true;
+      localStorage.clear();
+      window.location.replace("/login");
+    }
     return false;
+  }
+  if (err.response && err.response.status === 401) {
+    if (!isRedirecting) {
+      isRedirecting = true;
+      localStorage.clear();
+      window.location.replace("/login");
+      return false;
+    }
   }
   if (err.response && err.response.status === 403) {
     localStorage.clear();
@@ -163,26 +205,27 @@ const refreshToken = async () => {
     const response = await axiosInstance.post("auth/refresh-token", {
       refresh_token: localStorage.getItem("refresh_token"),
     });
-    const data = response.data;
-    console.log( "refresh data", data)
-    if (!data?.token) {
-      localStorage.clear();
-      return Promise.reject(data);
-    }
 
-    console.log("data.token", data.token)
+    const data = response?.data;
+
+    if (!data?.token?.access_token) {
+      throw new Error("No access token found in refresh response");
+    }
 
     localStorage.setItem("access_token", data.token.access_token);
     localStorage.setItem("refresh_token", data.token.refresh_token);
+
     return data.token.access_token;
-  } catch (error) {
-    router.push("/login");
-    // console.log("data.token", error);
-    // errorToast(error?.response?.data?.error?.message || "Unauthorized Access");
-    localStorage.clear();
-    return Promise.reject(error);
+  } catch (err) {
+    if (!isRedirecting) {
+      isRedirecting = true;
+      localStorage.clear();
+      window.location.replace("/login");
+    }
+    throw err;
   }
 };
+
 
 const Get = (
   endPoint,

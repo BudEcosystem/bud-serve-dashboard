@@ -209,7 +209,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                   <div className="h-[1.25rem]">
                     <Image
                       preview={false}
-                      src={data.modality.text.input ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      src={data.modality.text.input ? "/images/drawer/endpoints/text.png" : "/images/drawer/endpoints/text-not.png"}
                       alt={data.modality.text.label}
                       style={{ width: '1.25rem', height: "1.25rem" }}
                     />
@@ -217,7 +217,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                   <div className="h-[1.25rem]">
                     <Image
                       preview={false}
-                      src={data.modality.image.input ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      src={data.modality.image.input ? "/images/drawer/endpoints/image.png" : "/images/drawer/endpoints/image-not.png"}
                       alt={data.modality.image.label}
                       style={{ height: "1.25rem" }}
                     />
@@ -225,7 +225,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                   <div className="h-[1.25rem]">
                     <Image
                       preview={false}
-                      src={data.modality.audio.input ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      src={data.modality.audio.input ? "/images/drawer/endpoints/audio_speech.png" : "/images/drawer/endpoints/audio_speech-not.png"}
                       alt={data.modality.audio.label}
                       style={{ height: "1.25rem" }}
                     />
@@ -247,7 +247,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                   <div className="h-[1.25rem]">
                     <Image
                       preview={false}
-                      src={data.modality.text.output ? "/images/drawer/text.png" : "/images/drawer/text-not.png"}
+                      src={data.modality.text.output ? "/images/drawer/endpoints/text.png" : "/images/drawer/endpoints/text-not.png"}
                       alt={data.modality.text.label}
                       style={{ height: "1.25rem" }}
                     />
@@ -255,7 +255,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                   <div className="h-[1.25rem]">
                     <Image
                       preview={false}
-                      src={data.modality.image.output ? "/images/drawer/image.png" : "/images/drawer/image-not.png"}
+                      src={data.modality.image.output ? "/images/drawer/endpoints/image.png" : "/images/drawer/endpoints/image-not.png"}
                       alt={data.modality.image.label}
                       style={{ height: "1.25rem" }}
                     />
@@ -263,7 +263,7 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
                   <div className="h-[1.25rem]">
                     <Image
                       preview={false}
-                      src={data.modality.audio.output ? "/images/drawer/audio.png" : "/images/drawer/audio-not.png"}
+                      src={data.modality.audio.output ? "/images/drawer/endpoints/audio_speech.png" : "/images/drawer/endpoints/audio_speech-not.png"}
                       alt={data.modality.audio.label}
                       style={{ height: "1.25rem" }}
                     />
