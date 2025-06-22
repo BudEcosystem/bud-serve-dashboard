@@ -73,6 +73,14 @@ export interface PromptDetail {
   response: string,
   score: number,
 };
+export type GetAdapterParams = {
+  endpointId: string,
+  page: number,
+  limit: number,
+  name?: string,
+  order_by?: string,
+  projectId?: string
+};
 export const useEndPoints = create<{
   endPoints: IEndPoint[];
   pageSource: string;
@@ -97,24 +105,17 @@ export const useEndPoints = create<{
     name?: string;
     order_by?: string;
   }) => void;
-  createEndPoint: (data: any) => Promise<any>;
+createEndPoint: (data: any) => Promise<any>;
   setPageSource: (data: any) => Promise<any>;
   setPromptPage: (type: string, title: string) => Promise<any>;
   deleteEndPoint: (endpointId: string, id?: string) => Promise<any>;
   updateEndPoint: (endpointId: string, data: any) => void;
   getReusedPrompts: (deploymentId: string,) => void;
   getInferenceQualityAnalytics: (deploymentId: string,) => void;
-  getEndpointClusterDetails: (endpointId: string, source?: string, projectId?: string) => void;
+  getEndpointClusterDetails: (endpointId: string, projectId?: string) => void;
   getInferenceQualityPrompts: (params: any, id: string) => void;
   clusterDetails?: EndpointClusterData;
-  getAdapters: (
-    endpointId: string,
-    page: number,
-    limit: number,
-    name?: string,
-    order_by?: string,
-    projectId?: string
-  ) => void;
+  getAdapters: (params: GetAdapterParams, projectId?: string) => void;
   deleteAdapter: (adapterId: string, projectId?: string) => void;
 }>((set, get) => ({
   pageSource: "",
@@ -136,14 +137,14 @@ export const useEndPoints = create<{
     set({ scoreType: scoreType });
     set({ pageTitle: title });
   },
-  getEndpointClusterDetails: async (endpointId: string, source?: string, projectId?) => {
+getEndpointClusterDetails: async (endpointId: string, projectId?) => {
+    console.log("projectId projectId", projectId)
     set({ loading: true });
-    console.log("model-cluster-detail-source", source);
     const url = `${tempApiBaseUrl}/endpoints/${endpointId}/model-cluster-detail`;
 
     try {
       const response: any = await AppRequest.Get(url, {
-        params: source ? { source } : undefined,
+
         headers: {
           "x-resource-type": "project",
           "x-entity-id": projectId,
@@ -232,24 +233,17 @@ export const useEndPoints = create<{
       console.error("Error creating model:", error);
     }
   },
-  getAdapters: async (
-    endpointId: string,
-    page: number,
-    limit: number,
-    name?: string,
-    order_by = "-created_at",
-    projectId?: string
-  ) => {
-    const url = `${tempApiBaseUrl}/endpoints/${endpointId}/adapters`;
+getAdapters: async (params: GetAdapterParams, projectId?) => {
+    const url = `${tempApiBaseUrl}/endpoints/${params.endpointId}/adapters`;
     set({ loading: true });
     try {
       const response: any = await AppRequest.Get(url, {
         params: {
-          page: page,
-          limit: limit,
-          search: name ? true : false,
-          name: name ? name : undefined,
-          order_by: order_by,
+          page: params.page,
+          limit: params.limit,
+          search: params.name ? true : false,
+          name: params.name ? params.name : undefined,
+          order_by: params.order_by,
         },
         headers: {
           "x-resource-type": "project",

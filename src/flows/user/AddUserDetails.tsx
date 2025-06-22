@@ -38,8 +38,8 @@ export default function AddUserDetails() {
   Access Levels:-
   Model: ${findAccess('model')}
   Cluster: ${findAccess('cluster')}
+  User: ${findAccess('user')}
   Project Creation: ${findAccess('project')}
-  Project Creation: ${findAccess('user')}
 
   Click this link to login: https://bud.studio`
 
@@ -122,12 +122,16 @@ export default function AddUserDetails() {
                     <Text_13_300_FFFFFF>{findAccess('cluster')}</Text_13_300_FFFFFF>
                   </div>
                   <div className="mt-3 flex gap-[.6rem]">
-                    <Text_12_400_787B83>Project:</Text_12_400_787B83>
-                    <Text_13_300_FFFFFF>{findAccess('project')}</Text_13_300_FFFFFF>
+                    <Text_12_400_787B83>User:</Text_12_400_787B83>
+                    <Text_13_300_FFFFFF>{findAccess('user')}</Text_13_300_FFFFFF>
                   </div>
                   <div className="mt-3 flex gap-[.6rem]">
-                    <Text_12_400_787B83>User:</Text_12_400_787B83>
-                    <Text_13_300_FFFFFF>{findAccess('User')}</Text_13_300_FFFFFF>
+                    <Text_12_400_787B83>Benchmark:</Text_12_400_787B83>
+                    <Text_13_300_FFFFFF>{findAccess('benchmark')}</Text_13_300_FFFFFF>
+                  </div>
+                  <div className="mt-3 flex gap-[.6rem]">
+                    <Text_12_400_787B83>Project:</Text_12_400_787B83>
+                    <Text_13_300_FFFFFF>{findAccess('project')}</Text_13_300_FFFFFF>
                   </div>
                 </div>
                 <div className="mt-3 flex gap-[.6rem]">

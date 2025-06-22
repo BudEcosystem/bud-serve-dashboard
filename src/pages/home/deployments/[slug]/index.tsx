@@ -59,7 +59,7 @@ const ProjectDetailsPage = () => {
     if (clustersId) {
       getClusterById(clustersId as string);
     }
-    if (deploymentId) {
+    if (deploymentId && projectId) {
       await getEndpointClusterDetails(deploymentId as string, projectId as string);
     }
     hideLoader();

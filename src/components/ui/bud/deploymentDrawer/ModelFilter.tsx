@@ -13,6 +13,7 @@ function ModelFilter({
     selectedTags = [],
     setSelectedTags,
     filterClick,
+    buttonPermission
 }: {
     search: string;
     setSearch: (value: string) => void;
@@ -21,6 +22,7 @@ function ModelFilter({
     selectedTags?: Tag[];
     setSelectedTags?: (value: Tag[]) => void;
     filterClick?: () => void;
+    buttonPermission?: boolean;
 }) {
     return (
         <div className="px-[1.4rem] py-[1.8rem] rounded-es-lg rounded-ee-lg pb-[.5rem]">
@@ -35,6 +37,7 @@ function ModelFilter({
                 {buttonLabel && <PrimaryButton classNames="!min-w-[107px] !px-[1.5rem]"
                     onClick={onButtonClick}
                     text={buttonLabel}
+                    permission={buttonPermission}
                 >
                 </PrimaryButton>}
                 {filterClick&&<div onClick={filterClick} className="cursor-pointer">

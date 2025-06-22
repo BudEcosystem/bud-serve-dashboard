@@ -7,7 +7,7 @@ import { endpointStatusMapping } from "@/lib/colorMapping";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import { Button, ConfigProvider, Popover, Table, TableProps } from "antd";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ProjectTags from "src/flows/components/ProjectTags";
 import { useConfirmAction } from "src/hooks/useConfirmAction";
 import { useDrawer } from "src/hooks/useDrawer";
@@ -38,10 +38,18 @@ export default function AdaptersTable() {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const projectId = router.query.projectId as string;
 
-  useEffect(() => {
-    getAdapters(deploymentId as string, 1, 20, projectId);
-  }, [deploymentId])
+const load = useCallback(async () => {
+    const payload = {
+      endpointId: deploymentId as string,
+      page: 1,
+      limit: 20,
+    }
+    await getAdapters(payload, projectId);
+  }, [deploymentId, projectId, getAdapters]);
 
+  useEffect(() => {
+    load();
+  }, [deploymentId, projectId])
   const columns: ColumnsType<IAdapter> = [
     {
       title: 'Adapter Name',
@@ -97,7 +105,7 @@ export default function AdaptersTable() {
             <PrimaryButton
               onClick={async (event) => {
                 event.stopPropagation();
-                // await getEndpointClusterDetails(record.id)
+                // await getEndpointClusterDetails(record.id, projectId);
                 openDrawer('use-model', record);
               }}
             >
@@ -146,12 +154,12 @@ export default function AdaptersTable() {
         setConfirmLoading(true);
         const result = await deleteAdapter(record?.id, projectId)
         if (result?.['data']) {
-          await getAdapters(deploymentId as string, 1, 20, projectId);
+          await load();
           successToast('Deployment deleted successfully');
         } else {
           errorToast('Failed to delete deployment');
         }
-        await getAdapters(deploymentId as string, 1, 20, projectId);
+        await load()
         setConfirmLoading(false);
         setConfirmVisible(false);
       },

@@ -14,7 +14,7 @@ import { useOverlay } from "src/context/overlayContext";
 import { openWarning } from "@/components/warningMessage";
 import { useEndPoints } from "src/hooks/useEndPoint";
 import useHandleRouteChange from "@/lib/useHandleRouteChange";
-import { useUser } from "src/stores/useUser";
+import { PermissionEnum, useUser } from "src/stores/useUser";
 import { useCluster } from "src/hooks/useCluster";
 import PageHeader from "@/components/ui/pageHeader";
 import SearchHeaderInput from "src/flows/components/SearchHeaderInput";
@@ -286,6 +286,7 @@ const PerfomanceBenchmarks = () => {
               text="Bud Performance benchmarking tools allows model evaluation on different clusters & Nodes to check its performance on the hardware"
               buttonLabel={"Run Another Benchmark"}
               hClass=""
+              buttonPermission = {hasPermission(PermissionEnum.ModelManage)}
               buttonAction={() => {
                 reset();
                 openDrawer("model_benchmark");

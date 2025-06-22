@@ -6,7 +6,6 @@ import {
   Heading_30_600_FFFFFF,
   Text_12_400_B3B3B3,
 } from "../text";
-import { IconProps } from "@radix-ui/react-icons/dist/types";
 
 import { PrimaryButton } from "../bud/form/Buttons";
 
@@ -18,8 +17,9 @@ interface pageHeaderProps {
   buttonAction?: () => void;
   classNames?: string;
   hClass?: string;
-  ButtonIcon?: ComponentType<IconProps>;
+  ButtonIcon?: ComponentType<any>;
   rightComponent?: React.ReactNode;
+  buttonPermission?: boolean;
 }
 const PageHeader: React.FC<pageHeaderProps> = ({
   headding,
@@ -30,6 +30,7 @@ const PageHeader: React.FC<pageHeaderProps> = ({
   ButtonIcon,
   rightComponent,
   hClass,
+  buttonPermission
 }) => {
   return (
     <>
@@ -48,6 +49,7 @@ const PageHeader: React.FC<pageHeaderProps> = ({
           {buttonLabel && (
             <Flex align={'center'} justify={'end'} className="">
               <PrimaryButton
+                permission={buttonPermission}
                 type="submit"
                 onClick={buttonAction}
                 classNames="!pr-[.8rem] tracking-[.02rem]"

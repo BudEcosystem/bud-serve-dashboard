@@ -2091,6 +2091,11 @@ input:-webkit-autofill:active {
     background-color: #202020 !important;
   }
 }
+.antPopoverArrow.Darker {
+  .ant-popover-arrow::before {
+    background-color: #161616 !important;
+  }
+}
 
 /** Progress **/
 

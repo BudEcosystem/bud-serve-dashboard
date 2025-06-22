@@ -57,6 +57,7 @@ const defaultFilter = {
 }
 
 export default function UserManagement() {
+  const [isMounted, setIsMounted] = useState(false);
   const { hasPermission } = useUser();
 
   const { isLoading, showLoader, hideLoader } = useLoader();
@@ -122,11 +123,16 @@ export default function UserManagement() {
   }, [currentPage, pageSize, getUsers]);
 
   useEffect(() => {
-    load(filter);
-  }, [currentPage, pageSize, getUsers]);
-  
+    if (isMounted) {
+      setTimeout(() => {
+        load(filter);
+      }, 1000);
+    }
+    // load(filter);
+  }, [currentPage, pageSize, getUsers, isMounted]);
+
   useEffect(() => {
-    if(filterReset) {
+    if (filterReset) {
       applyFilter()
     }
   }, [filterReset]);
@@ -141,7 +147,7 @@ export default function UserManagement() {
     }, 500);
     return () => clearTimeout(timer);
   }, [filter.email]);
-  
+
 
   function SortIcon({ sortOrder }: { sortOrder: string }) {
     return sortOrder ? sortOrder === 'descend' ?
@@ -209,6 +215,10 @@ export default function UserManagement() {
     setPageSize(pageSize);
   };
 
+  useEffect(() => {
+    setIsMounted(true)
+  }, []);
+
   return (
     <DashBoardLayout>
       <div className="boardPageView">
@@ -225,10 +235,10 @@ export default function UserManagement() {
               <>
                 <SearchHeaderInput placeholder="Search by name or email" searchValue={
                   filter.name || filter.email || ""
-                } 
-                setSearchValue={(value) => {
-                  setFilter({ ...filter, email: value, name: value });
-                }} />
+                }
+                  setSearchValue={(value) => {
+                    setFilter({ ...filter, email: value, name: value });
+                  }} />
 
                 <Popover
                   placement="bottomRight"

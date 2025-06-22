@@ -95,6 +95,7 @@ function SecurityScan() {
             <div className="flex justify-end items-end px-[0.7rem] pt-[2.6rem] pb-[.3rem]">
                 {(hasPermission(PermissionEnum.ModelManage) && (currentWorkflow?.workflow_steps?.model_security_scan_events?.status != "PENDING") || !selectedModel.scan_verified) &&
                     <PrimaryButton
+                        permission={hasPermission(PermissionEnum.ModelManage)}
                         disabled={isExpandedViewOpen}
                         onClick={async () => {
                             if (isExpandedViewOpen) return;
