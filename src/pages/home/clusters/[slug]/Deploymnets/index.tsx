@@ -63,8 +63,8 @@ function DeploymentListTable() {
     const [orderBy, setOrderBy] = useState<string>('created_at');
     const { hasProjectPermission, hasPermission } = useUser();
     const { contextHolder, openConfirm } = useConfirmAction()
-    const { deleteEndPoint, getEndpointClusterDetails, setPageSource } = useEndPoints();
-    
+    const { getEndpointClusterDetails, setPageSource } = useEndPoints();
+    const projectId = router.query.projectId as string
     useLoaderOnLoding(loading);
 
     const page = 1;
@@ -79,7 +79,7 @@ function DeploymentListTable() {
     }
 
     const setEndpointDetails = (id) => {
-        getEndpointClusterDetails(id)
+        getEndpointClusterDetails(id, projectId)
     }
 
     useHandleRouteChange(() => {
@@ -92,59 +92,6 @@ function DeploymentListTable() {
         }
     }, [clustersId])
 
-    // useEffect(() => {
-    //     // debounce
-    //     if (!clustersId) return;
-
-    //     const timer = setTimeout(() => {
-    //         getEndPoints({
-    //             id: clustersId,
-    //             page: page,
-    //             limit: limit,
-    //             name: searchValue,
-    //             order_by: `${order}${orderBy}`,
-    //         });
-    //     }, 500);
-    //     return () => clearTimeout(timer);
-    // }, [searchValue, order, orderBy]);
-
-
-
-    const confirmDelete = (record) => {
-        if (record?.status === 'deleting' || record?.status === 'deleted') {
-            errorToast('Deployment is in deleting state, please wait for it to complete');
-            return;
-        }
-        setConfirmVisible(true);
-        openConfirm({
-            message: `You're about to delete the ${record?.name} deployment`,
-            description: 'Once you delete the deployment, it will not be recovered. If the deployment code is being used anywhere it wont function. Are you sure?',
-            cancelAction: () => {
-            },
-            cancelText: 'Cancel',
-            loading: confirmLoading,
-            key: 'delete-endpoint',
-            okAction: async () => {
-                if (!record) {
-                    errorToast('No record selected');
-                    return;
-                };
-                setConfirmLoading(true);
-                const result = await deleteEndPoint(record?.id)
-                if (result?.data) {
-                    await getData();
-                    successToast('Deployment deleted successfully');
-                } else {
-                    errorToast('Failed to delete deployment');
-                }
-                await getData();
-                setConfirmLoading(false);
-                setConfirmVisible(false);
-            },
-            okText: 'Delete',
-            type: 'warining'
-        });
-    }
 
     return (
         <div className='pb-[60px] pt-[.4rem]'>
@@ -257,7 +204,7 @@ function DeploymentListTable() {
                         }
                     }
                 }}
-                
+
                 onChange={(pagination, filters, sorter: {
                     order: 'ascend' | 'descend';
                     field: string;

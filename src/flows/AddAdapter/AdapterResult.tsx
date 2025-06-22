@@ -18,25 +18,25 @@ export const AdapterResult = () => {
   const { openDrawer, closeDrawer } = useDrawer();
   const { adapterWorkflow, currentWorkflow, setAdapterWorkflow } = useDeployModel();
   const { getAdapters } = useEndPoints();
-
-  useEffect(()=> {
-    if(!currentWorkflow){
-        return
+  const projectId = router.query.projectId as string;
+  useEffect(() => {
+    if (!currentWorkflow) {
+      return
     }
     setAdapterWorkflow({
-        adapterModelId: currentWorkflow.workflow_steps.adapter_config?.adapter_model_id,
-        adapterName: currentWorkflow.workflow_steps.adapter_config?.adapter_name,
-        endpointId: currentWorkflow.workflow_steps.adapter_config?.endpoint_id,
-        adapterId: currentWorkflow.workflow_steps.adapter_config?.adapter_id
+      adapterModelId: currentWorkflow.workflow_steps.adapter_config?.adapter_model_id,
+      adapterName: currentWorkflow.workflow_steps.adapter_config?.adapter_name,
+      endpointId: currentWorkflow.workflow_steps.adapter_config?.endpoint_id,
+      adapterId: currentWorkflow.workflow_steps.adapter_config?.adapter_id
     })
-}, [currentWorkflow])
+  }, [currentWorkflow])
 
-    return <BudForm
+  return <BudForm
     data={{}}
     nextText="View Deployment"
     onNext={() => {
       // getData();
-      getAdapters(adapterWorkflow?.endpointId, 1, 20);
+      getAdapters(adapterWorkflow?.endpointId, 1, 20, projectId);
       router.push(`/projects/${selectedProject?.id}/deployments/${adapterWorkflow?.endpointId}`);
       closeDrawer();
     }}

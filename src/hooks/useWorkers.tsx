@@ -28,54 +28,128 @@ export const useWorkers = create<{
     workers: IWorker[];
     loading: boolean;
     selectedWorker: IWorker | null;
-    getWorkers: (endpointId: string, params?: any) => Promise<IWorker[]>;
-    getWorker: (endpointId: string, workerId: string, reload?: boolean) => Promise<IWorker>;
-    deleteWorker: (endpointId: string, worker: IWorker) => Promise<any>;
-    getWorkerMetrics: (endpointId: string, workerId: string) => Promise<any>;
-    getWorkerLogs: (endpointId: string, workerId: string) => Promise<any>;
+    getWorkers: (endpointId: string, params?: any, projectId?: string) => Promise<IWorker[]>;
+    getWorker: (endpointId: string, workerId: string, reload?: boolean, projectId?: string) => Promise<IWorker>;
+    deleteWorker: (endpointId: string, worker: IWorker, projectId?: string) => Promise<any>;
+    getWorkerMetrics: (endpointId: string, workerId: string, projectId?: string) => Promise<any>;
+    getWorkerLogs: (endpointId: string, workerId: string, projectId?: string) => Promise<any>;
     isMetricsLoading: boolean;
     isLogsLoading: boolean;
 }>((set, get) => ({
-    getWorkerLogs: async (endpointId: string, workerId: string) => {
+
+    getWorkerLogs: async (endpointId: string, workerId: string, projectId?) => {
         set({ isLogsLoading: true });
-        const response: any = await AppRequest.Get(`${tempApiBaseUrl}/endpoints/${endpointId}/workers/${workerId}/logs`);
-        set({ isLogsLoading: false });
-        return response?.data?.logs;
+        try {
+            const response: any = await AppRequest.Get(
+                `${tempApiBaseUrl}/endpoints/${endpointId}/workers/${workerId}/logs`,
+                {
+                    headers: {
+                        "x-resource-type": "project",
+                        "x-entity-id": projectId,
+                    },
+                }
+            );
+            return response?.data?.logs;
+        } catch (error) {
+            console.error("Error fetching logs:", error);
+        } finally {
+            set({ isLogsLoading: false });
+        }
     },
-    getWorkerMetrics: async (endpointId: string, workerId: string) => {
+
+    getWorkerMetrics: async (endpointId: string, workerId: string, projectId?) => {
         set({ isMetricsLoading: true });
-        const response: any = await AppRequest.Get(`${tempApiBaseUrl}/endpoints/${endpointId}/workers/${workerId}/metrics`);
-        set({ isMetricsLoading: false });
-        return response?.data?.metrics;
+        try {
+            const response: any = await AppRequest.Get(
+                `${tempApiBaseUrl}/endpoints/${endpointId}/workers/${workerId}/metrics`,
+                {
+                    headers: {
+                        "x-resource-type": "project",
+                        "x-entity-id": projectId,
+                    },
+                }
+            );
+            return response?.data?.metrics;
+        } catch (error) {
+            console.error("Error fetching metrics:", error);
+        } finally {
+            set({ isMetricsLoading: false });
+        }
     },
-    getWorker: async (endpointId: string, workerId: string, reload = false) => {
+
+
+    getWorker: async (endpointId: string, workerId: string, reload = false, projectId?) => {
         set({ loading: true });
-        const response: any = await AppRequest.Get(`${tempApiBaseUrl}/endpoints/${endpointId}/workers/${workerId}`, {
-            params: {
-                reload
-            }
-        });
-        set({ selectedWorker: response.data?.worker, loading: false });
-        return response?.data?.worker;
+        try {
+            const response: any = await AppRequest.Get(
+                `${tempApiBaseUrl}/endpoints/${endpointId}/workers/${workerId}`,
+                {
+                    params: {
+                        reload,
+                    },
+                    headers: {
+                        "x-resource-type": "project",
+                        "x-entity-id": projectId,
+                    },
+                }
+            );
+            set({ selectedWorker: response.data?.worker, loading: false });
+            return response?.data?.worker;
+        } catch (error) {
+            console.error("Error fetching worker:", error);
+            set({ loading: false });
+        }
     },
-    getWorkers: async (endpointId: string, params?: any) => {
+
+    getWorkers: async (endpointId: string, params?: any, projectId?) => {
         set({ loading: true });
-        const response: any = await AppRequest.Get(`${tempApiBaseUrl}/endpoints/${endpointId}/workers`, {
-            params: {
-                ...params,
-            }
-        });
-        set({ workers: response.data?.workers , loading: false});
-        return response?.data?.workers;
+        try {
+            const response: any = await AppRequest.Get(
+                `${tempApiBaseUrl}/endpoints/${endpointId}/workers`,
+                {
+                    params: {
+                        ...params,
+                    },
+                    headers: {
+                        headers: {
+                            "x-resource-type": "project",
+                            "x-entity-id": projectId,
+                        },
+                    },
+                }
+            );
+            set({ workers: response.data?.workers, loading: false });
+            return response?.data?.workers;
+        } catch (error) {
+            console.error("Error fetching workers:", error);
+            set({ loading: false });
+        }
     },
+
     workers: [],
     loading: false,
     isMetricsLoading: true,
     isLogsLoading: true,
     selectedWorker: null,
-    deleteWorker: async (endpointId: string, _worker: IWorker) => {
-        const response: any = await AppRequest.Post(`${tempApiBaseUrl}/endpoints/delete-worker`, { endpoint_id: endpointId, worker_id: _worker.id, worker_name: _worker.name });
+
+    deleteWorker: async (endpointId: string, _worker: IWorker, projectId?) => {
+        const response: any = await AppRequest.Post(
+            `${tempApiBaseUrl}/endpoints/delete-worker`,
+            {
+                endpoint_id: endpointId,
+                worker_id: _worker.id,
+                worker_name: _worker.name,
+            },
+            {
+                headers: {
+                    "x-resource-type": "project",
+                    "x-entity-id": projectId,
+                },
+            }
+        );
+
         get().getWorkers(endpointId);
         return response;
     },
+
 }));

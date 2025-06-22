@@ -100,11 +100,11 @@ export const useEndPoints = create<{
   createEndPoint: (data: any) => Promise<any>;
   setPageSource: (data: any) => Promise<any>;
   setPromptPage: (type: string, title: string) => Promise<any>;
-  deleteEndPoint: (endpointId: string) => Promise<any>;
+  deleteEndPoint: (endpointId: string, id?: string) => Promise<any>;
   updateEndPoint: (endpointId: string, data: any) => void;
   getReusedPrompts: (deploymentId: string,) => void;
   getInferenceQualityAnalytics: (deploymentId: string,) => void;
-  getEndpointClusterDetails: (endpointId: string, source?: string) => void;
+  getEndpointClusterDetails: (endpointId: string, source?: string, projectId?: string) => void;
   getInferenceQualityPrompts: (params: any, id: string) => void;
   clusterDetails?: EndpointClusterData;
   getAdapters: (
@@ -112,9 +112,10 @@ export const useEndPoints = create<{
     page: number,
     limit: number,
     name?: string,
-    order_by?: string
+    order_by?: string,
+    projectId?: string
   ) => void;
-  deleteAdapter: (adapterId: string) => void;
+  deleteAdapter: (adapterId: string, projectId?: string) => void;
 }>((set, get) => ({
   pageSource: "",
   clusterDetails: undefined,
@@ -135,16 +136,30 @@ export const useEndPoints = create<{
     set({ scoreType: scoreType });
     set({ pageTitle: title });
   },
-  getEndpointClusterDetails: async (endpointId: string, source?: string) => {
+  getEndpointClusterDetails: async (endpointId: string, source?: string, projectId?) => {
     set({ loading: true });
     console.log("model-cluster-detail-source", source);
     const url = `${tempApiBaseUrl}/endpoints/${endpointId}/model-cluster-detail`;
-    const response: any = await AppRequest.Get(url);
-    if (response) {
-      set({ clusterDetails: response.data?.result });
+
+    try {
+      const response: any = await AppRequest.Get(url, {
+        params: source ? { source } : undefined,
+        headers: {
+          "x-resource-type": "project",
+          "x-entity-id": projectId,
+        },
+      });
+
+      if (response) {
+        set({ clusterDetails: response.data?.result });
+      }
+    } catch (error) {
+      console.error("Error fetching cluster details:", error);
+    } finally {
       set({ loading: false });
     }
   },
+
   getEndPoints: async ({ id, page, limit, name, order_by = "-created_at" }) => {
     const url = `${tempApiBaseUrl}/endpoints/`;
     set({ loading: true });
@@ -157,6 +172,10 @@ export const useEndPoints = create<{
           search: name ? true : false,
           name: name ? name : undefined,
           order_by: order_by,
+        },
+        headers: {
+          "x-resource-type": "project",
+          "x-entity-id": id,
         },
       });
       const listData = response.data;
@@ -184,10 +203,17 @@ export const useEndPoints = create<{
       console.error("Error creating model:", error);
     }
   },
-  deleteEndPoint: async (endpointId: string): Promise<any> => {
+  deleteEndPoint: async (endpointId: string, id?: string): Promise<any> => {
     try {
-      const response: any = await AppRequest.Post(
-        `${tempApiBaseUrl}/endpoints/${endpointId}/delete-workflow`
+      const response: any = await AppRequest.Delete(
+        `${tempApiBaseUrl}/endpoints/${endpointId}/delete-workflow`,
+        null,
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": id,
+          },
+        }
       );
       // successToast(response.data.message);
       return response;
@@ -211,7 +237,8 @@ export const useEndPoints = create<{
     page: number,
     limit: number,
     name?: string,
-    order_by = "-created_at"
+    order_by = "-created_at",
+    projectId?: string
   ) => {
     const url = `${tempApiBaseUrl}/endpoints/${endpointId}/adapters`;
     set({ loading: true });
@@ -224,9 +251,13 @@ export const useEndPoints = create<{
           name: name ? name : undefined,
           order_by: order_by,
         },
+        headers: {
+          "x-resource-type": "project",
+          "x-entity-id": projectId,
+        },
       });
-      const listData = response.data;
 
+      const listData = response.data;
       set({ adapters: listData.adapters });
       successToast(response.message);
     } catch (error) {
@@ -235,15 +266,26 @@ export const useEndPoints = create<{
       set({ loading: false });
     }
   },
-  deleteAdapter: async (adapterId: string) => {
+
+  deleteAdapter: async (adapterId: string, projectId?) => {
     try {
       const url = `${tempApiBaseUrl}/endpoints/delete-adapter/${adapterId}`;
-      const response: any = await AppRequest.Post(url);
+      const response: any = await AppRequest.Post(
+        url,
+        undefined,
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
+        }
+      );
       successToast(response.data.message);
     } catch (error) {
       console.error("Error creating model:", error);
     }
   },
+
   getReusedPrompts: async (deploymentId: string): Promise<any> => {
     try {
       const url = `${tempApiBaseUrl}/metrics/analytics/cache-metrics/${deploymentId}?page=1&limit=1000`;

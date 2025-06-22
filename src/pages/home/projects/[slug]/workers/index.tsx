@@ -159,6 +159,7 @@ function WorkersTable() {
   const router = useRouter()
   const { deploymentId } = router.query; // Access the dynamic part of the route
   const { workers, getWorker, getWorkers, loading } = useWorkers();
+  const projectId = router.query.projectId as string
   useLoaderOnLoding(loading);
   const [tempFilter, setTempFilter] = useState<{
     status?: string;
@@ -167,17 +168,17 @@ function WorkersTable() {
   const [filterOpen, setFilterOpen] = React.useState(false);
 
   useEffect(() => {
-    getWorkers(deploymentId as string);
+    getWorkers(deploymentId as string, projectId);
   }, [deploymentId])
 
   const applyFilter = () => {
-    getWorkers(deploymentId as string, tempFilter);
+    getWorkers(deploymentId as string, tempFilter, projectId);
     setFilterOpen(false);
   };
   const resetFilter = () => {
     setTempFilter({});
     setFilterOpen(false);
-    getWorkers(deploymentId as string, {});
+    getWorkers(deploymentId as string, {}, projectId);
   };
   const handleOpenChange = (open) => {
     setFilterOpen(open);
@@ -250,7 +251,7 @@ function WorkersTable() {
         onRow={(record, rowIndex) => {
           return {
             onClick: async event => {
-              await getWorker(deploymentId as string, record.id);
+              await getWorker(deploymentId as string, record.id, false, projectId);
               openDrawer("worker-details")
             }
           }
@@ -295,14 +296,14 @@ function WorkersTable() {
               </div>
               {hasPermission(PermissionEnum.ModelManage) && (
                 <PrimaryButton
-                onClick={() => {
-                  openDrawer("add-worker")
-                }}
-              >
-                <Text_12_600_EEEEEE className='flex items-center justify-center'>
-                  Add Worker
-                </Text_12_600_EEEEEE>
-              </PrimaryButton>
+                  onClick={() => {
+                    openDrawer("add-worker")
+                  }}
+                >
+                  <Text_12_600_EEEEEE className='flex items-center justify-center'>
+                    Add Worker
+                  </Text_12_600_EEEEEE>
+                </PrimaryButton>
               )}
             </div>
           </div>

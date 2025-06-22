@@ -148,7 +148,7 @@ const HarmfulnessPromptList = () => {
       getClusterById(clustersId as string);
     }
     if (deploymentId) {
-      await getEndpointClusterDetails(deploymentId as string);
+      await getEndpointClusterDetails(deploymentId as string, projectId as string);
     }
     hideLoader();
   }

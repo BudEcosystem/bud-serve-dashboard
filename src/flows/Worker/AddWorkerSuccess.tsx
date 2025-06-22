@@ -9,20 +9,23 @@ import BudStepAlert from "src/flows/components/BudStepAlert";
 import { useDeployModel } from "src/stores/useDeployModel";
 import { useEndPoints } from "src/hooks/useEndPoint";
 import { useWorkers } from "src/hooks/useWorkers";
+import { useRouter } from "next/router";
 
 const AddWorkerSuccess: React.FC = () => {
   const { closeDrawer } = useDrawer();
   const { currentWorkflow, getWorkflow } = useDeployModel();
-  const {getEndpointClusterDetails} =useEndPoints();
-  const { getWorkers }  = useWorkers();
+  const { getEndpointClusterDetails } = useEndPoints();
+  const { getWorkers } = useWorkers();
+  const router = useRouter();
+  const projectId = router.query.projectId as string
   React.useEffect(() => {
     getWorkflow();
   }, []);
 
   useEffect(() => {
-    if(currentWorkflow?.workflow_steps?.endpoint?.id){
-      getEndpointClusterDetails(currentWorkflow?.workflow_steps?.endpoint?.id);
-      getWorkers(currentWorkflow?.workflow_steps?.endpoint?.id);
+    if (currentWorkflow?.workflow_steps?.endpoint?.id) {
+      getEndpointClusterDetails(currentWorkflow?.workflow_steps?.endpoint?.id, projectId);
+      getWorkers(currentWorkflow?.workflow_steps?.endpoint?.id, projectId);
     }
   }, [currentWorkflow]);
 
