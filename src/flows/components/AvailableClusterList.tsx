@@ -217,7 +217,7 @@ export function ClusterCard({
                         }}
                     >
                         <div className="flex items-center justify-start">
-                            <Text_14_400_EEEEEE className="max-w-[100px]  1920px:max-w-[150px] 2560px:max-w-[250px] truncate overflow-hidden whitespace-nowrap leading-[100%]">{data.name}</Text_14_400_EEEEEE>
+                            <Text_14_400_EEEEEE className="max-w-[100px]  1920px:max-w-[150px] 2560px:max-w-[250px] truncate overflow-hidden whitespace-nowrap leading-[150%]">{data.name}</Text_14_400_EEEEEE>
                         </div>
                         <div className="flex items-center justify-start gap-[.5rem] mt-[.55rem]">
                             <Tags name="CPU" color="#D1B854" classNames="py-[.26rem] px-[.4rem]" />
