@@ -38,7 +38,7 @@ export default function AdaptersTable() {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const projectId = router.query.projectId as string;
 
-  const load = useCallback(async () => {
+const load = useCallback(async () => {
     const payload = {
       endpointId: deploymentId as string,
       page: 1,
@@ -50,7 +50,6 @@ export default function AdaptersTable() {
   useEffect(() => {
     load();
   }, [deploymentId, projectId])
-
   const columns: ColumnsType<IAdapter> = [
     {
       title: 'Adapter Name',

@@ -105,7 +105,7 @@ export const useEndPoints = create<{
     name?: string;
     order_by?: string;
   }) => void;
-  createEndPoint: (data: any) => Promise<any>;
+createEndPoint: (data: any) => Promise<any>;
   setPageSource: (data: any) => Promise<any>;
   setPromptPage: (type: string, title: string) => Promise<any>;
   deleteEndPoint: (endpointId: string, id?: string) => Promise<any>;
@@ -137,7 +137,7 @@ export const useEndPoints = create<{
     set({ scoreType: scoreType });
     set({ pageTitle: title });
   },
-  getEndpointClusterDetails: async (endpointId: string, projectId?) => {
+getEndpointClusterDetails: async (endpointId: string, projectId?) => {
     console.log("projectId projectId", projectId)
     set({ loading: true });
     const url = `${tempApiBaseUrl}/endpoints/${endpointId}/model-cluster-detail`;
@@ -233,7 +233,7 @@ export const useEndPoints = create<{
       console.error("Error creating model:", error);
     }
   },
-  getAdapters: async (params: GetAdapterParams, projectId?) => {
+getAdapters: async (params: GetAdapterParams, projectId?) => {
     const url = `${tempApiBaseUrl}/endpoints/${params.endpointId}/adapters`;
     set({ loading: true });
     try {
