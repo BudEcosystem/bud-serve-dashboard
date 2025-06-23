@@ -169,16 +169,10 @@ export default function EditUser() {
       manage: userPermissions?.global_scopes?.find(scope => scope.name === 'user:manage')?.has_permission,
     },
     {
-      name: 'Benchmarks',
+      name: 'Benchmark',
       view: userPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:view')?.has_permission,
       manage: userPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:manage')?.has_permission,
     }
-  ]
-
-  const expandData = [
-    { name: 'Project 1' },
-    { name: 'Project 2' },
-    { name: 'Project 3' }
   ]
 
   const prepareProjectsList = () => {
@@ -200,6 +194,7 @@ export default function EditUser() {
   }, [userPermissions, globalProjects]);
 
   const handleCheckboxChange = (name: any, check: boolean) => {
+    console.log("handleCheckboxChange", name, check);
     const currentPermission = userPermissions?.global_scopes || [];
 
     const updatedPermissions = currentPermission.map(scope =>
@@ -207,7 +202,8 @@ export default function EditUser() {
         ? { ...scope, has_permission: check }
         : scope
     );
-
+    // console.log("currentPermission", currentPermission);
+    // console.log("updatedPermissions", updatedPermissions);
     setUsersPermissions(userDetails.id, updatedPermissions);
   };
 
@@ -231,6 +227,7 @@ export default function EditUser() {
 
     const handleCheckboxChange = (index: number, type: "view" | "manage") => {
       setCheckedState((prev) => {
+        console.log("handleCheckboxChange", index, type);
         const newState = { ...prev };
 
         if (type === "view") {
