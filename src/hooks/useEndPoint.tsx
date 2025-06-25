@@ -206,7 +206,7 @@ getEndpointClusterDetails: async (endpointId: string, projectId?) => {
   },
   deleteEndPoint: async (endpointId: string, id?: string): Promise<any> => {
     try {
-      const response: any = await AppRequest.Delete(
+      const response: any = await AppRequest.Post(
         `${tempApiBaseUrl}/endpoints/${endpointId}/delete-workflow`,
         null,
         {
