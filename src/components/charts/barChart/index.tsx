@@ -63,10 +63,11 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
         },
         backgroundColor: 'transparent',
         grid: {
-          left: "6%",
-          right: "2%",
-          bottom: '20%',
-          top: "23%"
+          left: "0%",
+          right: "0%",
+          bottom: '4%',
+          top: "23%",
+          containLabel: true,
         },
         xAxis: {
           type: 'category',

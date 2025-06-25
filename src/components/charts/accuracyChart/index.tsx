@@ -80,9 +80,10 @@ const AccuracyPopup: React.FC<AccuracyPopupProps> = ({ data }) => {
         },
         grid: {
           right: "0%",
-          left: "10%",
+          left: "0%",
           top: "37%",
-          bottom: "21%",
+          bottom: "1%",
+          containLabel: true,
         },
         tooltip: {
           trigger: "axis",
