@@ -105,8 +105,14 @@ const load = useCallback(async () => {
             <PrimaryButton
               onClick={async (event) => {
                 event.stopPropagation();
-                // await getEndpointClusterDetails(record.id, projectId);
-                openDrawer('use-model', record);
+                // Pass adapter data in a format similar to endpoint
+                openDrawer('use-model', { 
+                  endpoint: {
+                    name: record.name,
+                    model: record.model,
+                    // Adapters might not have supported_endpoints, so we'll rely on model.supported_endpoints
+                  } 
+                });
               }}
             >
               Use this model
