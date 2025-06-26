@@ -225,7 +225,7 @@ const RoutesComponent: React.FC<RoutesProps> = ({ data }) => {
                                           onClick={async (event) => {
                                               event.stopPropagation();
                                               await getEndpointClusterDetails(record.id, projectId as string);
-                                              openDrawer('use-model');
+                                              openDrawer('use-model', { endpoint: record });
                                           }}
                                       >
                                           Use this model

@@ -28,7 +28,7 @@ const ProjectDetailsPage = () => {
   const router = useRouter();
   const { projectId, clustersId, deploymentId } = router.query;
   const { hasPermission, loadingUser } = useUser();
-  const { clusterDetails, getEndpointClusterDetails, pageSource, setPageSource } = useEndPoints();
+  const { clusterDetails, getEndpointClusterDetails, pageSource, setPageSource, endPoints, getEndPoints } = useEndPoints();
   const { getClusterById } = useCluster();
   const { openDrawer } = useDrawer();
 
@@ -55,6 +55,8 @@ const ProjectDetailsPage = () => {
     // }
     if (projectId) {
       await getProject(projectId as string);
+      // Also fetch endpoints to get the supported_endpoints array
+      await getEndPoints({ id: projectId, page: 1, limit: 100 });
     }
     if (clustersId) {
       getClusterById(clustersId as string);
@@ -155,7 +157,9 @@ const ProjectDetailsPage = () => {
                 <PrimaryButton
                   type="submit"
                   onClick={() => {
-                    openDrawer('use-model');
+                    // Find the current endpoint from the endpoints list
+                    const currentEndpoint = endPoints?.find(ep => ep.id === deploymentId);
+                    openDrawer('use-model', { endpoint: currentEndpoint });
                   }}
                   className="min-w-[7.7rem]"
                   text="Use this model"
