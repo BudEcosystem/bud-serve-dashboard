@@ -23,7 +23,7 @@ export default function AddBenchmark() {
   const [concurrentRequests, setConcurrentRequests] = useState(
     stepOneData?.concurrent_requests || ""
   );
-  const { openDrawerWithStep, step } = useDrawer();
+  const { openDrawerWithStep, openDrawer, step, drawerProps } = useDrawer();
   const { form, submittable } = useContext(BudFormContext);
   const [options, setOptions] = useState([]);
 
@@ -48,6 +48,10 @@ export default function AddBenchmark() {
     setEvalWith(stepOneData?.eval_with);
   }, [stepOneData?.eval_with]);
 
+  useEffect(() => {
+    console.log('drawerProps', drawerProps?.source);
+  }, [drawerProps]);
+
   return (
     <BudForm
       data={{
@@ -58,6 +62,12 @@ export default function AddBenchmark() {
         eval_with: stepOneData?.eval_with || "",
       }}
       disableNext={!submittable || !evalWith?.length}
+      showBack={drawerProps?.source == 'modelDetails' ? true : false}
+      onBack={() => {
+        if (drawerProps?.source == 'modelDetails') {
+          openDrawer('view-model');
+        }
+      }}
       onNext={async (values) => {
         if (!submittable || !evalWith.length) {
           form.submit();
