@@ -100,6 +100,8 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
           },
         },
         tooltip: {
+          // alwaysShowContent: true,
+          appendToBody: true,
           trigger: 'item',
           backgroundColor: 'rgba(0,0,0,.75)',
           borderColor: '#1F1F1F',
@@ -109,11 +111,15 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
             fontSize: 12,
             fontWeight: 400
           },
-          extraCssText: `backdrop-filter: blur(10px);border-radius:4px;`,
+          extraCssText: `
+    backdrop-filter: blur(10px);
+    border-radius: 4px;
+    z-index: 9999;
+  `,
           formatter: (params) => {
             return `
-              <div style="text-align: left;text-transform: capitalize">
-                ${params.name}<br/>
+              <div style="text-align: left;text-transform: capitalize echarts-tooltip">
+                ${params.name}sadasfgrhtryjtuyky hgertryruitouytrewdwfe grwthyjukjhgrfaefrgethjyuk<br/>
                 ${params.value.toFixed(2)}<br/>
               </div>`;
           },
