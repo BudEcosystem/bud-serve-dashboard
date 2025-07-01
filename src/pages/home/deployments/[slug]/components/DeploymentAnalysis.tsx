@@ -124,9 +124,10 @@ function TokenUsageChart({
       backgroundColor: "transparent",
       grid: {
         top: "10%",
-        left: "8%",
+        left: "3%",
         bottom: "15%",
-        right: "8%",
+        right: "3%",
+        containLabel: true,
       },
       xAxis: {
         type: "category",
@@ -236,9 +237,10 @@ function ComputeHoursChart({
       backgroundColor: "transparent",
       grid: {
         top: "10%",
-        left: "8%",
+        left: "3%",
         bottom: "15%",
-        right: "0%",
+        right: "3%",
+        containLabel: true,
       },
       xAxis: {
         type: "category",
@@ -330,9 +332,10 @@ function APICallsChart({
       backgroundColor: "transparent",
       grid: {
         top: "10%",
-        left: "8%",
+        left: "3%",
         bottom: "15%",
-        right: "0%",
+        right: "3%",
+        containLabel: true,
       },
       xAxis: {
         type: "category",
@@ -431,9 +434,10 @@ function APICallsTimeSeriesChart({
       backgroundColor: "transparent",
       grid: {
         top: "10%",
-        left: "12%",
+        left: "3%",
         bottom: "15%",
-        right: "5%",
+        right: "3%",
+        containLabel: true,
       },
       xAxis: {
         type: "category",
@@ -2001,9 +2005,10 @@ function MetricTimeSeriesChart({
       backgroundColor: "transparent",
       grid: {
         top: "10%",
-        left: "12%",
-        bottom: "15%",
-        right: "5%",
+        left: "0%",
+        bottom: "1%",
+        right: "0%",
+        containLabel: true,
       },
       xAxis: {
         type: "category",
@@ -2145,9 +2150,10 @@ function TokenTimeSeriesChart({
       backgroundColor: "transparent",
       grid: {
         top: "10%",
-        left: "12%",
-        bottom: "10%",
-        right: "5%",
+        left: "0%",
+        bottom: "1%",
+        right: "0%",
+        containLabel: true,
       },
       legend: {
         show: false

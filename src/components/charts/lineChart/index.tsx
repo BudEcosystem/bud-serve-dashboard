@@ -45,9 +45,10 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
                 backgroundColor: 'transparent',
                 grid: {
                     top: '23%',
-                    left: '8%',
-                    bottom: '20%',
-                    right: '1%',
+                    left: '0%',
+                    bottom: '1%',
+                    right: '0%',
+                    containLabel: true,
                 },
                 xAxis: {
                     type: 'category',

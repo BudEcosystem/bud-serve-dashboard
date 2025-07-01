@@ -156,14 +156,10 @@ const TokenMetricsChart: React.FC<TokenMetricsChartProps> = ({ data, extraChartD
         legend: { show: false },
         grid: {
           right: '0%',
-          left: (() => {
-            if (window.innerWidth > 2000) return '7%';
-            if (window.innerWidth > 1900) return '7%';
-            if (window.innerWidth > 1600) return '8%';
-            return '10%';
-          })(), // Adjust 'left' based on screen resolution
+          left: '0%',
           top: '16.5%',
-          bottom: '35%',
+          bottom: '20%',
+          containLabel: true,
         },
         tooltip: {
           trigger: 'axis',
