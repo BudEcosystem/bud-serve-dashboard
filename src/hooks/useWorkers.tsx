@@ -111,10 +111,8 @@ export const useWorkers = create<{
                         ...params,
                     },
                     headers: {
-                        headers: {
-                            "x-resource-type": "project",
-                            "x-entity-id": projectId,
-                        },
+                        "x-resource-type": "project",
+                        "x-entity-id": projectId,
                     },
                 }
             );

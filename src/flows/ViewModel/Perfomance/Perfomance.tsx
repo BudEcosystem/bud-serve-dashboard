@@ -330,7 +330,7 @@ export default function PerformanceDetailed({ data }: { data: Model }) {
         <PrimaryButton
             type="submit"
             onClick={() => {
-              openDrawer("model_benchmark");
+              openDrawer("model_benchmark", { source: 'modelDetails'});
             }}
             className="min-w-[7.7rem]"
             permission={hasPermission(PermissionEnum.ModelManage)}
@@ -397,7 +397,7 @@ export default function PerformanceDetailed({ data }: { data: Model }) {
           <PrimaryButton
               type="submit"
               onClick={() => {
-                openDrawer("model_benchmark");
+                openDrawer("model_benchmark", { source: 'modelDetails'});
               }}
               className="min-w-[7.7rem]"
               permission={hasPermission(PermissionEnum.ModelManage)}

@@ -23,6 +23,7 @@ interface FooterProps {
   onNext?: (values: any) => void;
   disableNext?: boolean;
   disableBack?: boolean;
+  showBack?: boolean;
 }
 
 function Footer(props: FooterProps) {
@@ -30,7 +31,7 @@ function Footer(props: FooterProps) {
 
   return (
     <BudDrawerFooter>
-      {props.onBack
+      {props.onBack && props.showBack
         ? <SecondaryButton
           onClick={props.onBack}
           disabled={props.disableBack}
@@ -155,6 +156,7 @@ export function BudForm(props: BudFormProps) {
         onNext={props.onNext}
         disableNext={props.disableNext}
         disableBack={props.disableBack}
+        showBack={props.showBack !== false}
       />}
   </Form>
 }

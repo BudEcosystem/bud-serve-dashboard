@@ -168,8 +168,8 @@ function WorkersTable() {
   const [filterOpen, setFilterOpen] = React.useState(false);
 
   useEffect(() => {
-    getWorkers(deploymentId as string, projectId);
-  }, [deploymentId])
+    getWorkers(deploymentId as string, tempFilter, projectId);
+  }, [deploymentId, projectId])
 
   const applyFilter = () => {
     getWorkers(deploymentId as string, tempFilter, projectId);
@@ -178,7 +178,7 @@ function WorkersTable() {
   const resetFilter = () => {
     setTempFilter({});
     setFilterOpen(false);
-    getWorkers(deploymentId as string, {}, projectId);
+    getWorkers(deploymentId as string, tempFilter, projectId);
   };
   const handleOpenChange = (open) => {
     setFilterOpen(open);
