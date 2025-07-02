@@ -119,7 +119,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
           formatter: (params) => {
             return `
               <div style="text-align: left;text-transform: capitalize echarts-tooltip">
-                ${params.name}sadasfgrhtryjtuyky hgertryruitouytrewdwfe grwthyjukjhgrfaefrgethjyuk<br/>
+                ${params.name}<br/>
                 ${params.value.toFixed(2)}<br/>
               </div>`;
           },
