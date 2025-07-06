@@ -133,6 +133,12 @@ export default {
         source: '/apiKeys',
         destination: '/home/apiKeys',
       },
+     
+     
+      {
+        source: '/evaluations',
+        destination: '/home/evaluations',
+      },
     ];
   },
   env: {
