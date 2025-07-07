@@ -5,6 +5,8 @@ import DashBoardLayout from "../layout";
 import { Dropdown, Tabs, Image } from "antd";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
+  Text_10_400_B3B3B3,
+  Text_10_400_EEEEEE,
   Text_12_400_757575,
   Text_13_400_B3B3B3,
   Text_14_400_EEEEEE,
@@ -194,7 +196,7 @@ const Evaluations = () => {
     <DashBoardLayout>
       <div
         className="boardPageView bg-cover bg-center bg-no-repeat overflow-x-hidden"
-        // style={{ backgroundImage: `url('/images/evaluations/ui/bg.png')` }}
+      // style={{ backgroundImage: `url('/images/evaluations/ui/bg.png')` }}
       >
         {/* Header */}
         <div className="flex justify-between items-center px-[3.5rem] border-b-[1px] border-[#2c2654 box-border">
@@ -319,7 +321,7 @@ const Evaluations = () => {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="mt-[3.34rem] mx-auto projectDetailsDiv ">
+        <div className="mt-[3.34rem] mx-auto projectDetailsDiv px-[3.5rem]">
           <div className="flex justify-center h-[3rem] w-[3rem] m-auto">
             <Image
               preview={false}
@@ -329,7 +331,7 @@ const Evaluations = () => {
               alt="Logo"
             />
           </div>
-          <div className="flex items-center gap-4 pt-[2rem]">
+          <div className="flex items-center gap-4 pt-[2rem] relative max-w-[70.4%] mx-auto">
             <SearchHeaderInput
               searchValue={searchValue}
               setSearchValue={setSearchValue}
@@ -337,55 +339,85 @@ const Evaluations = () => {
               expanded={true}
               classNames="flex-1 border-[.5px] border-[#757575]"
             />
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-6 text-[#757575] text-sm">
-                <span>0/450</span>
-              </div>
+            <div className="flex items-center gap-6 text-[#757575] text-sm absolute right-[1rem]">
+              <Text_10_400_B3B3B3>0/450</Text_10_400_B3B3B3>
             </div>
           </div>
 
           {/* Filter Pills */}
-          <div className="flex items-center gap-3 mt-4">
-            {[
-              "Text",
-              "Image",
-              "Video",
-              "Actions",
-              "Audio",
-              "Embeddings",
-              "Omni",
-              "Reasoning",
-              "factuality",
-              "Reasoning",
-              "Dummy",
-              "Reasoning",
-              "factuality",
-              "Reasoning",
-              "Other",
-            ].map((filter) => (
-              <button
-                key={filter}
-                className="px-3 py-1.5 bg-[#1F1F1F] text-[#B3B3B3] text-xs rounded-full hover:bg-[#2A2A2A] hover:text-white transition-colors"
-              >
-                {filter}
-              </button>
-            ))}
-            <ChevronDownIcon className="w-4 h-4 text-[#757575]" />
+          <div className="flex items-center gap-[.3rem] mt-[2.05rem] max-w-[90%] m-auto justify-between">
+            <button
+              className="flex items-center justify-center w-[1.125rem] h-[1.125rem] rounded-full border border-[#FFFFFF0D] backdrop-blur-[34.4px]"
+              style={{ minWidth: 18, minHeight: 18 }}
+              type="button"
+            >
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path
+                  d="M6.5 2L4 5L6.5 8"
+                  stroke="#EEEEEE"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <div className="flex items-center gap-[.1rem] overflow-x-auto m-auto">
+              {/* Round left button */}
+              {[
+                "Text",
+                "Image",
+                "Video",
+                "Actions",
+                "Audio",
+                "Embeddings",
+                "Omni",
+                "Reasoning",
+                "factuality",
+                "Reasoning",
+                "Dummy",
+                "Reasoning",
+                "factuality",
+                "Reasoning",
+                "Other",
+              ].map((filter) => (
+                <button
+                  key={filter}
+                  className="px-[.6rem] py-[.3rem] rounded-[0.25rem] hover:bg-[#1F1F1F] bg-[#1F1F1F] transition-colors"
+                >
+                  <Text_10_400_EEEEEE>{filter}</Text_10_400_EEEEEE>
+                </button>
+              ))}
+            </div>
+            <button
+              className="flex items-center justify-center w-[1.125rem] h-[1.125rem] rounded-full border border-[#FFFFFF0D] backdrop-blur-[34.4px]"
+              style={{ minWidth: 18, minHeight: 18 }}
+              type="button"
+            >
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path
+                d="M3.5 2L6 5L3.5 8"
+                stroke="#EEEEEE"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              </svg>
+            </button>
           </div>
         </div>
 
         {/* Evaluation Cards Grid */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+        <div className="mt-[2.8rem] flex flex-wrap justify-between gap-1 w-full px-[3.5rem]">
           {filteredEvaluations.map((evaluation) => (
             <div
               key={evaluation.id}
-              className="bg-[#161616] border border-[#1F1F1F] rounded-lg p-6 hover:shadow-[1px_1px_6px_-1px_#2e3036] transition-all cursor-pointer"
+              className=" w-[48.5%] bg-[#161616] border border-[#1F1F1F] rounded-lg p-6 hover:shadow-[1px_1px_6px_-1px_#2e3036] transition-all cursor-pointer"
               onClick={() => router.push(`/home/evaluations/${evaluation.id}`)}
             >
-              <div className="flex justify-between items-start mb-4">
-                <Text_14_600_EEEEEE className="text-[16px]">
+              <div className=" flex justify-between items-start mb-4">
+                <Text_14_400_EEEEEE className="text-[16px]">
                   {evaluation.title}
-                </Text_14_600_EEEEEE>
+                </Text_14_400_EEEEEE>
                 <div className="flex items-center gap-3">
                   <button className="p-1.5 hover:bg-[#1F1F1F] rounded transition-colors">
                     <svg
@@ -424,7 +456,7 @@ const Evaluations = () => {
               </div>
 
               {/* Type Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className=" flex flex-wrap gap-2 mb-4">
                 {evaluation.subTypes?.map((type) => (
                   <div
                     key={type}
@@ -437,9 +469,9 @@ const Evaluations = () => {
               </div>
 
               {/* Description */}
-              <Text_13_400_B3B3B3 className="line-clamp-2 mb-4">
+              <Text_10_400_EEEEEE className=" line-clamp-2 mb-4 leading-[140%]">
                 {evaluation.description}
-              </Text_13_400_B3B3B3>
+              </Text_10_400_EEEEEE>
 
               {/* Footer */}
               <div className="flex items-center justify-between">
@@ -474,42 +506,6 @@ const Evaluations = () => {
             </div>
           ))}
         </div>
-
-        {/* Empty State */}
-        {filteredEvaluations.length === 0 && (
-          <div className="flex flex-col items-center justify-center mt-20">
-            <div className="w-20 h-20 bg-[#1F1F1F] rounded-full flex items-center justify-center mb-4">
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M16 8V16M16 20V20.01"
-                  stroke="#757575"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle
-                  cx="16"
-                  cy="16"
-                  r="12"
-                  stroke="#757575"
-                  strokeWidth="2"
-                />
-              </svg>
-            </div>
-            <Text_14_400_EEEEEE className="mb-2">
-              No evaluations found
-            </Text_14_400_EEEEEE>
-            <Text_13_400_B3B3B3>
-              Try adjusting your search or filters
-            </Text_13_400_B3B3B3>
-          </div>
-        )}
       </div>
     </DashBoardLayout>
   );
