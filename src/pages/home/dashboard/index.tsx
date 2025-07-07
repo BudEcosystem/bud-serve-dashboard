@@ -712,7 +712,7 @@ const Dashboard = () => {
                             src="/images/dashboard/down.png"
                             alt=""
                           />}
-                        <span className={`text-[0.8125rem] leading-[100%] font-[400] ml-[.2rem] ${Number(totalRequests?.global_metrics?.summary_metrics?.delta_percentage) >= 0 ? 'text-[#479D5F]' : 'text-[#EC7575]'}`}>{totalRequests?.global_metrics?.summary_metrics?.delta_percentage || 0}% </span>
+                        <span className={`text-[0.8125rem] leading-[100%] font-[400] ml-[.2rem] ${Number(totalRequests?.global_metrics?.summary_metrics?.delta_percentage) >= 0 ? 'text-[#479D5F]' : 'text-[#EC7575]'}`}>{Number(totalRequests?.global_metrics?.summary_metrics?.delta_percentage || 0).toFixed(2)}% </span>
                       </Flex>
                     </Flex>
                     <span className="text-[0.8125rem] text-[#757575] leading-[100%] font-[400]">Last 7 days</span>
