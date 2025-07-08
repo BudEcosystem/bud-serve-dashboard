@@ -63,5 +63,5 @@ jobs:
         with:
           context: .
           push: true
-          file: ./deploy/Dockerfile
+          file: ./Dockerfile
           tags: budstudio/bud-dashboard:${{ env.RELEASE_TAG }}
