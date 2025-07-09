@@ -94,7 +94,10 @@ const config = {
       },
       backdropBlur: {
         'custom': '10px',
-      }
+      },
+      boxShadow: {
+        'purple-glow': '0px 0px 18px 0px #B882FA66',
+      },
     },
   },
   plugins: [

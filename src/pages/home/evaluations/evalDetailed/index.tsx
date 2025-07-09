@@ -51,7 +51,7 @@ const sampletags = [
 
 const EvalDetailed = () => {
   const [isMounted, setIsMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState("4");
+  const [activeTab, setActiveTab] = useState("3");
   const [showAllTags, setShowAllTags] = useState(false);
   const router = useRouter();
 
@@ -65,7 +65,23 @@ const EvalDetailed = () => {
       <div className="flex justify-between items-center">
         {isMounted && (
           <div className="flex justify-start items-center">
-            <BackButton onClick={goBack} />
+            {/* <BackButton classNames="" onClick={goBack} /> */}
+            <button
+              className="mr-[1.25rem] flex items-center justify-center w-[1.125rem] h-[1.125rem] rounded-full border border-white/5 backdrop-blur-[34.4px] transition-opacity opacity-100 hover:bg-white/10"
+              style={{ minWidth: 18, minHeight: 18 }}
+              type="button"
+              onClick={goBack}
+            >
+              <div className="flex justify-center h-[0.55rem] w-[auto]">
+              <Image
+                preview={false}
+                className=""
+                style={{ width: "auto", height: "0.55rem" }}
+                src="/images/evaluations/icons/left.svg"
+                alt="Logo"
+              />
+              </div>
+            </button>
             <CustomBreadcrumb
               urls={["/evaluations", `name`]}
               data={["Evaluations", `name`]} />
@@ -84,7 +100,7 @@ const EvalDetailed = () => {
     <DashBoardLayout>
       <div
         // className=" h-full w-full"
-      className="temp-bg h-full w-full flex flex-col"
+        className="temp-bg h-full w-full flex flex-col"
       >
         <div className="border-b-[1px] border-b-[#2c2654] px-[1.15rem] py-[1.05rem] flex-shrink-0">
           <HeaderContent />
@@ -93,7 +109,7 @@ const EvalDetailed = () => {
           <div className="w-full pt-[1.8rem]">
             <div className="w-full flex justify-between items-center">
               <Text_28_600_FFFFFF>LiveMathBench</Text_28_600_FFFFFF>
-              <PrimaryButton>Run Evaluation</PrimaryButton>
+              <PrimaryButton classNames="shadow-purple-glow">Run Evaluation</PrimaryButton>
             </div>
             <Text_14_400_FFFFFF className="leading-[140%] mt-[.5rem] max-w-[80%]">LiveMathBench can capture LLM capabilities in complex reasoning tasks, including challenging latest question sets from various mathematical competitions.</Text_14_400_FFFFFF>
             <div className="flex flex-wrap justify-start items-center gap-[.3rem] mt-[1.3rem] max-w-[80%]">
@@ -118,7 +134,7 @@ const EvalDetailed = () => {
           </div>
           <div className="evalsTabDetail">
             <Tabs
-              defaultActiveKey="2"
+              defaultActiveKey="1"
               activeKey={activeTab}
               onChange={(key) => setActiveTab(key)}
               className=""

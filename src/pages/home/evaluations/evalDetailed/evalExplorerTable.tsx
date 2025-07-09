@@ -117,7 +117,7 @@ function EvalExplorerTable() {
             dataIndex: 'prompt',
             key: 'prompt',
             width: '40%',
-            render: (text) => <Text_12_400_EEEEEE >{text}</Text_12_400_EEEEEE>,
+            render: (text) => <Text_12_400_EEEEEE className='leading-[140%]'>{text}</Text_12_400_EEEEEE>,
             sorter: true,
             sortIcon: SortIcon,
           },
@@ -128,7 +128,7 @@ function EvalExplorerTable() {
             width: '40%',
             sorter: true,
             sortOrder: orderBy === 'text' ? order === '-' ? 'descend' : 'ascend' : undefined,
-            render: (text) => <Text_12_400_EEEEEE >{text}</Text_12_400_EEEEEE>,
+            render: (text) => <Text_12_400_EEEEEE className='leading-[140%] py-[.5rem]'>{text}</Text_12_400_EEEEEE>,
             sortIcon: SortIcon,
           }
         ]}
