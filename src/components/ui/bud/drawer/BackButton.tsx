@@ -3,12 +3,17 @@ import React from 'react'
 
 export default function BackButton({
     onClick,
+    classNames
 }: {
-    onClick: () => void
+    onClick: () => void,
+    classNames?: string
 }) {
     return (
         <div
-            className="rounded rounded-full bg-[#18191B] w-[1.125rem] h-[1.125rem] shadow-[0_0_2px_2px_rgba(0, 0, 0, 0.85))] hover:border hover:border-[#120f0f] cursor-pointer mr-[1.25rem] flex justify-center items-center"
+            className={`rounded rounded-full w-[1.125rem] h-[1.125rem] shadow-[0_0_2px_2px_rgba(0, 0, 0, 0.85))] hover:border hover:border-[#120f0f] cursor-pointer mr-[1.25rem] flex justify-center items-center ${classNames}`}
+            style={{
+                background: '#18191B',
+            }}
             onClick={onClick}
         >
             <svg xmlns="http://www.w3.org/2000/svg"

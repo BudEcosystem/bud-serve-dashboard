@@ -126,7 +126,7 @@ const HorizontalScrollFilter = ({
               }`}
               onClick={() => handleFilterClick(filter)}
             >
-              <Text_10_400_EEEEEE>{filter}</Text_10_400_EEEEEE>
+              <Text_10_400_EEEEEE className='leading-[140%]'>{filter}</Text_10_400_EEEEEE>
             </button>
           );
         })}

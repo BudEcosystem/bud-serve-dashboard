@@ -113,7 +113,7 @@ const Evaluations = () => {
   }, [searchValue, selectedFilter]);
 
 
-  const operations = <PrimaryButton onClick={() => router.push("/home/evaluations/new")} classNames="mt-[.2rem]">
+  const operations = <PrimaryButton onClick={() => router.push("/home/evaluations/new")} classNames="mt-[.2rem] shadow-purple-glow">
     <span className="flex items-center gap-2">
       <svg
         width="16"
