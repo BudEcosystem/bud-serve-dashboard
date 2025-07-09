@@ -289,8 +289,8 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
   );
   return (
     <div>
-      <Theme accentColor="iris" appearance="dark" style={{ background: 'transparent' }} className="">
-      {/* <Theme accentColor="iris" appearance="dark" className=""> */}
+      {/* <Theme accentColor="iris" appearance="dark" style={{ background: 'transparent' }} className=""> */}
+      <Theme accentColor="iris" appearance="dark" className="">
         <div className="dashboardWrapper flex justify-between relative">
           <div className={`dashboardOverlay absolute w-full h-full top-0 left-0 z-[1200] ${isVisible ? 'block' : 'hidden'}`}></div>
           <div

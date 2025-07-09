@@ -119,8 +119,8 @@ body {
 
 
 body {
-  // background: #101010;
-  background-image: url(./../../public/images/evaluations/ui/eval.png);
+  background: #101010;
+  // background-image: url(./../../public/images/evaluations/ui/eval.png);
   // background-image: url(./../../public/images/ui/benchmark.png);
   // background-image: url(./../../public/images/ui/credentials.jpg);
   // background-image: url(./../../public/images/project/view/notification.jpg);
@@ -142,6 +142,12 @@ body {
   // background-position: 0px 0px;
   // width: 100% !important;
 }
+.temp-bg {
+  background-image: url(./../../public/images/evaluations/ui/bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 
 #container {
   background-color: #aaa;
@@ -200,6 +206,7 @@ body {
 }
 
 .statuses.hovered {
+
   // overflow: visible !important;
   // height: 80% !important;
   .absolute-div {
@@ -262,7 +269,7 @@ body {
   right: -150px;
   width: 350px;
   height: 350px;
-  background:  #1a1a1a;
+  background: #1a1a1a;
   // background: linear-gradient(135deg, rgba(245, 237, 254, 0.1), rgba(150, 92, 222, 0.9));
   background: radial-gradient(circle, #965cdee6 0%, #f5edfe1a 28%, #101010 60%);
 
@@ -272,6 +279,7 @@ body {
   z-index: -1;
   // mix-blend-mode: overlay;
 }
+
 .login-left-bg {
   // background-image: url(./../../public/images/login-left-bg.png);
   background-size: 100%;
@@ -304,6 +312,7 @@ body {
   z-index: 1;
   animation: moveDown 8s ease-in-out infinite alternate;
 }
+
 .gol-bg::before {
   content: '';
   position: absolute;
@@ -324,6 +333,7 @@ body {
   0% {
     transform: rotate(145deg) translateY(0);
   }
+
   100% {
     transform: rotate(145deg) translateY(-200px);
   }
@@ -333,6 +343,7 @@ body {
   0% {
     transform: rotate(145deg) translateX(500px);
   }
+
   100% {
     transform: rotate(145deg) translateX(200px);
   }
@@ -496,7 +507,7 @@ body {
   width: 100%;
   // width: 83.5%;
   // comment
-  // background-color: #020202;
+  background-color: #020202;
   border: 1px solid #181818;
 }
 
@@ -603,6 +614,12 @@ input:-webkit-autofill:active {
     background: #020202;
     // background: transparent !important;
     z-index: 1200;
+  }
+
+  .evalPageArea {
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    position: relative;
   }
 
   .projectDetailsDiv {
@@ -2090,6 +2107,7 @@ input:-webkit-autofill:active {
     background-color: #202020 !important;
   }
 }
+
 .antPopoverArrow.Darker {
   .ant-popover-arrow::before {
     background-color: #161616 !important;
@@ -2550,16 +2568,20 @@ svg.ant-progress-circle {
   display: flex;
   align-items: center;
 }
+
 .ant-breadcrumb {
   display: flex !important;
   align-items: center !important;
 }
+
 .ant-breadcrumb a {
   height: auto !important;
 }
+
 .ant-breadcrumb-link {
   display: inline-block;
 }
+
 .ant-avatar-group .ant-avatar {
   border: none;
 }
@@ -3186,14 +3208,16 @@ svg.ant-progress-circle {
 
 .ant-table-wrapper {
   overflow: hidden !important;
+
   .ant-table-container {
     overflow: hidden !important;
   }
+
   .ant-table-expanded-row-fixed {
     width: auto !important;
   }
 
-  > table {
+  >table {
     width: auto !important;
   }
 
@@ -3306,12 +3330,15 @@ svg.ant-progress-circle {
 
 .CommonCustomPagination {
   .ant-pagination {
-    .ant-pagination-jump-next, .ant-pagination-jump-prev {
+
+    .ant-pagination-jump-next,
+    .ant-pagination-jump-prev {
       width: 1.5rem !important;
       min-width: 1.5rem !important;
       height: 1.5rem !important;
       min-height: 1.5rem !important;
       line-height: 100% !important;
+
       a {
         width: 1.5rem !important;
         max-width: 1.5rem !important;
@@ -3402,6 +3429,7 @@ svg.ant-progress-circle {
         fill: #757575 !important
       }
     }
+
     // .anticon {
     //   color: #757575 !important;
     // }
@@ -3524,10 +3552,12 @@ svg.ant-progress-circle {
 html {
   scroll-behavior: smooth;
 }
+
 .scrollBox {
   // Firefox
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+
   // WebKit
   &::-webkit-scrollbar {
     width: 8px;
@@ -3548,10 +3578,11 @@ html {
     background-color: rgba(0, 0, 0, 0.4);
   }
 }
+
 // custom scrollbar
 
 // custom datepicker 
-.ant-picker .ant-picker-input{
+.ant-picker .ant-picker-input {
   input::placeholder {
     color: #808080;
     font-weight: 300 !important;
@@ -3559,39 +3590,50 @@ html {
     font-size: .75rem;
   }
 }
+
 .ant-picker .ant-picker-input {
   color: white;
 }
+
 .ant-picker-dropdown {
   .ant-picker-panel-container {
     background-color: #121212;
     border: 1px solid #1F1F1F;
   }
+
   .ant-picker-header {
     color: #EEEEEE;
+
     button {
       color: #EEEEEE;
     }
   }
+
   .ant-picker-content th {
     color: #EEEEEE;
   }
+
   .ant-picker-cell {
     color: #B3B3B3;
   }
+
   .ant-picker-cell-in-view {
     color: #EEEEEE;
   }
+
   .ant-picker-now-btn {
     color: #EEEEEE;
   }
 }
-.ant-picker .ant-picker-suffix >* {
+
+.ant-picker .ant-picker-suffix>* {
   color: #EEEEEE;
 }
+
 .ant-picker .ant-picker-clear {
   color: #EEEEEE;
 }
+
 // custom datepicker 
 
 // switch
@@ -3620,7 +3662,7 @@ html {
   background: #965cde !important;
 }
 
-.custom-code pre  {
+.custom-code pre {
   margin: 0 !important;
   // background: transparent !important;
   padding: 0 !important;
@@ -3628,6 +3670,7 @@ html {
   box-shadow: none !important;
   font-size: .75rem !important;
 }
+
 .markdown-body pre code {
   display: block;
   padding: 1rem;
@@ -3645,7 +3688,7 @@ html {
 }
 
 
-.ant-tooltip  {
+.ant-tooltip {
   z-index: 1149 !important;
 }
 
@@ -3654,13 +3697,18 @@ html {
   .ant-tab {
     z-index: 10 !important;
   }
+
   .ant-tabs-top .ant-tabs-nav {
     margin-bottom: 0 !important;
   }
+
   .ant-tabs-nav {
     margin-bottom: 0 !important;
-    padding: 0 !important;
-    border-bottom: none !important;
+    padding-top: 1.1rem !important;
+    padding-bottom: 1.1rem !important;
+    padding-right: 3.5rem !important;
+    padding-left: 3.5rem !important;
+    border-bottom: 1px solid #2c2654;
 
     .ant-tabs-ink-bar {
       background: transparent !important;
@@ -3681,13 +3729,25 @@ html {
       }
     }
   }
+
   .ant-tabs-top .ant-tabs-nav::before {
     border-bottom: none !important;
   }
+
   .ant-tabs .ant-tabs-tab+.ant-tabs-tab {
     margin: 0 0 0 0rem !important;
   }
+
+  .ant-tabs-content-holder {
+    overflow-y: auto !important;
+    padding: 0 3.5rem;
+  }
+
+  .ant-tabs-content-holder::-webkit-scrollbar {
+    width: 0 !important;
+  }
 }
+
 // eval tab styles
 
 // responsive styles
@@ -3772,10 +3832,12 @@ html {
       inset-inline-start: 27% !important;
     }
   }
+
   .gol-bg::after {
     bottom: -66%;
     left: -30%;
   }
+
   .gol-bg::before {
     bottom: -75%;
     right: -27%;

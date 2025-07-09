@@ -69,6 +69,15 @@ const Text_10_400_44474D = ({ children, className = "", ...props }) => (
     {children}
   </Text>
 );
+const Text_10_400_D1B854 = ({ children, className = "", ...props }) => (
+  <Text
+    as="div"
+    className={`block text-[0.625rem] font-normal text-[#D1B854] ${className}`}
+    {...props}
+  >
+    {children}
+  </Text>
+);
 const Text_6_400_FFFFFF = ({ children, className = "", ...props }) => (
   <Text
     as="div"
@@ -833,6 +842,7 @@ export {
   Text_12_300_B3B3B3,
   Text_10_400_FFFFFF,
   Text_10_400_44474D,
+  Text_10_400_D1B854,
   Text_14_600_FFFFFF,
   Text_12_400_FFFFFF,
   Text_12_400_18191B,

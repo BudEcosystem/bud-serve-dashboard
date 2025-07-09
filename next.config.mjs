@@ -139,6 +139,10 @@ export default {
         source: '/evaluations',
         destination: '/home/evaluations',
       },
+      {
+        source: '/evaluations/:evaluationId',
+        destination: '/home/evaluations/evalDetailed',
+      },
     ];
   },
   env: {
