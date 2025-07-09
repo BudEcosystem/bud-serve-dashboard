@@ -749,6 +749,15 @@ const Text_32_700_FFFFFF = ({ children, className = "", ...props }) => (
     {children}
   </Text>
 );
+const Text_28_600_FFFFFF = ({ children, className = "", ...props }) => (
+  <Text
+    as="div"
+    className={`text-[#FFFFFF] text-[1.75rem] font-[600] ${className}`}
+    {...props}
+  >
+    {children}
+  </Text>
+);
 const Text_38_400_EEEEEE = ({ children, className = "", ...props }) => (
   <Text
     as="div"
@@ -899,5 +908,6 @@ export {
   Text_13_400_tag,
   Text_22_700_EEEEEE,
   Text_14_600_B3B3B3,
+  Text_28_600_FFFFFF,
   Ibm_12_500_EEEEEE,
 };

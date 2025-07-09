@@ -120,7 +120,7 @@ body {
 
 body {
   background: #101010;
-  // background-image: url(./../../public/images/evaluations/ui/eval.png);
+  // background-image: url(./../../public/images/evaluations/ui/explorer.png);
   // background-image: url(./../../public/images/ui/benchmark.png);
   // background-image: url(./../../public/images/ui/credentials.jpg);
   // background-image: url(./../../public/images/project/view/notification.jpg);
@@ -138,10 +138,11 @@ body {
   // background-image: url(./../../public/settings.png);
   background-size: cover;
   background-repeat: no-repeat;
-  // background-position: 0px 15px;
+  background-position: top;
   // background-position: 0px 0px;
   // width: 100% !important;
 }
+
 .temp-bg {
   background-image: url(./../../public/images/evaluations/ui/bg.png);
   background-size: cover;
@@ -3748,6 +3749,89 @@ html {
   }
 }
 
+.evalsTabDetail {
+  .ant-tab {
+    z-index: 10 !important;
+  }
+
+  .ant-tabs-top .ant-tabs-nav {
+    margin-bottom: 0 !important;
+  }
+
+  .ant-tabs-nav {
+    margin-bottom: 0 !important;
+    padding-top: 3.1rem !important;
+    padding-bottom: 3.1rem !important;
+    padding-right: 0rem !important;
+    padding-left: 0rem !important;
+
+    .ant-tabs-ink-bar {
+      background: transparent !important;
+      height: 0px !important;
+      z-index: 0 !important;
+    }
+
+    .ant-tabs-tab {
+      height: 2rem !important;
+      padding: 0rem 1rem !important;
+      font-size: 0.75rem !important;
+      color: #B3B3B3 !important;
+
+      &.ant-tabs-tab-active {
+        border-radius: 0.4rem;
+        color: #EEEEEE !important;
+        background-color: #FFFFFF12 !important;
+      }
+    }
+  }
+
+  .ant-tabs-top .ant-tabs-nav::before {
+    border-bottom: none !important;
+  }
+
+  .ant-tabs .ant-tabs-tab+.ant-tabs-tab {
+    margin: 0 0 0 0rem !important;
+  }
+
+  .ant-tabs-content-holder {
+    overflow-y: auto !important;
+    padding: 0rem;
+  }
+
+  .ant-tabs-content-holder::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}
+
+// eval explorer table styles
+.eval-explorer-wrapper {
+  .ant-table .ant-table-thead>tr>th {
+    border-top: 0 !important;
+  }
+
+  .ant-table-wrapper .ant-table {
+    border-radius: 0 !important;
+  }
+
+  .ant-table-wrapper table {
+    border-radius: 0 !important;
+  }
+
+  .ant-table-wrapper .ant-table-container table>thead>tr:first-child>*:last-child {
+    border-radius: 0 !important;
+    border-start-start-radius: 0 !important;
+  }
+
+  .ant-table-wrapper .ant-table-container table>thead>tr:first-child>*:first-child {
+    border-radius: 0 !important;
+    border-start-start-radius: 0 !important;
+  }
+
+  .ant-table .ant-table-row:hover {
+    background-color: #121212 !important;
+  }
+}
+
 // eval tab styles
 
 // responsive styles
@@ -3892,4 +3976,20 @@ html {
   .cardSetTwo {
     width: 49% !important;
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
 }
