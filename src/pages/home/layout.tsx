@@ -147,6 +147,13 @@ const DashBoardLayout: React.FC<LayoutProps> = ({ children, headerItems }) => {
       iconWhite: '/images/icons/keyWhite.png',
       cmd: "6",
     },
+     {
+      label: "Evaluations",
+      route: "/evaluations",
+      icon: '/icons/simulations.png',
+      iconWhite: '/icons/simulationsWhite.svg',
+      cmd: "7",
+    },
   ]
 
   const tabsTwo = [
