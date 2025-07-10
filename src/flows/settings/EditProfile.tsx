@@ -32,9 +32,6 @@ export default function EditProfile() {
         (!form.getFieldValue("password") && user?.name === form.getFieldValue("name"))
       }
       onNext={(values) => {
-        console.log("name", user?.name);
-        console.log("name new ", form.getFieldValue("name"));
-        return
         if (submittable) {
           updateCurrentUser(
             {
