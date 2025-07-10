@@ -175,7 +175,8 @@ export default function ViewUser() {
                 </div>
                 <div className="min-h-[2.75rem] pt-[0.788rem] min-w-[16.5%]">
                   <Checkbox
-                    checked={item.view || item.name == 'User'}
+                    checked={item.view}
+                    // checked={item.view || item.name == 'User'}
                     className="AntCheckbox greayCheck text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
                     disabled={disabled}
                     onChange={() => handleCheckboxChange(index)}

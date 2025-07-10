@@ -193,15 +193,24 @@ export default function EditUser() {
     prepareProjectsList();
   }, [userPermissions, globalProjects]);
 
-  const handleCheckboxChange = (name: any, check: boolean) => {
-    console.log("handleCheckboxChange", name, check);
+  const handleCheckboxChange = (name: any, check: boolean, type?: string) => {
+    console.log(primaryTableData);
     const currentPermission = userPermissions?.global_scopes || [];
+    let updatedPermissions
+    if (type == 'view') {
+       updatedPermissions = currentPermission.map(scope =>
+        scope.name === name + ':view'
+          ? { ...scope, has_permission: check }
+          : scope
+      );
+    } else {
+       updatedPermissions = currentPermission.map(scope =>
+        scope.name === name + ':manage'
+          ? { ...scope, has_permission: check }
+          : scope
+      );
+    }
 
-    const updatedPermissions = currentPermission.map(scope =>
-      scope.name === name + ':manage'
-        ? { ...scope, has_permission: check }
-        : scope
-    );
     // console.log("currentPermission", currentPermission);
     // console.log("updatedPermissions", updatedPermissions);
     setUsersPermissions(userDetails.id, updatedPermissions);
@@ -473,10 +482,13 @@ export default function EditUser() {
 
                         <div className="min-h-[2.75rem] pt-[0.788rem] min-w-[16.5%]">
                           <Checkbox
-                            checked={item.view || item.name == 'User'}
+                            defaultChecked={item.view}
                             className="AntCheckbox text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
-                            onChange={null}
-                            disabled
+                            disabled={item.name !== 'User'}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              handleCheckboxChange(item.name.toLocaleLowerCase(), isChecked, 'view')
+                            }}
                           />
                         </div>
                         <div className="min-h-[2.75rem] pt-[0.788rem]">

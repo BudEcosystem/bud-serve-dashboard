@@ -25,7 +25,12 @@ export default function AddUserDetails() {
   }, [createdUser]);
 
   const findAccess = (type: any) => {
-    return createdUser?.permissions?.find((p) => p.name === type + ':manage')?.has_permission ? 'Manage' : 'View'
+    const hasManage = createdUser?.permissions?.find((p) => p.name === type + ':manage')?.has_permission;
+    const hasView = createdUser?.permissions?.find((p) => p.name === type + ':view')?.has_permission;
+    
+    if (hasManage) return 'Manage';
+    if (hasView) return 'View';
+    return 'None';
   }
 
   const textToCopy = `Admin has invited you to Bud Inference Engine
