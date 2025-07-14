@@ -19,6 +19,7 @@ import { PrimaryButton } from "@/components/ui/bud/form/Buttons";
 import { useRouter } from "next/router";
 import SearchHeaderInput from "src/flows/components/SearchHeaderInput";
 import EvaluationList from "./evalListing/index";
+import EvaluationSumary from "./summary";
 
 interface EvaluationCard {
   id: string;
@@ -163,8 +164,8 @@ const Evaluations = () => {
                   </div>
                 ),
                 key: "1",
-                // children: <EvaluationList />,
-                children: <></>,
+                children: <EvaluationSumary />,
+                // children: <></>,
               },
               {
                 label: (

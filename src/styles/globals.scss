@@ -96,6 +96,15 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
 }
 
 *,
@@ -120,7 +129,7 @@ body {
 
 body {
   background: #101010;
-  // background-image: url(./../../public/images/evaluations/ui/explorer.png);
+  // background-image: url(./../../public/images/evaluations/ui/Evaluation_Details.png);
   // background-image: url(./../../public/images/ui/benchmark.png);
   // background-image: url(./../../public/images/ui/credentials.jpg);
   // background-image: url(./../../public/images/project/view/notification.jpg);
@@ -139,7 +148,7 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top;
-  // background-position: 0px 0px;
+  // background-position: 0px -300px;
   // width: 100% !important;
 }
 
@@ -3761,7 +3770,8 @@ html {
   .ant-tabs-nav {
     margin-bottom: 0 !important;
     padding-top: 3.1rem !important;
-    padding-bottom: 3.1rem !important;
+    padding-bottom: 1.65rem !important;
+    // padding-bottom: 3.1rem !important;
     padding-right: 0rem !important;
     padding-left: 0rem !important;
 
