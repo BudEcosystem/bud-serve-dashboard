@@ -236,6 +236,7 @@ export default function EditUser() {
 
     const handleCheckboxChange = (index: number, type: "view" | "manage") => {
       setCheckedState((prev) => {
+        console.log("prev", prev);
         console.log("handleCheckboxChange", index, type);
         const newState = { ...prev };
 
@@ -484,7 +485,7 @@ export default function EditUser() {
                           <Checkbox
                             defaultChecked={item.view}
                             className="AntCheckbox text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
-                            disabled={item.name !== 'User'}
+                            disabled={item.name !== 'User' && item.name !== 'Benchmark'}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               handleCheckboxChange(item.name.toLocaleLowerCase(), isChecked, 'view')
