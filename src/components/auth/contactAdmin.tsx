@@ -162,7 +162,7 @@ const ContactAdmin = ({ onSubmit }: ContactAdminKeyProps) => {
             backgroundColor: getChromeColor("#EC7575"),
           }}
         >
-          <Text_12_400_EEEEEE className="text-[#EC7575]">{authError.includes('Cannot read properties') ? 'Something went wrong, please try aginn later.' : authError}</Text_12_400_EEEEEE>
+          <Text_12_400_EEEEEE className="text-[#EC7575]">{authError.includes('Cannot read properties') ? 'Something went wrong, please try again later.' : authError}</Text_12_400_EEEEEE>
         </motion.div>
       )}
     </>
