@@ -55,6 +55,7 @@ export default function EditUser() {
   const [viewAll, setViewAll] = useState(false);
   const [manageAll, setManageAll] = useState(false);
   const [userPayload, setUserPayload] = useState<any>();
+  const [localPermissions, setLocalPermissions] = useState<any>(null);
   // for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
@@ -140,6 +141,12 @@ export default function EditUser() {
     setUserPayload((prev) => ({ ...prev, role: userRole }))
   }, [userRole])
 
+  useEffect(() => {
+    if (userPermissions) {
+      setLocalPermissions(userPermissions);
+    }
+  }, [userPermissions]);
+
 
 
 
@@ -155,23 +162,23 @@ export default function EditUser() {
   const primaryTableData = [
     {
       name: 'Model',
-      view: userPermissions?.global_scopes?.find(scope => scope.name === 'model:view')?.has_permission,
-      manage: userPermissions?.global_scopes?.find(scope => scope.name === 'model:manage')?.has_permission
+      view: localPermissions?.global_scopes?.find(scope => scope.name === 'model:view')?.has_permission || false,
+      manage: localPermissions?.global_scopes?.find(scope => scope.name === 'model:manage')?.has_permission || false
     },
     {
       name: 'Cluster',
-      view: userPermissions?.global_scopes?.find(scope => scope.name === 'cluster:view')?.has_permission,
-      manage: userPermissions?.global_scopes?.find(scope => scope.name === 'cluster:manage')?.has_permission
+      view: localPermissions?.global_scopes?.find(scope => scope.name === 'cluster:view')?.has_permission || false,
+      manage: localPermissions?.global_scopes?.find(scope => scope.name === 'cluster:manage')?.has_permission || false
     },
     {
       name: 'User',
-      view: userPermissions?.global_scopes?.find(scope => scope.name === 'user:view')?.has_permission,
-      manage: userPermissions?.global_scopes?.find(scope => scope.name === 'user:manage')?.has_permission,
+      view: localPermissions?.global_scopes?.find(scope => scope.name === 'user:view')?.has_permission || false,
+      manage: localPermissions?.global_scopes?.find(scope => scope.name === 'user:manage')?.has_permission || false,
     },
     {
       name: 'Benchmark',
-      view: userPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:view')?.has_permission,
-      manage: userPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:manage')?.has_permission,
+      view: localPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:view')?.has_permission || false,
+      manage: localPermissions?.global_scopes?.find(scope => scope.name === 'benchmark:manage')?.has_permission || false,
     }
   ]
 
@@ -195,24 +202,33 @@ export default function EditUser() {
 
   const handleCheckboxChange = (name: any, check: boolean, type?: string) => {
     console.log(primaryTableData);
-    const currentPermission = userPermissions?.global_scopes || [];
+    const currentPermission = localPermissions?.global_scopes || [];
     let updatedPermissions
     if (type == 'view') {
        updatedPermissions = currentPermission.map(scope =>
         scope.name === name + ':view'
           ? { ...scope, has_permission: check }
+          : scope.name === name + ':manage' && !check
+          ? { ...scope, has_permission: false } // If unchecking view, also uncheck manage
           : scope
       );
     } else {
        updatedPermissions = currentPermission.map(scope =>
         scope.name === name + ':manage'
           ? { ...scope, has_permission: check }
+          : scope.name === name + ':view' && check
+          ? { ...scope, has_permission: true } // If checking manage, also check view
           : scope
       );
     }
 
-    // console.log("currentPermission", currentPermission);
-    // console.log("updatedPermissions", updatedPermissions);
+    // Update local state immediately
+    setLocalPermissions({
+      ...localPermissions,
+      global_scopes: updatedPermissions
+    });
+    
+    // Then make API call
     setUsersPermissions(userDetails.id, updatedPermissions);
   };
 
@@ -483,7 +499,7 @@ export default function EditUser() {
 
                         <div className="min-h-[2.75rem] pt-[0.788rem] min-w-[16.5%]">
                           <Checkbox
-                            defaultChecked={item.view}
+                            checked={item.view}
                             className="AntCheckbox text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
                             disabled={item.name !== 'User' && item.name !== 'Benchmark'}
                             onChange={(e) => {
@@ -494,7 +510,7 @@ export default function EditUser() {
                         </div>
                         <div className="min-h-[2.75rem] pt-[0.788rem]">
                           <Checkbox
-                            defaultChecked={item.manage}
+                            checked={item.manage}
                             className="AntCheckbox text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
                             onChange={(e) => {
                               const isChecked = e.target.checked;
@@ -561,7 +577,7 @@ export default function EditUser() {
                         <>
                           <div className="min-h-[2.75rem] pt-[0.788rem] min-w-[16.5%]">
                             <Checkbox
-                              checked={userPermissions?.global_scopes?.find(scope => scope.name === 'project:view')?.has_permission}
+                              checked={localPermissions?.global_scopes?.find(scope => scope.name === 'project:view')?.has_permission || false}
                               className="AntCheckbox text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
                               onChange={null}
                               disabled
@@ -569,7 +585,7 @@ export default function EditUser() {
                           </div>
                           <div className="min-h-[2.75rem] pt-[0.788rem]">
                             <Checkbox
-                              defaultChecked={userPermissions?.global_scopes?.find(scope => scope.name === 'project:manage')?.has_permission}
+                              checked={localPermissions?.global_scopes?.find(scope => scope.name === 'project:manage')?.has_permission || false}
                               className="AntCheckbox text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
                               onChange={(e) => {
                                 const isChecked = e.target.checked;
