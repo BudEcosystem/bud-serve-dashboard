@@ -165,7 +165,6 @@ const Evaluations = () => {
                 ),
                 key: "1",
                 children: <EvaluationSumary />,
-                // children: <></>,
               },
               {
                 label: (
