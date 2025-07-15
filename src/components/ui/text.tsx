@@ -450,7 +450,7 @@ const Text_12_400_EEEEEE = ({ children, className = "", ...props }) => (
 const Text_12_600_EEEEEE = ({ children, className = "", ...props }) => (
   <Text
     as="div"
-    className={`block text-xs font-[600] text-[#EEEEEE] ${className}`}
+    className={`block text-[0.75rem] font-[600] text-[#EEEEEE] ${className}`}
     {...props}
     style={{
       lineHeight: '100%'

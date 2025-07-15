@@ -26,6 +26,7 @@ import { color } from "echarts";
 import Tags from "src/flows/components/DrawerTags";
 import EvalExplorerTable from "./evalExplorerTable";
 import LeaderboardTable from "./leaderboardTable";
+import LeaderboardDetails from "./details";
 
 interface EvaluationCard {
   id: string;
@@ -99,17 +100,17 @@ const EvalDetailed = () => {
   return (
     <DashBoardLayout>
       <div
-        // className=" h-full w-full"
+        // className="temp-bg h-full w-full"
         className="temp-bg h-full w-full flex flex-col"
       >
         <div className="border-b-[1px] border-b-[#2c2654] px-[1.15rem] py-[1.05rem] flex-shrink-0">
           <HeaderContent />
         </div>
-        <div className="w-full px-[3.6rem] flex-1 overflow-y-auto">
+        <div className="w-full px-[3.6rem] flex-1 overflow-y-auto no-scrollbar">
           <div className="w-full pt-[1.8rem]">
             <div className="w-full flex justify-between items-center">
               <Text_28_600_FFFFFF>LiveMathBench</Text_28_600_FFFFFF>
-              <PrimaryButton classNames="shadow-purple-glow">Run Evaluation</PrimaryButton>
+              <PrimaryButton classNames="shadow-purple-glow" textClass="text-[0.8125rem]">Run Evaluation</PrimaryButton>
             </div>
             <Text_14_400_FFFFFF className="leading-[140%] mt-[.5rem] max-w-[80%]">LiveMathBench can capture LLM capabilities in complex reasoning tasks, including challenging latest question sets from various mathematical competitions.</Text_14_400_FFFFFF>
             <div className="flex flex-wrap justify-start items-center gap-[.3rem] mt-[1.3rem] max-w-[80%]">
@@ -155,8 +156,8 @@ const EvalDetailed = () => {
                     </div>
                   ),
                   key: "1",
-                  // children: <EvaluationList />,
-                  children: <></>,
+                  children: <LeaderboardDetails />,
+                  // children: <></>,
                 },
                 {
                   label: (
