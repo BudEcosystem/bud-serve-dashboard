@@ -119,7 +119,7 @@ const HorizontalScrollFilter = ({
           return (
             <button
               key={index}
-              className={`px-[0.6rem] py-[0.3rem] rounded-[0.25rem] transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
+              className={`px-[0.6rem] py-[0.2rem] rounded-[0.25rem] transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
                 isSelected
                   ? 'bg-blue-600 hover:bg-blue-700 text-white'
                   : 'bg-[#1F1F1F] hover:bg-[#2F2F2F]'
