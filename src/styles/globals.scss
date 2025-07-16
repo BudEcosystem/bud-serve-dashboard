@@ -3527,6 +3527,17 @@ svg.ant-progress-circle {
   }
 }
 
+.evalTable {
+  .ant-table {
+    border : 0 !important
+  }
+  .ant-table .ant-table-title+.ant-table-container {
+    border-left: 1px solid #1F1F1F !important;
+    border-right: 1px solid #1F1F1F !important;
+    border-top: 1px solid #1F1F1F !important;
+  }
+}
+
 .ant-table .ant-table-column-title {
   font-weight: 600 !important
 }

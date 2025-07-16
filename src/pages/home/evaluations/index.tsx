@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import SearchHeaderInput from "src/flows/components/SearchHeaderInput";
 import EvaluationList from "./evalListing/index";
 import EvaluationSumary from "./summary";
+import ExperimentsTable from "./experiments";
 
 interface EvaluationCard {
   id: string;
@@ -31,7 +32,7 @@ interface EvaluationCard {
 }
 
 const Evaluations = () => {
-  const [activeTab, setActiveTab] = useState("4");
+  const [activeTab, setActiveTab] = useState("3");
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All Categories");
@@ -200,7 +201,7 @@ const Evaluations = () => {
                   </div>
                 ),
                 key: "3",
-                children: <></>,
+                children: <ExperimentsTable />,
               },
               {
                 label: (
