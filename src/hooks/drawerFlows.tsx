@@ -3443,6 +3443,28 @@ const createRoute: DrawerFlowType = {
   ],
 };
 
+// New Experiment Flow
+const newExperiment: DrawerFlowType = {
+  title: "New Experiment",
+  description: "Create a new experiment",
+  totalSteps: 1,
+  steps: [
+    {
+      navigation: () => ["Experiments", "New Experiment"],
+      id: "new-experiment",
+      step: 1,
+      component: StepComponents["new-experiment"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Experiment",
+        },
+      ],
+      confirmClose: true,
+    },
+  ],
+};
+
 const flows = {
   "new-project": newProject,
   "deploy-model": deployModel,
@@ -3491,6 +3513,8 @@ const flows = {
   "edit-profile": editProfile,
   // route
   "create-route": createRoute,
+  // experiments
+  "new-experiment": newExperiment,
 };
 
 export const flowMapping: {
