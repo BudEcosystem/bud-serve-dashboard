@@ -104,6 +104,7 @@ import DeployModelAutoScale from "./DeployModel/DeployModelAutoScale";
 import EditProfile from "./settings/EditProfile";
 import CreateRoute from "./Routes/CreateRoute";
 import SelectEndpointsForRoutes from "./Routes/SelectEndpointsForRoutes";
+import NewExperimentDrawer from "./Evaluations/NewExperiment";
 export const StepComponents = {
   "new-project": NewProject,
   "invite-members": InviteMembers,
@@ -218,6 +219,8 @@ export const StepComponents = {
   // routes
   "create-route-data": CreateRoute,
   "select-endpoints-route": SelectEndpointsForRoutes,
+  // experiments
+  "new-experiment": NewExperimentDrawer,
 };
 
 export type StepComponentsType = keyof typeof StepComponents;

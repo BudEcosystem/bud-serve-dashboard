@@ -20,6 +20,8 @@ import { useRouter } from "next/router";
 import SearchHeaderInput from "src/flows/components/SearchHeaderInput";
 import EvaluationList from "./evalListing/index";
 import EvaluationSumary from "./summary";
+import ExperimentsTable from "./experiments";
+import { useDrawer } from "src/hooks/useDrawer";
 
 interface EvaluationCard {
   id: string;
@@ -31,8 +33,9 @@ interface EvaluationCard {
 }
 
 const Evaluations = () => {
-  const [activeTab, setActiveTab] = useState("4");
+  const [activeTab, setActiveTab] = useState("3");
   const router = useRouter();
+  const { openDrawer } = useDrawer();
   const [searchValue, setSearchValue] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All Categories");
 
@@ -114,7 +117,7 @@ const Evaluations = () => {
   }, [searchValue, selectedFilter]);
 
 
-  const operations = <PrimaryButton onClick={() => router.push("/home/evaluations/new")} classNames="mt-[.2rem] shadow-purple-glow">
+  const operations = <PrimaryButton onClick={() => openDrawer("new-experiment" as any)} classNames="mt-[.2rem] shadow-purple-glow">
     <span className="flex items-center gap-2">
       <svg
         width="16"
@@ -200,7 +203,7 @@ const Evaluations = () => {
                   </div>
                 ),
                 key: "3",
-                children: <></>,
+                children: <ExperimentsTable />,
               },
               {
                 label: (
