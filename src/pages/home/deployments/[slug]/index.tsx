@@ -189,7 +189,8 @@ const ProjectDetailsPage = () => {
                 key: '1',
                 children: <GeneralDeploymentInfo switchTab={switchTab} />
               },
-              {
+              // Hide Adapters tab for cloud models
+              ...(clusterDetails?.model?.provider_type === "cloud_model" ? [] : [{
                 label: <div className="flex items-center gap-2">
                   <Image
                     preview={false}
@@ -205,8 +206,9 @@ const ProjectDetailsPage = () => {
                 </div>,
                 key: '2',
                 children: <AdaptersTable />,
-              },
-              {
+              }]),
+              // Hide Workers tab for cloud models
+              ...(clusterDetails?.model?.provider_type === "cloud_model" ? [] : [{
                 label: <div className="flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width=".875rem" height=".875rem" viewBox="0 0 14 15" fill="none">
                     <g clipPath="url(#clip0_1517_3714)">
@@ -220,12 +222,12 @@ const ProjectDetailsPage = () => {
                   </svg>
                   <Text_14_600_FFFFFF
                     className="hover:text-[#EEEEEE]"
-                    style={{ color: activeTab === "2" ? '#EEEEEE' : '#B3B3B3' }}
+                    style={{ color: activeTab === "3" ? '#EEEEEE' : '#B3B3B3' }}
                   >Workers</Text_14_600_FFFFFF>
                 </div>,
                 key: '3',
                 children: <WorkersTable />,
-              },
+              }]),
               {
                 label: <div className="flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width=".875rem" height=".875rem" viewBox="0 0 14 15" fill="none">
@@ -234,7 +236,7 @@ const ProjectDetailsPage = () => {
                   <Text_14_600_FFFFFF
                     className="hover:text-[#EEEEEE]"
                     style={{
-                      color: activeTab === "3" ? '#EEEEEE' : '#B3B3B3',
+                      color: activeTab === "4" ? '#EEEEEE' : '#B3B3B3',
                     }}
                   >Benchmarks</Text_14_600_FFFFFF>
                 </div>,
@@ -262,7 +264,7 @@ const ProjectDetailsPage = () => {
                   </svg>
                   <Text_14_600_FFFFFF
                     className="hover:text-[#EEEEEE]"
-                    style={{ color: activeTab === "4" ? '#EEEEEE' : '#B3B3B3' }}
+                    style={{ color: activeTab === "5" ? '#EEEEEE' : '#B3B3B3' }}
 
                   >Model Evaluations</Text_14_600_FFFFFF>
                 </div>,
