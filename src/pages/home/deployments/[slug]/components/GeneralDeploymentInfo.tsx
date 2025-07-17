@@ -36,7 +36,7 @@ function GeneralDeploymentInfo({ switchTab }: { switchTab: (key: string) => void
     <div className='mt-[1.1rem] pl-[.15rem] relative'>
       <div className='flex gap-[1rem]'>
 
-        <div className="flex items-center flex-col border border-[#1F1F1F] rounded-[.4rem] px-[1.4rem] py-[1.3rem] pb-[1.1rem] w-[50%] bg-[#101010] cursor-pointer"
+        <div className={`flex items-center flex-col border border-[#1F1F1F] rounded-[.4rem] px-[1.4rem] py-[1.3rem] pb-[1.1rem] ${clusterDetails?.model?.provider_type === "cloud_model" ? "w-full" : "w-[50%]"} bg-[#101010] cursor-pointer`}
           onClick={async (e) => {
             e.stopPropagation()
             const result = await getModel(clusterDetails?.model?.id)
@@ -98,53 +98,56 @@ function GeneralDeploymentInfo({ switchTab }: { switchTab: (key: string) => void
           </div>
         </div>
 
-        <div className="flex items-center  flex-col border  border-[#1F1F1F] rounded-[.4rem] px-[1.4rem] py-[1.3rem] w-[50%]  bg-[#101010] cursor-pointer"
+        {/* Hide cluster detail card for cloud models */}
+        {clusterDetails?.model?.provider_type !== "cloud_model" && (
+          <div className="flex items-center  flex-col border  border-[#1F1F1F] rounded-[.4rem] px-[1.4rem] py-[1.3rem] w-[50%]  bg-[#101010] cursor-pointer"
 
-          onClick={async (e) => {
-            e.stopPropagation()
-            await getClusterById(clusterDetails?.cluster?.id)
-            router.push(`/clusters/${clusterDetails?.cluster?.id}`);
-          }}>
-          <div className="flex items-start justify-start w-full">
-            <IconRender icon={clusterDetails?.cluster?.icon} />
+            onClick={async (e) => {
+              e.stopPropagation()
+              await getClusterById(clusterDetails?.cluster?.id)
+              router.push(`/clusters/${clusterDetails?.cluster?.id}`);
+            }}>
+            <div className="flex items-start justify-start w-full">
+              <IconRender icon={clusterDetails?.cluster?.icon} />
 
-            <div className='ml-[.75rem]'>
-              <span className="block text-[0.875rem] font-[400] text-[#EEEEEE] leading-[.875rem]">
-                {clusterDetails?.cluster?.name}
-              </span>
-              <Text_11_400_808080 className='mt-[.35rem]'>
-                {formatDate(clusterDetails?.cluster?.created_at)}
-              </Text_11_400_808080>
+              <div className='ml-[.75rem]'>
+                <span className="block text-[0.875rem] font-[400] text-[#EEEEEE] leading-[.875rem]">
+                  {clusterDetails?.cluster?.name}
+                </span>
+                <Text_11_400_808080 className='mt-[.35rem]'>
+                  {formatDate(clusterDetails?.cluster?.created_at)}
+                </Text_11_400_808080>
+                </div>
             </div>
-          </div>
-          <div className='mt-[.5rem] self-start'>
-            <div className="flex items-center justify-start w-full">
-              <div>
-                <div className="flex items-center justify-start flex-wrap	gap-[.6rem]">
-                  <ClusterTags hideEndPoints cluster={clusterDetails?.cluster} />
+            <div className='mt-[.5rem] self-start'>
+              <div className="flex items-center justify-start w-full">
+                <div>
+                  <div className="flex items-center justify-start flex-wrap	gap-[.6rem]">
+                    <ClusterTags hideEndPoints cluster={clusterDetails?.cluster} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className='flex flex-grow items-center justify-between mt-[0]' />
-          <div className='text-[#B3B3B3] flex flex-col items-start justify-start gap-[.5rem] mt-4 w-full text-[.75rem]'>
-            <Text_12_400_EEEEEE className='mb-[.1rem]'>
-              Resource Availability
-            </Text_12_400_EEEEEE>
-            <div className='flex items-center justify-start gap-[.45rem]'>
-              <TagsList data={[
-                {
-                  name: `${clusterDetails?.cluster?.available_nodes || 0} Available Nodes`,
-                  color: '#EEEEEE',
-                },
-                {
-                  name: `${clusterDetails?.cluster?.total_nodes || 0} Total Nodes`,
-                  color: '#EEEEEE',
-                },
-              ]} />
+            <div className='flex flex-grow items-center justify-between mt-[0]' />
+            <div className='text-[#B3B3B3] flex flex-col items-start justify-start gap-[.5rem] mt-4 w-full text-[.75rem]'>
+              <Text_12_400_EEEEEE className='mb-[.1rem]'>
+                Resource Availability
+              </Text_12_400_EEEEEE>
+              <div className='flex items-center justify-start gap-[.45rem]'>
+                <TagsList data={[
+                  {
+                    name: `${clusterDetails?.cluster?.available_nodes || 0} Available Nodes`,
+                    color: '#EEEEEE',
+                  },
+                  {
+                    name: `${clusterDetails?.cluster?.total_nodes || 0} Total Nodes`,
+                    color: '#EEEEEE',
+                  },
+                ]} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <div className='hR mt-[1.6rem]'></div>
       <div className='mt-[1rem]'>
