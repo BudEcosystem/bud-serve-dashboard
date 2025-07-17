@@ -148,6 +148,17 @@ type AdapterWorkflow = {
   adapterId: string;
 };
 
+export type ModelConfiguration = {
+  enableToolParser: boolean;
+  enableReasoningParser: boolean;
+  customToolParser: {
+    enabled: boolean;
+    toolCallPattern: string;
+    functionPattern: string;
+    stripTokens: string[];
+  };
+};
+
 export const useDeployModel = create<{
   requestCount: any | null;
   currentWorkflow: WorkflowType | null;
@@ -192,7 +203,9 @@ export const useDeployModel = create<{
   quantizationWorkflow: QuantizationWorkflow | null;
   quantizationMethods: QuantizationMethod[];
   adapterWorkflow: AdapterWorkflow | null;
+  modelConfiguration: ModelConfiguration | null;
   setSelectedCredentials: (credentials: Credentials | null) => void;
+  setModelConfiguration: (configuration: ModelConfiguration | null) => void;
   setSelectedProvider: (provider: Provider) => void;
   setDeploymentSpecification: (spec: any) => void;
   setScalingSpecification: (spec: any) => void;
@@ -219,6 +232,7 @@ export const useDeployModel = create<{
   updateCredentials: (credentials: Credentials) => any;
   updateCloudModel: () => Promise<any>;
   updateCloudModelDetails: () => Promise<any>;
+  updateModelConfiguration: () => Promise<boolean>;
   getWorkflowCloud: (id?: string) => Promise<any>;
   createLocalModelWorkflow: () => any;
   createModalityForWorkflow: () => any;
@@ -360,6 +374,10 @@ export const useDeployModel = create<{
   setAdapterWorkflow: (workflow: AdapterWorkflow | null) => {
     set({ adapterWorkflow: workflow });
   },
+  modelConfiguration: null,
+  setModelConfiguration: (configuration: ModelConfiguration | null) => {
+    set({ modelConfiguration: configuration });
+  },
   providerTypeList: providerTypeList,
   modalityTypeList: modalityTypeList,
   requestCount: 0,
@@ -414,6 +432,7 @@ export const useDeployModel = create<{
       },
       quantizationWorkflow: null,
       adapterWorkflow: null,
+      modelConfiguration: null,
     });
   },
   getWorkflowCloud: async (id?: string) => {
@@ -1065,6 +1084,58 @@ export const useDeployModel = create<{
     } catch (error) {
       errorToast("Error creating model");
       console.error("Error creating model:", error);
+    } finally {
+      get().endRequest();
+    }
+  },
+  updateModelConfiguration: async () => {
+    const workflowId = get().currentWorkflow?.workflow_id;
+    const modelConfiguration = get().modelConfiguration;
+    const projectId = useProjects.getState().selectedProject?.id;
+    
+    if (!workflowId) {
+      errorToast("Please create a workflow");
+      return false;
+    }
+    
+    if (!modelConfiguration) {
+      errorToast("Model configuration is not set");
+      return false;
+    }
+    
+    get().startRequest();
+    
+    try {
+      const response: any = await AppRequest.Post(
+        `${tempApiBaseUrl}/models/deploy-workflow`,
+        {
+          step_number: 5,
+          trigger_workflow: false,
+          workflow_id: workflowId,
+          model_configuration: {
+            enable_tool_parser: modelConfiguration.enableToolParser,
+            enable_reasoning_parser: modelConfiguration.enableReasoningParser,
+            custom_tool_parser: {
+              enabled: modelConfiguration.customToolParser.enabled,
+              tool_call_pattern: modelConfiguration.customToolParser.toolCallPattern,
+              function_pattern: modelConfiguration.customToolParser.functionPattern,
+              strip_tokens: modelConfiguration.customToolParser.stripTokens,
+            },
+          },
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
+        }
+      );
+      get().getWorkflowCloud();
+      return true;
+    } catch (error) {
+      errorToast("Error updating model configuration");
+      console.error("Error updating model configuration:", error);
+      return false;
     } finally {
       get().endRequest();
     }
