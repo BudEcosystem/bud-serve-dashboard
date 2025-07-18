@@ -83,14 +83,26 @@ export const useEvaluations = create<{
   evaluationsList: Evaluation[];
   evaluationsListTotal: number;
   traitsList: TraitSimple[];
+  experimentDetails: any;
+  experimentMetrics: any;
+  experimentBenchmarks: any;
+  experimentRuns: any;
 
   getEvaluations: (payload?: GetEvaluationsPayload) => Promise<any>;
   getTraits: (payload?: any) => Promise<any>;
+  getExperimentDetails: (id: string) => Promise<any>;
+  getExperimentMetrics: (id: string) => Promise<any>;
+  getExperimentBenchmarks: (id: string) => Promise<any>;
+  getExperimentRuns: (id: string) => Promise<any>;
 }>((set, get) => ({
   loading: false,
   evaluationsList: [],
   traitsList: [],
   evaluationsListTotal: null,
+  experimentDetails: null,
+  experimentMetrics: null,
+  experimentBenchmarks: null,
+  experimentRuns: null,
 
   getEvaluations: async (payload) => {
     set({ loading: true });
@@ -146,6 +158,62 @@ export const useEvaluations = create<{
       set({ traitsList: traitsWithoutDatasets });
     } catch (error) {
       console.error("Error fetching evaluations:", error);
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getExperimentDetails: async (id: string) => {
+    set({ loading: true });
+    try {
+      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/experiments/${id}`);
+      set({ experimentDetails: response.data });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching experiment details:", error);
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getExperimentMetrics: async (id: string) => {
+    set({ loading: true });
+    try {
+      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/experiments/${id}/metrics`);
+      set({ experimentMetrics: response.data });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching experiment metrics:", error);
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getExperimentBenchmarks: async (id: string) => {
+    set({ loading: true });
+    try {
+      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/experiments/${id}/benchmarks`);
+      set({ experimentBenchmarks: response.data });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching experiment benchmarks:", error);
+      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getExperimentRuns: async (id: string) => {
+    set({ loading: true });
+    try {
+      const response: any = await AppRequest.Get(`${tempApiBaseUrl}/experiments/${id}/runs`);
+      set({ experimentRuns: response.data });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching experiment runs:", error);
+      throw error;
     } finally {
       set({ loading: false });
     }
