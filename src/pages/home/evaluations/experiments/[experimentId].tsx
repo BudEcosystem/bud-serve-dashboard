@@ -278,7 +278,7 @@ const ExperimentDetailsPage = () => {
 
   return (
     <DashBoardLayout>
-      <div className=" h-full w-full flex flex-col">
+      <div className="temp-bg h-full w-full flex flex-col">
       {/* <div className="temp-bg h-full w-full flex flex-col"> */}
         {/* Header */}
         <div className="border-b-[1px] border-b-[#2c2654] px-[1.15rem] py-[1.05rem] flex-shrink-0">

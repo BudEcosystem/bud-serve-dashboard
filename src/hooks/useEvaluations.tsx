@@ -14,6 +14,26 @@ export interface GetEvaluationsPayload {
   domains?: string;
 }
 
+export interface GetExperimentsPayload {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string[];
+  tags?: string[];
+  order?: string;
+  orderBy?: string;
+}
+
+export interface ExperimentData {
+  id: string;
+  experimentName: string;
+  models: string;
+  traits: string;
+  tags: string[];
+  status: "Running" | "Completed" | "Failed";
+  createdDate: string;
+}
+
 export interface Trait {
   id: string;
   name: string;
@@ -83,6 +103,8 @@ export const useEvaluations = create<{
   evaluationsList: Evaluation[];
   evaluationsListTotal: number;
   traitsList: TraitSimple[];
+  experimentsList: ExperimentData[];
+  experimentsListTotal: number;
   experimentDetails: any;
   experimentMetrics: any;
   experimentBenchmarks: any;
@@ -90,6 +112,7 @@ export const useEvaluations = create<{
 
   getEvaluations: (payload?: GetEvaluationsPayload) => Promise<any>;
   getTraits: (payload?: any) => Promise<any>;
+  getExperiments: (payload?: GetExperimentsPayload) => Promise<any>;
   getExperimentDetails: (id: string) => Promise<any>;
   getExperimentMetrics: (id: string) => Promise<any>;
   getExperimentBenchmarks: (id: string) => Promise<any>;
@@ -99,6 +122,8 @@ export const useEvaluations = create<{
   evaluationsList: [],
   traitsList: [],
   evaluationsListTotal: null,
+  experimentsList: [],
+  experimentsListTotal: null,
   experimentDetails: null,
   experimentMetrics: null,
   experimentBenchmarks: null,
@@ -158,6 +183,43 @@ export const useEvaluations = create<{
       set({ traitsList: traitsWithoutDatasets });
     } catch (error) {
       console.error("Error fetching evaluations:", error);
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getExperiments: async (payload) => {
+    set({ loading: true });
+    try {
+      // Build query parameters
+      const params = new URLSearchParams();
+      
+      if (payload?.page) params.append('page', payload.page.toString());
+      if (payload?.limit) params.append('limit', payload.limit.toString());
+      if (payload?.search) params.append('search', payload.search);
+      if (payload?.status && payload.status.length > 0) {
+        payload.status.forEach(status => params.append('status', status));
+      }
+      if (payload?.tags && payload.tags.length > 0) {
+        payload.tags.forEach(tag => params.append('tags', tag));
+      }
+      if (payload?.order) params.append('order', payload.order);
+      if (payload?.orderBy) params.append('orderBy', payload.orderBy);
+
+      const queryString = params.toString();
+      const url = `${tempApiBaseUrl}/experiments/`;
+      // const url = `${tempApiBaseUrl}/experiments${queryString ? `?${queryString}` : ''}`;
+      
+      const response: any = await AppRequest.Get(url);
+      set({ experimentsList: response.data.experiments || response.data || [] });
+      set({ experimentsListTotal: response.data.total || response.total || 0 });
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching experiments:", error);
+      // Return empty data on error
+      set({ experimentsList: [], experimentsListTotal: 0 });
+      throw error;
     } finally {
       set({ loading: false });
     }
