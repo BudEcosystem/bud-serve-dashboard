@@ -89,7 +89,7 @@ export default function ViewModel() {
 
   useEffect(() => {
     if (selectedModel?.provider_type === 'cloud_model') {
-      setFilteredItems(items.filter((item) => item.key !== '4'));
+      setFilteredItems(items.filter((item) => item.key !== '3' && item.key !== '4' && item.key !== '5'));
     } else {
       setFilteredItems(items); // Use all tabs
     }
