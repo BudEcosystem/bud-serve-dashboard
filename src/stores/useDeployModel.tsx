@@ -211,6 +211,7 @@ export const useDeployModel = create<{
   updateTemplate: () => void;
   getWorkflow: (id?: string) => Promise<any>;
   updateDeploymentSpecification: () => Promise<any>;
+  updateDeploymentSpecificationAndDeploy: () => Promise<any>;
   updateScalingSpecification: () => Promise<any>;
   updateCluster: () => Promise<any>;
   createCloudModelWorkflow: () => any;
@@ -842,6 +843,48 @@ export const useDeployModel = create<{
         {
           step_number: 4,
           trigger_workflow: false,
+          workflow_id: workflowId,
+          endpoint_name: deployConfig.deployment_name,
+          deploy_config: deployConfigPayload,
+        },
+        {
+          headers: {
+            "x-resource-type": "project",
+            "x-entity-id": projectId,
+          },
+        }
+      );
+      get().getWorkflowCloud();
+      return response;
+    } catch (error) {
+      console.error("Error creating model:", error);
+    } finally {
+      get().endRequest();
+    }
+  },
+
+  updateDeploymentSpecificationAndDeploy: async () => {
+    const currentWorkflow = get().currentWorkflow;
+    const workflowId = currentWorkflow?.workflow_id;
+    const deployConfig = get().deploymentSpecifcation;
+    const projectId = useProjects.getState().selectedProject?.id;
+    if (!workflowId) {
+      errorToast("Please create a workflow");
+      return;
+    }
+    get().startRequest();
+    try {
+      let deployConfigPayload: any = {
+        concurrent_requests: parseInt(`${deployConfig.concurrent_requests}`),
+        avg_sequence_length: deployConfig.avg_sequence_length,
+        avg_context_length: deployConfig.avg_context_length,
+      };
+
+      const response: any = await AppRequest.Post(
+        `${tempApiBaseUrl}/models/deploy-workflow`,
+        {
+          step_number: 4,
+          trigger_workflow: true,
           workflow_id: workflowId,
           endpoint_name: deployConfig.deployment_name,
           deploy_config: deployConfigPayload,

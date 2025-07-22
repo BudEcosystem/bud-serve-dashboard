@@ -11,7 +11,7 @@ import { useDeployModel } from "src/stores/useDeployModel";
 
 export default function DeployModelSpecification() {
   const { selectedTemplate } = useDeployModel()
-  const { deploymentSpecifcation, updateDeploymentSpecification, currentWorkflow } = useDeployModel()
+  const { deploymentSpecifcation, updateDeploymentSpecification, updateDeploymentSpecificationAndDeploy, currentWorkflow } = useDeployModel()
   const { openDrawer, openDrawerWithStep, closeDrawer } = useDrawer();
   const {form} = useContext(BudFormContext);
 
@@ -30,6 +30,16 @@ export default function DeployModelSpecification() {
       onNext={async (values) => {
         form.submit();
         if (currentWorkflow) {
+          // Check if it's a cloud model and skip cluster steps
+          if (currentWorkflow.workflow_steps.model.provider_type === "cloud_model") {
+            const result = await updateDeploymentSpecificationAndDeploy();
+            if (result) {
+              openDrawerWithStep("deploy-model-success");
+            }
+            return;
+          }
+          
+          // For local models, continue with cluster finding
           const result = await updateDeploymentSpecification();
           if (result) {
             openDrawerWithStep("deploy-cluster-status");
