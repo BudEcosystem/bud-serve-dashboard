@@ -597,76 +597,78 @@ const General: React.FC<GeneralProps> = ({ data, goToAdapter }) => {
         )}
         <div className="hR"></div>
 
-        <div className="mt-[1.4rem] mb-[1.4rem]" ref={containerRef}>
-          <div
-            className="w-full mb-[1rem] py-[1.5rem] px-[1rem] cursor-pointer bg-[#101010] hover:bg-[#1F1F1F]  border border-[#1F1F1F] rounded-[8px]"
-            onClick={() =>
-              onDerivedCardClick({
-                name: "Quantizations",
-                value: `${data?.quantizations_count} models`,
-                color: "#B3B3B3",
-                key: "quantized",
-              })
-            }
-          >
-            <div className="flex justify-start align-center mb-[0.5rem]">
-              <Image
-                preview={false}
-                src={"/images/icons/modelRepoWhite.png"}
-                alt="info"
-                width={18}
-                height={18}
-              />
-              <Text_14_400_EEEEEE className="ml-[.5rem] mt-[-.1rem]">
-                Quantised Models
-              </Text_14_400_EEEEEE>
+        {data?.provider_type !== 'cloud_model' && (
+          <div className="mt-[1.4rem] mb-[1.4rem]" ref={containerRef}>
+            <div
+              className="w-full mb-[1rem] py-[1.5rem] px-[1rem] cursor-pointer bg-[#101010] hover:bg-[#1F1F1F]  border border-[#1F1F1F] rounded-[8px]"
+              onClick={() =>
+                onDerivedCardClick({
+                  name: "Quantizations",
+                  value: `${data?.quantizations_count} models`,
+                  color: "#B3B3B3",
+                  key: "quantized",
+                })
+              }
+            >
+              <div className="flex justify-start align-center mb-[0.5rem]">
+                <Image
+                  preview={false}
+                  src={"/images/icons/modelRepoWhite.png"}
+                  alt="info"
+                  width={18}
+                  height={18}
+                />
+                <Text_14_400_EEEEEE className="ml-[.5rem] mt-[-.1rem]">
+                  Quantised Models
+                </Text_14_400_EEEEEE>
+              </div>
+              <div className="flex justify-between items-center mt-[1rem]">
+                <span className="text-[2.375rem] text-[#EEEEEE] leading-[100%] font-[400] relative">
+                  {data?.quantizations_count}
+                </span>
+                <div
+                  className={`items-center align-center text-[0.75rem] px-[0.8rem] py-[.3rem] cursor-pointer bg-[#1F1F1F] hover:bg-[#101010] border border-[#757575] rounded-[8px] text-[#EEEEEE] hover:text-[#EEEEEE] flex mr-[.6rem] whitespace-nowrap`}
+                >
+                  See More <ChevronRight className="h-[0.8rem]" width={16} />
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between items-center mt-[1rem]">
-              <span className="text-[2.375rem] text-[#EEEEEE] leading-[100%] font-[400] relative">
-                {data?.quantizations_count}
-              </span>
-              <div
-                className={`items-center align-center text-[0.75rem] px-[0.8rem] py-[.3rem] cursor-pointer bg-[#1F1F1F] hover:bg-[#101010] border border-[#757575] rounded-[8px] text-[#EEEEEE] hover:text-[#EEEEEE] flex mr-[.6rem] whitespace-nowrap`}
-              >
-                See More <ChevronRight className="h-[0.8rem]" width={16} />
+            <div
+              className="w-full py-[1.5rem] px-[1rem] cursor-pointer bg-[#101010] hover:bg-[#1F1F1F]  border border-[#1F1F1F] rounded-[8px]"
+              onClick={() =>
+                onDerivedCardClick({
+                  name: "Adapters",
+                  value: `${data?.quantizations_count} models`,
+                  color: "#B3B3B3",
+                  key: "adapter",
+                })
+              }
+            >
+              <div className="flex justify-start align-center mb-[0.5rem]">
+                <Image
+                  preview={false}
+                  src={"/images/icons/adapter.png"}
+                  alt="info"
+                  width={18}
+                  height={18}
+                />
+                <Text_14_400_EEEEEE className="ml-[.5rem] mt-[-.1rem]">
+                  Adapters
+                </Text_14_400_EEEEEE>
+              </div>
+              <div className="flex justify-between items-center mt-[1rem]">
+                <span className="text-[2.375rem] text-[#EEEEEE] leading-[100%] font-[400] relative">
+                  {data?.adapters_count}
+                </span>
+                <div
+                  className={`items-center align-center text-[0.75rem] px-[0.8rem] py-[.3rem] cursor-pointer bg-[#1F1F1F] hover:bg-[#101010] border border-[#757575] rounded-[8px] text-[#EEEEEE] hover:text-[#EEEEEE] flex mr-[.6rem] whitespace-nowrap`}
+                >
+                  See More <ChevronRight className="h-[0.8rem]" width={16} />
+                </div>
               </div>
             </div>
           </div>
-          <div
-            className="w-full py-[1.5rem] px-[1rem] cursor-pointer bg-[#101010] hover:bg-[#1F1F1F]  border border-[#1F1F1F] rounded-[8px]"
-            onClick={() =>
-              onDerivedCardClick({
-                name: "Adapters",
-                value: `${data?.quantizations_count} models`,
-                color: "#B3B3B3",
-                key: "adapter",
-              })
-            }
-          >
-            <div className="flex justify-start align-center mb-[0.5rem]">
-              <Image
-                preview={false}
-                src={"/images/icons/adapter.png"}
-                alt="info"
-                width={18}
-                height={18}
-              />
-              <Text_14_400_EEEEEE className="ml-[.5rem] mt-[-.1rem]">
-                Adapters
-              </Text_14_400_EEEEEE>
-            </div>
-            <div className="flex justify-between items-center mt-[1rem]">
-              <span className="text-[2.375rem] text-[#EEEEEE] leading-[100%] font-[400] relative">
-                {data?.adapters_count}
-              </span>
-              <div
-                className={`items-center align-center text-[0.75rem] px-[0.8rem] py-[.3rem] cursor-pointer bg-[#1F1F1F] hover:bg-[#101010] border border-[#757575] rounded-[8px] text-[#EEEEEE] hover:text-[#EEEEEE] flex mr-[.6rem] whitespace-nowrap`}
-              >
-                See More <ChevronRight className="h-[0.8rem]" width={16} />
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
 
         {data?.examples?.length > 0 && (
           <>
