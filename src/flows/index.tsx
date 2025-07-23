@@ -105,6 +105,9 @@ import EditProfile from "./settings/EditProfile";
 import CreateRoute from "./Routes/CreateRoute";
 import SelectEndpointsForRoutes from "./Routes/SelectEndpointsForRoutes";
 import NewExperimentDrawer from "./Evaluations/NewExperiment";
+import NewEvaluation from "./Evaluations/RunEvaluation/NewEvaluation";
+import SelectModelForNewEvaluation from "./Evaluations/RunEvaluation/SelectModel";
+import SelectTrait from "./Evaluations/RunEvaluation/SelectTrait";
 export const StepComponents = {
   "new-project": NewProject,
   "invite-members": InviteMembers,
@@ -221,6 +224,10 @@ export const StepComponents = {
   "select-endpoints-route": SelectEndpointsForRoutes,
   // experiments
   "new-experiment": NewExperimentDrawer,
+  // new evaluations
+  "new-evaluation": NewEvaluation,
+  "select-model-new-evaluation": SelectModelForNewEvaluation,
+  "select-traits": SelectTrait,
 };
 
 export type StepComponentsType = keyof typeof StepComponents;

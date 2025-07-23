@@ -9,7 +9,7 @@ import { useModels } from "src/hooks/useModels";
 import ModelFilter from "@/components/ui/bud/deploymentDrawer/ModelFilter";
 import { usePerfomanceBenchmark } from "src/stores/usePerfomanceBenchmark";
 
-export default function SelectModel() {
+export default function SelectModelForNewEvaluation() {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(1000);
   const [models, setModels] = React.useState([]);
@@ -44,23 +44,12 @@ export default function SelectModel() {
       //   openDrawerWithStep("Benchmark-Configuration");
       // }}
       onBack={async () => {
-        openDrawerWithStep("Select-Nodes");
+        openDrawerWithStep("new-evaluation");
       }
       }
       backText="Back"
       onNext={() => {
-        stepFive()
-          .then((result) => {
-            if (result) {
-              console.log('result',result.data.workflow_steps.provider_type);
-              if(result.data.workflow_steps.provider_type === "cloud_model") {
-                openDrawerWithStep("model_benchmark-credential-select");
-              } else {
-                openDrawerWithStep("Benchmark-Configuration");
-              }              
-            }
-          })
-        // openDrawerWithStep("Select-Nodes");
+        openDrawerWithStep("select-traits");
       }}
       nextText="Next"
     >

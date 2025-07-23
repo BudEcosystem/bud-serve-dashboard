@@ -20,6 +20,7 @@ import RunsHistoryTable from "src/components/evaluations/RunsHistoryTable";
 import { Image } from "antd";
 import { CustomBreadcrumb } from "@/components/ui/bud/card/DrawerBreadCrumbNavigation";
 import Tags from "src/flows/components/DrawerTags";
+import { useDrawer } from "src/hooks/useDrawer";
 
 interface ExperimentDetails {
   id: string;
@@ -75,6 +76,7 @@ const sampletags = [
 ]
 
 const ExperimentDetailsPage = () => {
+  const { openDrawer } = useDrawer();
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const { experimentId } = router.query;
@@ -289,7 +291,7 @@ const ExperimentDetailsPage = () => {
           <div className="w-full pt-[1.8rem]">
             <div className="w-full flex justify-between items-center">
               <Text_28_600_FFFFFF>LiveMathBench</Text_28_600_FFFFFF>
-              <PrimaryButton classNames="shadow-purple-glow" textClass="text-[0.8125rem]">Run Evaluation</PrimaryButton>
+              <PrimaryButton classNames="shadow-purple-glow" textClass="text-[0.8125rem]" onClick={() => openDrawer('run-evaluation')}>Run Evaluation</PrimaryButton>
             </div>
             <div className="flex flex-wrap justify-start items-center gap-[.45rem] mt-[0.8rem] max-w-[80%]">
               {(showAllTags ? sampletags : sampletags.slice(0, 5)).map((item, index) => (
