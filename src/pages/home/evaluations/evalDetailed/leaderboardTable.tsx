@@ -70,7 +70,7 @@ function LeaderboardTable() {
 
 
   return (
-    <div className='pb-[60px] pt-[.1rem] eval-explorer-wrapper'>
+    <div className='pb-[60px] pt-[1.45rem] eval-explorer-wrapper'>
       <Table<DataType>
         className="eval-explorer-table"
         columns={[

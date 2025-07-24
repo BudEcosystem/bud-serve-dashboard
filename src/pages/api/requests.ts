@@ -155,7 +155,12 @@ const handleErrorResponse = (err) => {
     }
   }
   if (err.response && err.response.status === 403) {
-    localStorage.clear();
+    console.log('403', err)
+    if (err.config.url.includes('auth/refresh-token')) {
+      localStorage.clear();
+    } else {
+      errorToast(err.response?.data?.message || err.response?.data?.detail);
+    }
     return false;
   } else if (err.response && err.response.code === 500) {
     window.location.reload();
