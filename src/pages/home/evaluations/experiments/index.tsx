@@ -5,6 +5,7 @@ import { Table, Tag, Popover, ConfigProvider, Select } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/router";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { useEvaluations, ExperimentData, GetExperimentsPayload } from "src/hooks/useEvaluations";
 import {
   Text_12_400_EEEEEE,
   Text_16_600_FFFFFF,
@@ -22,15 +23,7 @@ import { capitalize } from "@/lib/utils";
 import { endpointStatusMapping } from "@/lib/colorMapping";
 
 
-interface ExperimentData {
-  id: string;
-  experimentName: string;
-  models: string;
-  traits: string;
-  tags: string[];
-  status: "Running" | "Completed" | "Failed";
-  createdDate: string;
-}
+// Remove the local interface since we're importing it from the hook
 
 interface ExperimentFilters {
   status?: string[];
@@ -47,95 +40,103 @@ const ExperimentsTable = () => {
   const [searchValue, setSearchValue] = useState("");
   const [order, setOrder] = useState("");
   const [orderBy, setOrderBy] = useState("");
-  const [experiments, setExperiments] = useState<ExperimentData[]>([]);
-  const [loading, setLoading] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [tempFilter, setTempFilter] = useState<ExperimentFilters>(defaultFilter);
   const [filter, setFilter] = useState<ExperimentFilters>(defaultFilter);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [totalUsers, setTotalUsers] = useState(100);
-  const totalItems = 100;
 
-  // Mock data - replace with actual API call
+  // Sample data for testing when API returns no data
+  const sampleExperiments: ExperimentData[] = [
+    {
+      id: "exp-1",
+      experimentName: "GPT-4 vs Claude-3 Performance Test",
+      models: "GPT-4, Claude-3",
+      traits: "Accuracy, Speed, Cost",
+      tags: ["production", "benchmark"],
+      status: "Completed",
+      createdDate: "2024-01-15T10:30:00Z"
+    },
+    {
+      id: "exp-2",
+      experimentName: "Multi-Model Language Translation",
+      models: "Llama-2, Mistral-7B, GPT-3.5",
+      traits: "Translation Quality, Latency",
+      tags: ["translation", "multi-lingual"],
+      status: "Running",
+      createdDate: "2024-01-14T14:45:00Z"
+    },
+    {
+      id: "exp-3",
+      experimentName: "Code Generation Benchmark",
+      models: "CodeLlama, StarCoder",
+      traits: "Code Quality, Syntax Accuracy",
+      tags: ["coding", "benchmark"],
+      status: "Failed",
+      createdDate: "2024-01-13T09:15:00Z"
+    },
+    {
+      id: "exp-4",
+      experimentName: "Customer Support Chatbot Eval",
+      models: "GPT-3.5-Turbo, Claude-2",
+      traits: "Response Quality, Customer Satisfaction",
+      tags: ["customer-support", "production"],
+      status: "Completed",
+      createdDate: "2024-01-12T16:20:00Z"
+    },
+    {
+      id: "exp-5",
+      experimentName: "Sentiment Analysis Comparison",
+      models: "BERT, RoBERTa, DistilBERT",
+      traits: "Accuracy, F1-Score",
+      tags: ["nlp", "sentiment"],
+      status: "Running",
+      createdDate: "2024-01-11T11:00:00Z"
+    }
+  ];
+
+  // Use Zustand store
+  const { 
+    experimentsList, 
+    experimentsListTotal, 
+    loading, 
+    getExperiments 
+  } = useEvaluations();
+
+  // Fetch experiments data from API
+  const fetchExperiments = useCallback(async () => {
+    try {
+      const payload: GetExperimentsPayload = {
+        page: currentPage,
+        limit: pageSize,
+        search: searchValue || undefined,
+        status: filter.status?.length > 0 ? filter.status : undefined,
+        tags: filter.tags?.length > 0 ? filter.tags : undefined,
+        order: order || undefined,
+        orderBy: orderBy || undefined,
+      };
+      
+      await getExperiments(payload);
+    } catch (error) {
+      console.error("Failed to fetch experiments:", error);
+      // You could show a toast notification here or handle the error as needed
+    }
+  }, [currentPage, pageSize, searchValue, filter, order, orderBy, getExperiments]);
+
+  // Initial data fetch
   useEffect(() => {
-    const mockData: ExperimentData[] = [
-      {
-        id: "1",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Running",
-        createdDate: "2024-01-13",
-      },
-      {
-        id: "2",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Running",
-        createdDate: "2024-01-13",
-      },
-      {
-        id: "3",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Completed",
-        createdDate: "2024-01-13",
-      },
-      {
-        id: "4",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Completed",
-        createdDate: "2024-01-13",
-      },
-      {
-        id: "5",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Completed",
-        createdDate: "2024-01-13",
-      },
-      {
-        id: "6",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Failed",
-        createdDate: "2024-01-13",
-      },
-      {
-        id: "7",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Failed",
-        createdDate: "2024-01-13",
-      },
-      {
-        id: "8",
-        experimentName: "name",
-        models: "name",
-        traits: "name",
-        tags: ["tag1", "tag2"],
-        status: "Failed",
-        createdDate: "2024-01-13",
-      },
-    ];
-    setExperiments(mockData);
-  }, []);
+    fetchExperiments();
+  }, [fetchExperiments]);
+
+  // Debounced search effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setCurrentPage(1); // Reset to first page when search changes
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [searchValue]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -269,35 +270,14 @@ const ExperimentsTable = () => {
     },
   ];
 
+  // Since filtering is now handled by the API, we can directly use the experiments list
   const filteredData = useMemo(() => {
-    let data = experiments;
-
-    // Apply search filter
-    if (searchValue) {
-      const searchLower = searchValue.toLowerCase();
-      data = data.filter(
-        (exp) =>
-          exp.experimentName.toLowerCase().includes(searchLower) ||
-          exp.models.toLowerCase().includes(searchLower) ||
-          exp.traits.toLowerCase().includes(searchLower) ||
-          exp.tags.some((tag) => tag.toLowerCase().includes(searchLower))
-      );
+    // Use sample data if experimentsList is empty or undefined
+    if (!experimentsList || experimentsList.length === 0) {
+      return sampleExperiments;
     }
-
-    // Apply status filter
-    if (filter.status && filter.status.length > 0) {
-      data = data.filter((exp) => filter.status.includes(exp.status));
-    }
-
-    // Apply tags filter
-    if (filter.tags && filter.tags.length > 0) {
-      data = data.filter((exp) =>
-        exp.tags.some((tag) => filter.tags.includes(tag))
-      );
-    }
-
-    return data;
-  }, [experiments, searchValue, filter]);
+    return experimentsList;
+  }, [experimentsList]);
 
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
     if (sorter.field) {
@@ -314,12 +294,14 @@ const ExperimentsTable = () => {
   const applyFilter = () => {
     setFilterOpen(false);
     setFilter(tempFilter);
+    setCurrentPage(1); // Reset to first page when applying filters
   };
 
   const resetFilter = () => {
     setTempFilter(defaultFilter);
     setFilter(defaultFilter);
     setFilterOpen(false);
+    setCurrentPage(1); // Reset to first page when resetting filters
   };
 
   const removeSelectedTag = (key: string, value: string) => {
@@ -339,11 +321,11 @@ const ExperimentsTable = () => {
   // Get unique tags from all experiments for filter options
   const availableTags = useMemo(() => {
     const tags = new Set<string>();
-    experiments.forEach((exp) => {
+    experimentsList.forEach((exp) => {
       exp.tags.forEach((tag) => tags.add(tag));
     });
     return Array.from(tags);
-  }, [experiments]);
+  }, [experimentsList]);
 
   return (
     <div className="h-full w-full relative pt-[2.5rem]">
@@ -378,8 +360,11 @@ const ExperimentsTable = () => {
             className: 'small-pagination',
             current: currentPage,
             pageSize: pageSize,
-            total: totalUsers,
-            // onChange: handlePageChange,
+            total: experimentsListTotal || 0,
+            onChange: (page, size) => {
+              setCurrentPage(page);
+              setPageSize(size);
+            },
             showSizeChanger: true,
             pageSizeOptions: ['5', '10', '20', '50'],
           }}

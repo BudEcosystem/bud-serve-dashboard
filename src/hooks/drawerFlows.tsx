@@ -3465,6 +3465,65 @@ const newExperiment: DrawerFlowType = {
   ],
 };
 
+
+
+const runEvaluation: DrawerFlowType = {
+  title: "New Evaluation",
+  description: "New Evaluation",
+  totalSteps: 2,
+  steps: [
+    {
+      navigation: () => [
+        "New Evaluation",
+      ],
+      id: "new-evaluation",
+      confirmClose: false,
+      step: 1,
+      component: StepComponents["new-evaluation"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Evaluation",
+        },
+        
+      ],
+    },
+    {
+      navigation: () => [
+        "New Evaluation",
+      ],
+      id: "select-model-new-evaluation",
+      confirmClose: false,
+      step: 2,
+      component: StepComponents["select-model-new-evaluation"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Evaluation",
+        },
+        
+      ],
+    },
+    {
+      navigation: () => [
+        "New Evaluation",
+      ],
+      id: "select-traits",
+      confirmClose: false,
+      step: 2,
+      component: StepComponents["select-traits"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Evaluation",
+        },
+        
+      ],
+    },
+    
+  ],
+};
+
 const flows = {
   "new-project": newProject,
   "deploy-model": deployModel,
@@ -3515,6 +3574,7 @@ const flows = {
   "create-route": createRoute,
   // experiments
   "new-experiment": newExperiment,
+  "run-evaluation": runEvaluation,
 };
 
 export const flowMapping: {
