@@ -69,6 +69,15 @@ const Text_10_400_44474D = ({ children, className = "", ...props }) => (
     {children}
   </Text>
 );
+const Text_10_400_D1B854 = ({ children, className = "", ...props }) => (
+  <Text
+    as="div"
+    className={`block text-[0.625rem] font-normal text-[#D1B854] ${className}`}
+    {...props}
+  >
+    {children}
+  </Text>
+);
 const Text_6_400_FFFFFF = ({ children, className = "", ...props }) => (
   <Text
     as="div"
@@ -740,6 +749,15 @@ const Text_32_700_FFFFFF = ({ children, className = "", ...props }) => (
     {children}
   </Text>
 );
+const Text_28_600_FFFFFF = ({ children, className = "", ...props }) => (
+  <Text
+    as="div"
+    className={`text-[#FFFFFF] text-[1.75rem] font-[600] ${className}`}
+    {...props}
+  >
+    {children}
+  </Text>
+);
 const Text_38_400_EEEEEE = ({ children, className = "", ...props }) => (
   <Text
     as="div"
@@ -833,6 +851,7 @@ export {
   Text_12_300_B3B3B3,
   Text_10_400_FFFFFF,
   Text_10_400_44474D,
+  Text_10_400_D1B854,
   Text_14_600_FFFFFF,
   Text_12_400_FFFFFF,
   Text_12_400_18191B,
@@ -889,5 +908,6 @@ export {
   Text_13_400_tag,
   Text_22_700_EEEEEE,
   Text_14_600_B3B3B3,
+  Text_28_600_FFFFFF,
   Ibm_12_500_EEEEEE,
 };

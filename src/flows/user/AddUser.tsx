@@ -53,6 +53,10 @@ const Permissions = [
     has_permission: false,
   },
   {
+    name: "user:view",
+    has_permission: false,
+  },
+  {
     name: "user:manage",
     has_permission: false,
   },
@@ -115,6 +119,7 @@ export default function AddUser() {
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
     const handleCheckboxChange = (permissionName: string) => {
+      console.log('permissionName', permissionName)
       setSelectedPermissions((prevPermissions) =>
         prevPermissions.map((perm) =>
           perm.name === permissionName
@@ -124,6 +129,9 @@ export default function AddUser() {
       );
     };
 
+    useEffect(()=>{
+      console.log('selectedPermissions', selectedPermissions)
+    },[selectedPermissions])
     return (
       <div className="table mt-[.6rem] w-full border border-[#1F1F1F]">
         <div className="tHead flex items-center px-[.55rem] bg-[#121212]">
@@ -153,10 +161,10 @@ export default function AddUser() {
                 <>
                   <div className={`min-h-[2.75rem] pt-[0.788rem] min-w-[16.5%] `}>
                     <Checkbox
-                      checked={true}
-                      disabled
+                      checked={selectedPermissions.find((p) => p.name === item.key + ':view')?.has_permission || false}
+                      disabled={item.name !== 'User'}
                       className="AntCheckbox text-[#757575] w-[0.875rem] h-[0.875rem] text-[0.875rem]"
-                      onChange={null}
+                      onChange={() => handleCheckboxChange(item.key + ':view')}
                     />
                   </div>
                   <div className="min-h-[2.75rem] pt-[0.788rem]">
