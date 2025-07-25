@@ -3443,6 +3443,27 @@ const createRoute: DrawerFlowType = {
   ],
 };
 
+// Flow for selecting fallback deployment
+const selectFallbackDeployment: DrawerFlowType = {
+  title: "Select Fallback Deployment",
+  description: "Choose a fallback deployment",
+  totalSteps: 1,
+  steps: [
+    {
+      navigation: () => [
+        "Select Fallback Deployment",
+      ],
+      id: "select-fallback-deployment",
+      confirmClose: false,
+      step: 1,
+      component: StepComponents["select-fallback-deployment"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "Select Deployment",
+        },
+      ],
+    },
 // New Experiment Flow
 const newExperiment: DrawerFlowType = {
   title: "New Experiment",
@@ -3572,6 +3593,8 @@ const flows = {
   "edit-profile": editProfile,
   // route
   "create-route": createRoute,
+  // deployment selection
+  "select-fallback-deployment": selectFallbackDeployment,
   // experiments
   "new-experiment": newExperiment,
   "run-evaluation": runEvaluation,

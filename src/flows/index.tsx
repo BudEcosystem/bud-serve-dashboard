@@ -104,6 +104,7 @@ import DeployModelAutoScale from "./DeployModel/DeployModelAutoScale";
 import EditProfile from "./settings/EditProfile";
 import CreateRoute from "./Routes/CreateRoute";
 import SelectEndpointsForRoutes from "./Routes/SelectEndpointsForRoutes";
+import SelectFallbackDeployment from "./DeployModel/SelectFallbackDeployment";
 import NewExperimentDrawer from "./Evaluations/NewExperiment";
 import NewEvaluation from "./Evaluations/RunEvaluation/NewEvaluation";
 import SelectModelForNewEvaluation from "./Evaluations/RunEvaluation/SelectModel";
@@ -222,6 +223,8 @@ export const StepComponents = {
   // routes
   "create-route-data": CreateRoute,
   "select-endpoints-route": SelectEndpointsForRoutes,
+  // deployment selection
+  "select-fallback-deployment": SelectFallbackDeployment,
   // experiments
   "new-experiment": NewExperimentDrawer,
   // new evaluations

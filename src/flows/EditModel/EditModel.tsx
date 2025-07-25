@@ -218,7 +218,6 @@ function EditModelForm({
               infoText="Enter the Github URL of the model"
               label="Github Link"
               placeholder="Enter Github Link"
-              defaultValue={selectedModel?.github_url}
               rules={[
                 { required: false, message: "Please enter Github Link" },
                 { pattern: new RegExp(/^(http|https):\/\/[^ "]+$/), message: "Please enter a valid URL" }
@@ -235,7 +234,6 @@ function EditModelForm({
               infoText="Enter the Huggingface URL of the model"
               label="Huggingface LInk"
               placeholder="Enter Huggingface LInk"
-              defaultValue={selectedModel?.huggingface_url}
               rules={[{ required: false, message: "Please enter Huggingface LInk" },
               { pattern: new RegExp(/^(http|https):\/\/[^ "]+$/), message: "Please enter a valid URL" }
 
@@ -251,7 +249,6 @@ function EditModelForm({
               name="website_url"
               infoText="Enter the Website URL of the model"
               label="Website Link"
-              defaultValue={selectedModel?.website_url}
               placeholder="Enter Website Link"
               rules={[{ required: false, message: "Please enter Website Link", },
               { pattern: new RegExp(/^(http|https):\/\/[^ "]+$/), message: "Please enter a valid URL" }

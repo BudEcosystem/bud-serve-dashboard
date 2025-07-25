@@ -70,7 +70,6 @@ export default function Configuration() {
             <TextInput
               name="max_input_tokens"
               label="Max Input Tokens"
-              defaultValue={stepTwoData?.max_input_tokens || null}
               onChange={(value) => null}
               placeholder="Enter number of tokens"
               rules={[{ required: true, message: "Enter number of tokens" }]}
@@ -83,7 +82,6 @@ export default function Configuration() {
             <TextInput
               name="max_output_tokens"
               label="Max Output Tokens"
-              defaultValue={stepTwoData?.max_output_tokens ||null}
               onChange={(value) => null}
               placeholder="Enter number of tokens"
               rules={[{ required: true, message: "Enter number of tokens" }]}

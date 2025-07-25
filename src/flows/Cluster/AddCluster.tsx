@@ -85,7 +85,6 @@ export default function AddCluster() {
                 ClassNames="mt-[.1rem] mb-[0rem]"
                 InputClasses="py-[.5rem]"
                 formItemClassnames="mb-[1rem]"
-                defaultValue={clusterValues.ingress_url}
                 onChange={(value) => { setClusterValues({ ...clusterValues, ingress_url: value }) }}
               />
               <div className="mb-[1.7rem]">

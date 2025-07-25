@@ -37,7 +37,6 @@ function EditClusterForm() {
           label="Ingress URL"
           placeholder="Type Ingress URL"
           infoText="Ingress URL is the URL that will be used to access the cluster"
-          defaultValue={selectedCluster?.ingress_url}
           rules={[
             { required: true, message: "Please enter Ingress URL" },
             { pattern: urlPattern, message: "Please enter a valid URL" }
