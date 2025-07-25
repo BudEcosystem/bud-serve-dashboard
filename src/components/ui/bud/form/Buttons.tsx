@@ -6,6 +6,7 @@ import CustomPopover from "src/flows/components/customPopover";
 
 interface PrimaryButtonProps {
   classNames?: string;
+  textClass?: string;
   permission?: boolean;
   Children?: ReactNode; // Optional children of any type, such as text or icons
   [key: string]: any;   // Allow any other props
@@ -14,6 +15,7 @@ interface PrimaryButtonProps {
 
 export function PrimaryButton({
   classNames = '',
+  textClass,
   permission = true,
   Children,
   ...props
@@ -40,7 +42,7 @@ export function PrimaryButton({
               }}
             >
               {Children}
-              <Text_12_600_EEEEEE className={`leading-[100%] ${(props.children == 'Next' || props.text == 'Next') ? 'ml-[.4rem] mr-[0]' : ''}`}>{props.children || props.text || "Next"}</Text_12_600_EEEEEE>
+              <div className={`font-[600] text-[#EEEEEE] text-[0.75rem] leading-[100%] ${props.textClass} ${(props.children == 'Next' || props.text == 'Next') ? 'ml-[.4rem] mr-[0]' : ''}`}>{props.children || props.text || "Next"}</div>
               {(props.children == 'Next' || props.text == 'Next') && (
                 <div className="ml-[-.2rem]">
                   <ChevronRight className="text-[#EEEEEE] text-[.5rem] w-[1rem]" />
@@ -65,7 +67,7 @@ export function PrimaryButton({
             <CustomPopover title="You don't have permision for this action" contentClassNames="flex justify-center items-center w-full h-full bg-[#161616]" customClassName="flex justify-center items-center w-full h-full Darker">
               <div className="flex justify-center items-center w-full h-full">
                 {Children}
-                <Text_12_600_EEEEEE className={`leading-[100%] ${(props.children == 'Next' || props.text == 'Next') ? 'ml-[.4rem] mr-[0]' : ''}`}>{props.children || props.text || "Next"}</Text_12_600_EEEEEE>
+                <div className={`font-[600] text-[#EEEEEE] text-[0.75rem] leading-[100%] ${(props.children == 'Next' || props.text == 'Next') ? 'ml-[.4rem] mr-[0]' : ''}`}>{props.children || props.text || "Next"}</div>
                 {(props.children == 'Next' || props.text == 'Next') && (
                   <div className="ml-[-.2rem]">
                     <ChevronRight className="text-[#EEEEEE] text-[.5rem] w-[1rem]" />
@@ -76,7 +78,7 @@ export function PrimaryButton({
           ) : (
             <div className="flex justify-center items-center w-full h-full">
               {Children}
-              <Text_12_600_EEEEEE className={`leading-[100%] ${(props.children == 'Next' || props.text == 'Next') ? 'ml-[.4rem] mr-[0]' : ''}`}>{props.children || props.text || "Next"}</Text_12_600_EEEEEE>
+              <div className={`font-[600] text-[#EEEEEE] text-[0.75rem] leading-[100%] ${(props.children == 'Next' || props.text == 'Next') ? 'ml-[.4rem] mr-[0]' : ''}`}>{props.children || props.text || "Next"}</div>
               {(props.children == 'Next' || props.text == 'Next') && (
                 <div className="ml-[-.2rem]">
                   <ChevronRight className="text-[#EEEEEE] text-[.5rem] w-[1rem]" />

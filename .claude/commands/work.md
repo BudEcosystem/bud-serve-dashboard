@@ -20,6 +20,8 @@ Analyze the code thoroughly until you feel you have a solid understanding of the
    – Security implications  
    – Backwards compatibility (if applicable)  
    – Include the reference link to featurebase or any other link that has the source of the user request
+   - re-use existing components
+   
 
 5. Think deeply about all aspects of the task. Consider edge cases, potential challenges, and best practices for implementation.
 
