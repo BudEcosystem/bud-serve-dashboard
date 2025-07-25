@@ -232,7 +232,7 @@ const LoaderWrapper = () => {
   const { isLoading } = useLoader();
 
   return isLoading ? (
-    <Box className="z-[1000] fixed top-0 left-0 w-screen h-screen flex justify-center items-center	backdrop-blur-[2px]">
+    <div className="z-[1000] fixed top-0 left-0 w-screen h-screen flex justify-center items-center	backdrop-blur-[2px]">
       {/* <Spinner size="3" className="z-[1000] relative w-[20px] h-[20px] block" /> */}
       <Image
         width={20}
@@ -240,7 +240,7 @@ const LoaderWrapper = () => {
         src={loaderIcn}
         alt="Logo"
       />
-    </Box>
+    </div>
   ) : null;
 };
 

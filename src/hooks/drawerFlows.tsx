@@ -3464,6 +3464,84 @@ const selectFallbackDeployment: DrawerFlowType = {
         },
       ],
     },
+// New Experiment Flow
+const newExperiment: DrawerFlowType = {
+  title: "New Experiment",
+  description: "Create a new experiment",
+  totalSteps: 1,
+  steps: [
+    {
+      navigation: () => ["Experiments", "New Experiment"],
+      id: "new-experiment",
+      step: 1,
+      component: StepComponents["new-experiment"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Experiment",
+        },
+      ],
+      confirmClose: true,
+    },
+  ],
+};
+
+
+
+const runEvaluation: DrawerFlowType = {
+  title: "New Evaluation",
+  description: "New Evaluation",
+  totalSteps: 2,
+  steps: [
+    {
+      navigation: () => [
+        "New Evaluation",
+      ],
+      id: "new-evaluation",
+      confirmClose: false,
+      step: 1,
+      component: StepComponents["new-evaluation"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Evaluation",
+        },
+        
+      ],
+    },
+    {
+      navigation: () => [
+        "New Evaluation",
+      ],
+      id: "select-model-new-evaluation",
+      confirmClose: false,
+      step: 2,
+      component: StepComponents["select-model-new-evaluation"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Evaluation",
+        },
+        
+      ],
+    },
+    {
+      navigation: () => [
+        "New Evaluation",
+      ],
+      id: "select-traits",
+      confirmClose: false,
+      step: 2,
+      component: StepComponents["select-traits"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Evaluation",
+        },
+        
+      ],
+    },
+    
   ],
 };
 
@@ -3517,6 +3595,9 @@ const flows = {
   "create-route": createRoute,
   // deployment selection
   "select-fallback-deployment": selectFallbackDeployment,
+  // experiments
+  "new-experiment": newExperiment,
+  "run-evaluation": runEvaluation,
 };
 
 export const flowMapping: {

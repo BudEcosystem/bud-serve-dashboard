@@ -568,7 +568,10 @@ const Text_24_600_EEEEEE = ({ children, className = "", ...props }) => (
 const Text_24_600_FFFFFF = ({ children, className = "", ...props }) => (
   <Text
     as="div"
-    className={`block text-[#FFFFFF] font-[600] text-[1.5rem] ${className}`}
+    className={`block font-[600] text-[1.5rem] ${className}`}
+    style={{
+      color: '#FFFFFF',
+    }}
     {...props}
   >
     {children}
@@ -706,7 +709,10 @@ const Text_26_400_EEEEEE = ({ children, className = "", ...props }) => (
 const Text_32_600_FFFFFF = ({ children, className = "", ...props }) => (
   <Text
     as="div"
-    className={`text-[#FFFFFF] text-[2rem] font-semibold leading-[24px] ${className}`}
+    className={` text-[2rem] font-semibold leading-[24px] ${className}`}
+    style={{
+      color: '#FFFFFF',
+    }}
     {...props}
   >
     {children}

@@ -282,6 +282,7 @@ const ProjectDetailsPage = () => {
                     className="hover:text-[#EEEEEE]"
                     style={{ color: activeTab === "6" ? '#EEEEEE' : '#B3B3B3' }}
 
+
                   >Model Evaluations</Text_14_600_FFFFFF>
                 </div>,
                 key: '6',
