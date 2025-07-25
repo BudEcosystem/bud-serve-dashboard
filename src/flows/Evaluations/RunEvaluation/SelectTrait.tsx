@@ -105,7 +105,7 @@ export default function SelectTrait() {
       backText="Back"
       onNext={() => {
 
-        // openDrawerWithStep("Select-Nodes");
+        openDrawerWithStep("select-evaluation");
       }}
       nextText="Next"
     >
