@@ -95,7 +95,6 @@ export default function CreateRoute() {
             <TextInput
               name="name"
               label="Route Name"
-              defaultValue={stepOneData?.name}
               onChange={(value) => null}
               placeholder="Enter Route Name"
               rules={[

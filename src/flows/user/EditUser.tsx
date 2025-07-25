@@ -364,7 +364,6 @@ export default function EditUser() {
             <TextInput
               name="name"
               label="Name"
-              defaultValue={userDetails.name}
               onChange={(value) => setUserPayload((prev) => ({ ...prev, name: value }))}
               placeholder="Enter Name"
               rules={[{ required: true, message: "Please enter name" }]}

@@ -91,7 +91,6 @@ export default function QuantizationDetail() {
                         placeholder="Enter Model name"
                         rules={[{ required: true, message: "Please enter Model name" }]}
                         ClassNames="mt-[.4rem]"
-                        defaultValue={quantizationWorkflow?.modelName}
                         infoText="Enter a name for the quantized model"
                         onChange={(e) => handleChange("modelName", e)}
                     />
@@ -101,7 +100,6 @@ export default function QuantizationDetail() {
                         infoText="Select target quantization type"
                         placeholder="Select quantization type"
                         items={typeItems}
-                        defaultValue={quantizationWorkflow?.type}
                         onSelect={() => {}}
                         onChange={(e) => handleChange("type", e)}
                     />
@@ -111,7 +109,6 @@ export default function QuantizationDetail() {
                         infoText="Select hardware to quantise the model"
                         placeholder="Select hardware"
                         items={hardwareItems}
-                        defaultValue={quantizationWorkflow?.hardware}
                         onSelect={() => {}}
                         onChange={(e) => handleChange("hardware", e)}
                     />

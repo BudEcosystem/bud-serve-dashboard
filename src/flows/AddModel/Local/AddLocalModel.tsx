@@ -87,13 +87,11 @@ function AddLocalModelForm() {
           placeholder={providerType?.id == 'disk' ? 'Enter Folder Path' : 'Enter URL'}
           rules={[{ required: true, message: providerType?.id == 'disk' ? 'Please enter folder path' : 'Please enter URL' }]}
           ClassNames="mt-[.4rem]"
-          defaultValue={localModelDetails?.uri}
           infoText={providerType?.id == 'disk' ? 'Enter a valid folder path of the model' : 'Enter a valid URL of the model'}
         />
         <TextInput
           name="author"
           label="Author"
-          defaultValue={localModelDetails?.author}
           placeholder="Enter Author name"
           rules={[{ required: true, message: "Please enter Author name" }]}
           ClassNames="mt-[.6rem]"

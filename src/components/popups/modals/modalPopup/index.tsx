@@ -264,7 +264,6 @@ const CommonModal: React.FC<CommonModalProps> = ({
                     <TextInput
                       textFieldSlot=""
                       name={field.name}
-                      defaultValue={formData?.model?.[field.name] || ""}
                       onChange={(e) => handleChange(field.name, e.target.value)}
                       placeholder={`Enter ${field.label.toLowerCase()}`}
                       className="text-[#FFFFFF]"

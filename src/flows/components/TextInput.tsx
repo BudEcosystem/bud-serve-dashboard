@@ -20,12 +20,58 @@ export interface BudInputProps {
   style?: React.CSSProperties;
   rules: FormRule[];
   suffix?: React.ReactNode;
-  defaultValue?: any;
   infoText?: string;
   type?: string;
 }
 
 function TextInput(props: BudInputProps) {
+  // When used inside Form.Item, we need to accept value and onChange from Form.Item
+  const FormItemInput = ({ value = '', onChange, ...restProps }: any) => {
+    const inputProps: any = {
+      value: value,
+      name: props.name,
+      placeholder: props.placeholder,
+      style: {
+        ...props.style,
+        paddingTop: ".75rem",
+        paddingBottom: ".75rem",
+        paddingLeft: ".5rem",
+        paddingRight: "1rem",
+      },
+      disabled: props.disabled,
+      onChange: (e) => {
+        let newValue = e.target.value;
+        if (props.allowOnlyNumbers) {
+          newValue = newValue.replace(/[^0-9]/g, "");
+        }
+        // Call Form.Item's onChange
+        onChange?.(newValue);
+        // Call custom onChange if provided
+        props.onChange?.(newValue);
+      },
+      suffix: props.suffix,
+      type: props.type,
+      className: `border border-[#757575] hover:!border-[#CFCFCF] hover:!bg-[#FFFFFF08] shadow-none !placeholder-[#808080] !placeholder:text-[#808080] !placeholder:font-[300] ${props.InputClasses}`,
+    };
+
+    return (
+      <div className={`floating-textarea ${props.ClassNames}`}>
+        <FloatLabel
+          label={
+            <InfoLabel
+              required={props.rules?.some((rule: any) => rule.required)}
+              text={props.label}
+              content={props.infoText || props.placeholder}
+            />
+          }
+          value={value}
+        >
+          <Input {...inputProps} />
+        </FloatLabel>
+      </div>
+    );
+  };
+
   return (
     <Form.Item
       name={props.name}
@@ -34,43 +80,7 @@ function TextInput(props: BudInputProps) {
       hasFeedback
       className={`${props.formItemClassnames}`}
     >
-      <div className={`floating-textarea ${props.ClassNames}`}>
-        <FloatLabel
-          label={
-            <InfoLabel
-              required={props.rules.some((rule: any) => rule.required)}
-              text={props.label}
-              content={props.infoText || props.placeholder}
-            />
-          }
-        >
-          <Input
-            defaultValue={props.defaultValue}
-            name={props.name}
-            placeholder={props.placeholder}
-            style={{
-              ...props.style,
-              paddingTop: ".75rem",
-              paddingBottom: ".75rem",
-              paddingLeft: ".5rem",
-              paddingRight: "1rem",
-            }}
-            disabled={props.disabled}
-            value={props.value}
-            onChange={(e) => {
-              let value = e.target.value;
-              if (props.allowOnlyNumbers) {
-                value = value.replace(/[^0-9]/g, "");
-              }
-              props.onChange && props.onChange(value);
-              // props.onChange && props.onChange(e.target.value);
-            }}
-            suffix={props.suffix}
-            type={props.type}
-            className={`border border-[#757575] hover:!border-[#CFCFCF] hover:!bg-[#FFFFFF08] shadow-none !placeholder-[#808080] !placeholder:text-[#808080] !placeholder:font-[300] ${props.InputClasses}`}
-          />
-        </FloatLabel>
-      </div>
+      <FormItemInput />
     </Form.Item>
   );
 }
