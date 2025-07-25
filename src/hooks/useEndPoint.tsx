@@ -117,6 +117,8 @@ createEndPoint: (data: any) => Promise<any>;
   clusterDetails?: EndpointClusterData;
   getAdapters: (params: GetAdapterParams, projectId?: string) => void;
   deleteAdapter: (adapterId: string, projectId?: string) => void;
+  getEndpointSettings: (endpointId: string) => Promise<any>;
+  updateEndpointSettings: (endpointId: string, settings: any) => Promise<any>;
 }>((set, get) => ({
   pageSource: "",
   clusterDetails: undefined,
@@ -340,6 +342,55 @@ getAdapters: async (params: GetAdapterParams, projectId?) => {
       set({ totalRecords: response.data.total_record });
     } catch (error) {
       console.error("Error fetching inference quality prompts:", error);
+    }
+  },
+
+  getEndpointSettings: async (endpointId: string): Promise<any> => {
+    try {
+      const url = `${tempApiBaseUrl}/endpoints/${endpointId}/deployment-settings`;
+      const response: any = await AppRequest.Get(url);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching endpoint settings:", error);
+      // If settings not found (404), return default values
+      if (error?.response?.status === 404) {
+        return {
+          endpoint_id: endpointId,
+          deployment_settings: {
+            rate_limits: {
+              enabled: false,
+              algorithm: 'token_bucket',
+              requests_per_minute: null,
+              requests_per_second: null,
+              requests_per_hour: null,
+              burst_size: null,
+            },
+            retry_config: null,
+            fallback_config: {
+              fallback_models: []
+            }
+          }
+        };
+      }
+      throw error;
+    }
+  },
+
+  updateEndpointSettings: async (endpointId: string, settings: any): Promise<any> => {
+    try {
+      const url = `${tempApiBaseUrl}/endpoints/${endpointId}/deployment-settings`;
+      const response: any = await AppRequest.Put(url, settings);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating endpoint settings:", error);
+      // Handle validation errors specifically
+      if (error?.response?.status === 422 && error?.response?.data?.detail) {
+        const validationErrors = error.response.data.detail
+          .map(err => `${err.loc.join('.')}: ${err.msg}`)
+          .join('\n');
+        throw new Error(validationErrors);
+      }
+      throw error;
     }
   }
 }));

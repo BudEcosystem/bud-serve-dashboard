@@ -104,12 +104,14 @@ import DeployModelAutoScale from "./DeployModel/DeployModelAutoScale";
 import EditProfile from "./settings/EditProfile";
 import CreateRoute from "./Routes/CreateRoute";
 import SelectEndpointsForRoutes from "./Routes/SelectEndpointsForRoutes";
+import SelectFallbackDeployment from "./DeployModel/SelectFallbackDeployment";
 import NewExperimentDrawer from "./Evaluations/NewExperiment";
 import NewEvaluation from "./Evaluations/RunEvaluation/NewEvaluation";
 import SelectModelForNewEvaluation from "./Evaluations/RunEvaluation/SelectModel";
 import SelectTrait from "./Evaluations/RunEvaluation/SelectTrait";
 import SelectEvaluation from "./Evaluations/RunEvaluation/SelectEvaluation";
 import EvaluationSummary from "./Evaluations/RunEvaluation/EvaluationSummary";
+
 export const StepComponents = {
   "new-project": NewProject,
   "invite-members": InviteMembers,
@@ -224,6 +226,8 @@ export const StepComponents = {
   // routes
   "create-route-data": CreateRoute,
   "select-endpoints-route": SelectEndpointsForRoutes,
+  // deployment selection
+  "select-fallback-deployment": SelectFallbackDeployment,
   // experiments
   "new-experiment": NewExperimentDrawer,
   // new evaluations
@@ -232,6 +236,7 @@ export const StepComponents = {
   "select-traits": SelectTrait,
   "select-evaluation": SelectEvaluation,
   "evaluation-summary": EvaluationSummary,
+
 };
 
 export type StepComponentsType = keyof typeof StepComponents;

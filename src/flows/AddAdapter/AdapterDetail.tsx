@@ -65,7 +65,6 @@ export const AdapterDetail = () => {
                             label="Adapter deployment name"
                             placeholder="Enter adapter deployment name"
                             rules={[{ required: true, message: "Please enter deployment name" }]}
-                            defaultValue={adapterWorkflow?.adapterName}
                             ClassNames="mt-[.4rem]"
                             infoText="Enter a name for the deployment of the adapter"
                             onChange={(e) => setAdapterWorkflow({ ...adapterWorkflow, "adapterName": e })}

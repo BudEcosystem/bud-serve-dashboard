@@ -91,7 +91,6 @@ interface BudDropdownMenuProps {
   disabled?: boolean;
   infoText?: string;
   items: any[];
-  defaultValue?: any;
   onSelect?: any;
   onChange?: any;
   rules?: any[];
@@ -102,42 +101,51 @@ export const BudDropdownMenu = (props: BudDropdownMenuProps) => {
 
   const { values, form } = useContext(BudFormContext);
   
-  return (
-    <Form.Item name={props.name} rules={props.rules}  hasFeedback className={`${props.formItemClassnames}`}>
+  // Component that receives value and onChange from Form.Item
+  const FormItemSelect = ({ value, onChange, ...restProps }: any) => {
+    return (
       <div className="floating-textarea">
         <FloatLabel
-        label={<InfoLabel
-          text={props.label} content={props.infoText || props.placeholder} />}>
-      <div className="custom-select-two w-full rounded-[6px] relative">
-        <ConfigProvider
-        theme={{
-            token: {
-            colorTextPlaceholder: '#808080'
-            },
-        }}
-        >
-        <Select
-            placeholder={props.placeholder}
-            style={{
-            backgroundColor: "transparent",
-            color: "#EEEEEE",
-            border: "0.5px solid #757575",
-            }}
-            popupClassName="!mt-[1.5rem]"
-            size="large"
-            className="drawerInp !bg-[transparent] text-[#EEEEEE] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE]"
-            options={props.items}
-            defaultValue={props.defaultValue}
-            onChange={(value) => {
-            form.setFieldsValue({ [props.name]: value });
-            form.validateFields([props.name]);
-            props.onChange && props.onChange(value);
-            }}
-        />
-        </ConfigProvider>
-    </div>
-    </FloatLabel>
-    </div>
-  </Form.Item>
+          label={<InfoLabel
+            text={props.label} content={props.infoText || props.placeholder} />}
+          value={value}>
+          <div className="custom-select-two w-full rounded-[6px] relative">
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorTextPlaceholder: '#808080'
+                },
+              }}
+            >
+              <Select
+                value={value}
+                placeholder={props.placeholder}
+                style={{
+                  backgroundColor: "transparent",
+                  color: "#EEEEEE",
+                  border: "0.5px solid #757575",
+                }}
+                popupClassName="!mt-[1.5rem]"
+                size="large"
+                className="drawerInp !bg-[transparent] text-[#EEEEEE] font-[300]  text-[.75rem] shadow-none w-full indent-[.4rem] border-0 outline-0 hover:border-[#EEEEEE] focus:border-[#EEEEEE] active:border-[#EEEEEE]"
+                options={props.items}
+                onChange={(newValue) => {
+                  // Call Form.Item's onChange
+                  onChange?.(newValue);
+                  // Call custom onChange if provided
+                  props.onChange?.(newValue);
+                }}
+              />
+            </ConfigProvider>
+          </div>
+        </FloatLabel>
+      </div>
+    );
+  };
+  
+  return (
+    <Form.Item name={props.name} rules={props.rules}  hasFeedback className={`${props.formItemClassnames}`}>
+      <FormItemSelect />
+    </Form.Item>
   )
 };

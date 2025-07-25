@@ -114,7 +114,6 @@ export default function AdvancedSettings() {
                         infoText="Select bits required for weight"
                         placeholder="Select bits"
                         items={typeItems}
-                        defaultValue={quantizationWorkflow?.weight?.bit}
                         onChange={(e) => handleChange("weight", "bit", e)}
                     />
                     <BudDropdownMenu
@@ -123,7 +122,6 @@ export default function AdvancedSettings() {
                         infoText="Select granularity"
                         placeholder="Select granularity"
                         items={granularityItems}
-                        defaultValue={quantizationWorkflow?.weight?.granularity}
                         onChange={(e) => handleChange("weight", "granularity", e)}
                     />
                     <BudSwitch
@@ -147,7 +145,6 @@ export default function AdvancedSettings() {
                         infoText="Select bits required for activation"
                         placeholder="Select bits"
                         items={typeItems}
-                        defaultValue={quantizationWorkflow?.activation?.bit}
                         onChange={(e) => handleChange("activation", "bit", e)}
                     />
                     <BudDropdownMenu
@@ -156,7 +153,6 @@ export default function AdvancedSettings() {
                         infoText="Select granularity"
                         placeholder="Select granularity"
                         items={granularityItems}
-                        defaultValue={quantizationWorkflow?.activation?.granularity}
                         onChange={(e) => handleChange("activation", "granularity", e)}
                     />
                     <BudSwitch

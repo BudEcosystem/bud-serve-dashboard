@@ -225,7 +225,6 @@ export default function BenchmarkHistory(props: Props) {
                   {/* <TextInput
                     textFieldSlot=""
                     name={'name'}
-                    defaultValue={formData?.['name'] || ''}
                     onChange={(e) => handleChange('name', e.target.value)}
                     placeholder={`Enter Model `}
                     className="text-[#FFFFFF]"
@@ -262,7 +261,6 @@ export default function BenchmarkHistory(props: Props) {
                       textFieldSlot=""
                       type="number"
                       name={"throughput_min"}
-                      defaultValue={throghputVal?.["min_value"] || ""}
                       onChange={(e) =>
                         onThroughPutChange("min_value", e.target.value)
                       }
@@ -274,7 +272,6 @@ export default function BenchmarkHistory(props: Props) {
                       textFieldSlot=""
                       type="number"
                       name={"throughput_max"}
-                      defaultValue={throghputVal?.["max_value"] || ""}
                       onChange={(e) =>
                         onThroughPutChange("max_value", e.target.value)
                       }
@@ -290,7 +287,6 @@ export default function BenchmarkHistory(props: Props) {
                       textFieldSlot=""
                       type="number"
                       name={"latency_min"}
-                      defaultValue={meanTpotVal?.["min_value"] || ""}
                       onChange={(e) =>
                         onMeanTpotChange("min_value", e.target.value)
                       }
@@ -302,7 +298,6 @@ export default function BenchmarkHistory(props: Props) {
                       textFieldSlot=""
                       type="number"
                       name={"latency_max"}
-                      defaultValue={meanTpotVal?.["max_value"] || ""}
                       onChange={(e) =>
                         onMeanTpotChange("max_value", e.target.value)
                       }

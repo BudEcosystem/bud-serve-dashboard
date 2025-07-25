@@ -166,9 +166,9 @@ const handleErrorResponse = (err) => {
     window.location.reload();
     return false;
   } else if (err.response && err.response.status === 500) {
-    return false;
+    return Promise.reject(err);
   } else if (err.response && err.response.status === 422) {
-    return false;
+    return Promise.reject(err);
   } else if (err.response && err.response.status == 400 && err.response.request.responseURL.includes('/login')) {
     return Promise.reject(err.response.data);
   } else {

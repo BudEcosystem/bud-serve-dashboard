@@ -74,7 +74,6 @@ export default function DeployModelAutoScale() {
               infoText="Scale based on engine metrics or cost based optimiser"
               placeholder="Select scaling type"
               items={typeItems}
-              defaultValue={scalingSpecifcation?.scalingType}
               onChange={(e) => handleChange("scalingType", e)}
             />
             <BudDropdownMenu
@@ -83,7 +82,6 @@ export default function DeployModelAutoScale() {
               infoText="Choose the SLO to scale on"
               placeholder="Scale based on"
               items={metricItems}
-              defaultValue={scalingSpecifcation?.scalingMetric}
               onChange={(e) => handleChange("scalingMetric", e)}
             />
               <TextInput
@@ -92,7 +90,6 @@ export default function DeployModelAutoScale() {
                 placeholder="Enter SLO Value"
                 rules={[{ required: true, message: "Please enter SLO Value" }]}
                 ClassNames="mt-[.4rem]"
-                defaultValue={scalingSpecifcation?.scalingValue}
                 infoText="Enter the value of the SLO to scale on"
                 onChange={(e) => handleChange("scalingValue", e)}
               />
@@ -104,7 +101,6 @@ export default function DeployModelAutoScale() {
                 rules={[{ required: true, message: "Please enter Min Replicas" }]}
                 ClassNames="mt-[.4rem]"
                 formItemClassnames="w-full"
-                defaultValue={scalingSpecifcation?.minReplicas}
                 infoText="Enter the minimum number of replicas your inference can scale down to"
                 onChange={(e) => handleChange("minReplicas", e)}
               />
@@ -115,7 +111,6 @@ export default function DeployModelAutoScale() {
                 rules={[{ required: true, message: "Please enter Max Replicas" }]}
                 ClassNames="mt-[.4rem]"
                 formItemClassnames="w-full"
-                defaultValue={scalingSpecifcation?.maxReplicas}
                 infoText="Enter the maximum number of replicas your inference can scale up to"
                 onChange={(e) => handleChange("maxReplicas", e)}
               />
@@ -148,7 +143,6 @@ export default function DeployModelAutoScale() {
                 placeholder="Enter Scale Up Tolerance"
                 rules={[{ required: true, message: "Please enter Scale Up Tolerance" }]}
                 ClassNames="mt-[.4rem]"
-                defaultValue={scalingSpecifcation?.scaleUpTolerance}
                 infoText="Enter the tolerance for scaling up"
                 onChange={(e) => handleChange("scaleUpTolerance", e)}
               />
@@ -158,7 +152,6 @@ export default function DeployModelAutoScale() {
                 placeholder="Enter Scale Down Tolerance"
                 rules={[{ required: true, message: "Please enter Scale Down Tolerance" }]}
                 ClassNames="mt-[.4rem]"
-                defaultValue={scalingSpecifcation?.scaleDownTolerance}
                 infoText="Enter the tolerance for scaling down"
                 onChange={(e) => handleChange("scaleDownTolerance", e)}
               />
@@ -168,7 +161,6 @@ export default function DeployModelAutoScale() {
                 placeholder="Enter Window"
                 rules={[{ required: true, message: "Please enter Window" }]}
                 ClassNames="mt-[.4rem]"
-                defaultValue={scalingSpecifcation?.window}
                 infoText="Enter the window to scale on"
                 onChange={(e) => handleChange("window", e)}
               />
