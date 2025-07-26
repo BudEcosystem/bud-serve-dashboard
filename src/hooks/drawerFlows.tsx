@@ -3561,6 +3561,22 @@ const runEvaluation: DrawerFlowType = {
       navigation: () => [
         "New Evaluation",
       ],
+      id: "view-evaluation-details",
+      confirmClose: false,
+      step: 2,
+      component: StepComponents["view-evaluation-details"],
+      progress: [
+        {
+          status: FormProgressStatus.inProgress,
+          title: "New Evaluation",
+        },
+        
+      ],
+    },
+    {
+      navigation: () => [
+        "New Evaluation",
+      ],
       id: "evaluation-summary",
       confirmClose: false,
       step: 2,

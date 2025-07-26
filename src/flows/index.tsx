@@ -111,6 +111,7 @@ import SelectModelForNewEvaluation from "./Evaluations/RunEvaluation/SelectModel
 import SelectTrait from "./Evaluations/RunEvaluation/SelectTrait";
 import SelectEvaluation from "./Evaluations/RunEvaluation/SelectEvaluation";
 import EvaluationSummary from "./Evaluations/RunEvaluation/EvaluationSummary";
+import ViewEvaluationDetails from "./Evaluations/RunEvaluation/ViewEvaluationDetails";
 export const StepComponents = {
   "new-project": NewProject,
   "invite-members": InviteMembers,
@@ -235,6 +236,7 @@ export const StepComponents = {
   "select-traits": SelectTrait,
   "select-evaluation": SelectEvaluation,
   "evaluation-summary": EvaluationSummary,
+   "view-evaluation-details": ViewEvaluationDetails,
 };
 
 export type StepComponentsType = keyof typeof StepComponents;
